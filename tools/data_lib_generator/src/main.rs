@@ -13,7 +13,6 @@ fn read_json() -> DataLib {
     let data_lib: DataLib = serde_json::from_str(&json_data).expect("error while parsing json");
     data_lib
 }
-
 fn generate_header(mut header: fs::File, data_lib: &DataLib, file_name: &str) {
     writeln!(header, "#ifndef {}_H", file_name.to_uppercase()).unwrap();
     writeln!(header, "#define {}_H\n", file_name.to_uppercase()).unwrap();
@@ -59,6 +58,7 @@ fn generate_header(mut header: fs::File, data_lib: &DataLib, file_name: &str) {
     writeln!(header, "#endif").unwrap();
 }
 
+//TODO (2024-12-06) lucas Add flag section to json to create the getters
 fn generate_data_lib(data_lib: &DataLib) {
     let file_name = "data_management";
     let mut dest_path = env::var("DEST_PATH").unwrap_or("../../libs/data_lib".to_string());
