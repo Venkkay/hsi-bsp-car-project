@@ -33,7 +33,7 @@ fn generate_header(mut header: fs::File, data_lib: &DataLib, file_name: &str) {
             if let Some(DeclarationType::FieldEnumDeclarations(declaration)) = &data_type.declaration {
                 writeln!(header, "enum {} {{", data_type.name).unwrap();
                 for field_enum_declaration in declaration {
-                    writeln!(header, "    {} = {};", field_enum_declaration.name, field_enum_declaration.value).unwrap();
+                    writeln!(header, "    {} = {},", field_enum_declaration.name, field_enum_declaration.value).unwrap();
                 }
                 writeln!(header, "}};\n").unwrap();
 
@@ -56,7 +56,7 @@ fn generate_header(mut header: fs::File, data_lib: &DataLib, file_name: &str) {
             }
         }
     }
-    writeln!(header, "#endif {}_H\n", file_name.to_uppercase()).unwrap();
+    writeln!(header, "#endif").unwrap();
 }
 
 fn generate_data_lib(data_lib: &DataLib) {
