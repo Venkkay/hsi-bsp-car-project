@@ -1,11 +1,11 @@
 {
   "types": [
     {
-      "name": "comodo_t",
+      "name": "comodo_frame_t",
       "kind": "atomic",
       "declaration": "uint8_t",
       "domain": "boolean",
-      "comment": "READ ONLY\nType to describe the frame sent by the comodo to the BGCV"
+      "comment": "READ ONLY\nType to describe the frame sent by the comodo to the BCGV"
     },
     {
       "name": "mux_frame_t",
@@ -24,8 +24,8 @@
           "type": "fuel_t"
         },
         {
-          "name": "trame_number",
-          "type": "mux_trame_number_t"
+          "name": "frame_number",
+          "type": "mux_frame_number_t"
         },
         {
           "name": "speed",
@@ -33,15 +33,15 @@
         },
         {
           "name": "chassis_issue",
-          "type": "chassis_issue_t"
+          "type": "uint8_t"
         },
         {
           "name": "engine_issue",
-          "type": "engine_issue_t"
+          "type": "uint8_t"
         },
         {
           "name": "battery_issue",
-          "type": "battery_issue_t"
+          "type": "uint8_t"
         },
         {
           "name": "crc8",
@@ -52,14 +52,14 @@
       "comment": "READ ONLY"
     },
     {
-      "name": "bgf_t",
+      "name": "bgf_trame_t",
       "kind": "atomic",
       "declaration": "uint16_t",
       "domain": "unsigned int",
       "comment": "READ / WRITE"
     },
     {
-      "name": "bgcv_frame_t",
+      "name": "bcgv_frame_t",
       "kind": "struct",
       "declaration": [
         {
@@ -67,7 +67,7 @@
           "type": "kilometer_t"
         },
         {
-          "name": "rpm_dashboard",
+          "name": "rpm",
           "type": "rpm_dashboard_t"
         },
         {
@@ -76,7 +76,7 @@
         },
         {
           "name": "fuel_percent_level",
-          "type": "fuel_percent_t"
+          "type": "fuel_t"
         },
         {
           "name": "dashboard_light",
@@ -134,7 +134,7 @@
       "comment": "For dashboard only"
     },
     {
-      "name": "mux_trame_number_t",
+      "name": "mux_frame_number_t",
       "kind": "atomic",
       "declaration": "uint8_t",
       "domain": {
@@ -158,7 +158,7 @@
       "kind": "enum",
       "declaration": [
         {
-            "name": "NOTHING",
+            "name": "NOTHING_CHASSIS",
             "value": 0
         },
         {
@@ -178,7 +178,7 @@
       "kind": "enum",
       "declaration": [
         {
-          "name": "NOTHING",
+          "name": "NOTHING_ENGINE",
           "value": 0
         },
         {
@@ -195,14 +195,14 @@
         }
       ],
       "domain": "",
-      "comment": "Use to describe to engine issue"
+      "comment": "Use to describe to engine's issue"
     },
     {
       "name": "battery_issues_t",
       "kind": "enum",
       "declaration": [
         {
-          "name": "NOTHING",
+          "name": "NOTHING_BATTERY",
           "value": 0
         },
         {
@@ -215,7 +215,7 @@
         }
       ],
       "domain": "",
-      "comment": "Use to describe the battery issue"
+      "comment": "Use to describe the battery's issue"
     },
     {
       "name": "bgf_message_t",
@@ -246,7 +246,7 @@
       "comment": "Use to define the type of message to be sent and received from the BGF."
     },
     {
-      "name": "light_state_t",
+      "name": "light_status_t",
       "kind": "enum",
       "declaration": [
         {
@@ -266,7 +266,83 @@
       "kind": "atomic",
       "declaration": "uint16_t",
       "domain": "",
-      "comment": "Chaque informations est sur 1 bit :\nwarning\nposition_light\nlow_beam\nhigh_beam\ntire_pressure\nbrake_issue\nengine_issue\nengine_pressure\ncooling\noil_overheat\nfuel_light\nlow_battery\ndead_battery\nuseless\nwipers\nwindscreen_washer"
+      "comment": "Each piece of information is 1 bit long:\nwarning\nposition_light\nlow_beam\nhigh_beam\ntire_pressure\nbrake_issue\nengine_issue\nengine_pressure\ncooling\noil_overheat\nfuel_light\nlow_battery\ndead_battery\nuseless\n\nwipers\nwindscreen_washer"
+    },
+    {
+      "name": "light_state_t",
+      "kind": "enum",
+      "declaration": [
+        {
+          "name": "LIGHT_OFF",
+          "value": 0
+        },
+        {
+          "name": "LIGHT_ON",
+          "value": 1
+        },
+        {
+          "name": "LIGHT_ERROR",
+          "value": 2
+        },
+        {
+          "name": "LIGHT_ACQUITTED",
+          "value": 3
+        }
+      ],
+      "domain": "",
+      "comment": "Describe the possible states of the lights (positions, low, high) "
+    },
+    {
+      "name": "indicator_state_t",
+      "kind": "enum",
+      "declaration": [
+        {
+          "name": "INDICATOR_OFF",
+          "value": 0
+        },
+        {
+          "name": "ACTIVATED_OFF",
+          "value": 1
+        },
+        {
+          "name": "ACTIVATED_ON",
+          "value": 2
+        },
+        {
+          "name": "INDICATOR_ERROR",
+          "value": 3
+        },
+        {
+          "name": "INDICATOR_ACQUITTED",
+          "value": 4
+        }
+      ],
+      "domain": "",
+      "comment": "Describe the possible states of indicators and warnings"
+    },
+    {
+      "name": "windscreen_wipers_state_t",
+      "kind": "enum",
+      "declaration": [
+        {
+          "name": "ALL_OFF",
+          "value": 0
+        },
+        {
+          "name": "WIPERS_ACTIVATED",
+          "value": 1
+        },
+        {
+          "name": "WDSCRN_CLN_WPRS_ACTIVATED",
+          "value": 2
+        },
+        {
+          "name": "TMR_WPRS_WDSCRN_CLN_OFF",
+          "value": 3
+        }
+      ],
+      "domain": "",
+      "comment": "Describe the possible states of the wipers and the windscreen washer"
     }
   ],
   "data": [
