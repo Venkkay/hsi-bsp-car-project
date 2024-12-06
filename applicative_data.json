@@ -158,7 +158,7 @@
       "kind": "enum",
       "declaration": [
         {
-            "name": "NOTHING",
+            "name": "NOTHING_CHASSIS",
             "value": 0
         },
         {
@@ -178,7 +178,7 @@
       "kind": "enum",
       "declaration": [
         {
-          "name": "NOTHING",
+          "name": "NOTHING_ENGINE",
           "value": 0
         },
         {
@@ -202,7 +202,7 @@
       "kind": "enum",
       "declaration": [
         {
-          "name": "NOTHING",
+          "name": "NOTHING_BATTERY",
           "value": 0
         },
         {
@@ -273,19 +273,19 @@
       "kind": "enum",
       "declaration": [
         {
-          "name": "OFF",
+          "name": "LIGHT_OFF",
           "value": 0
         },
         {
-          "name": "ON",
+          "name": "LIGHT_ON",
           "value": 1
         },
         {
-          "name": "ERROR",
+          "name": "LIGHT_ERROR",
           "value": 2
         },
         {
-          "name": "ACQUITTED",
+          "name": "LIGHT_ACQUITTED",
           "value": 3
         }
       ],
@@ -297,7 +297,7 @@
       "kind": "enum",
       "declaration": [
         {
-          "name": "OFF",
+          "name": "INDICATOR_OFF",
           "value": 0
         },
         {
@@ -309,11 +309,11 @@
           "value": 2
         },
         {
-          "name": "ERROR",
+          "name": "INDICATOR_ERROR",
           "value": 3
         },
         {
-          "name": "ACQUITTED",
+          "name": "INDICATOR_ACQUITTED",
           "value": 4
         }
       ],
