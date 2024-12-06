@@ -1,7 +1,7 @@
 use std::io::Write;
 pub mod models;
 
-use crate::models::DataLib;
+use crate::models::{DataLib, Type};
 use std::{env, fs};
 use crate::models::data_type::DeclarationType;
 
@@ -14,19 +14,10 @@ fn read_json() -> DataLib {
     data_lib
 }
 
-fn generate_data_lib(data_lib: &DataLib) {
-    let file_name = "data_management";
-    let mut dest_path = env::var("DEST_PATH").unwrap_or("../../libs/data_lib".to_string());
-    if !dest_path.ends_with('/') {
-        dest_path.push('/');
-    }
-    let mut header = fs::File::create(format!("{}{}.h", dest_path, file_name)).expect("Failed to create header file");
-    let mut source = fs::File::create(format!("{}{}.c", dest_path, file_name)).expect("Failed to create source file");
-
+fn generate_header(mut header: fs::File, data_lib: &DataLib, file_name: &str) {
     writeln!(header, "#ifndef {}_H", file_name.to_uppercase()).unwrap();
     writeln!(header, "#define {}_H\n", file_name.to_uppercase()).unwrap();
     writeln!(header, "#include <stddef.h>\n").unwrap();
-
     for data_type in &data_lib.types {
         if(data_type.kind == "atomic") {
             if let Some(DeclarationType::String(declaration)) = &data_type.declaration {
@@ -65,6 +56,20 @@ fn generate_data_lib(data_lib: &DataLib) {
             }
         }
     }
+    writeln!(header, "#endif {}_H\n", file_name.to_uppercase()).unwrap();
+}
+
+fn generate_data_lib(data_lib: &DataLib) {
+    let file_name = "data_management";
+    let mut dest_path = env::var("DEST_PATH").unwrap_or("../../libs/data_lib".to_string());
+    if !dest_path.ends_with('/') {
+        dest_path.push('/');
+    }
+    let header = fs::File::create(format!("{}{}.h", dest_path, file_name)).expect("Failed to create header file");
+    let mut source = fs::File::create(format!("{}{}.c", dest_path, file_name)).expect("Failed to create source file");
+
+    generate_header(header, data_lib, file_name);
+    
 
     /*
         println!("name: {}", data_type.name);

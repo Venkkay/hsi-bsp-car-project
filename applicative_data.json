@@ -374,6 +374,102 @@
         }
       ],
       "comment":"Defines the status of the instrument panel. It is used to find out the current status of the car at any given moment, and to determine the changes to be made according to the previous status."
+    },
+    {
+      "id":2,
+      "name":"MIN_RPM",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 0,
+      "comment":""
+    },
+    {
+      "id":3,
+      "name":"MAX_RPM",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 10000,
+      "comment":""
+    },
+    {
+      "id":4,
+      "name":"MIN_RPM_DASHBOARD",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 0,
+      "comment":""
+    },
+    {
+      "id":5,
+      "name":"MAX_RPM_DASHBOARD",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 1000,
+      "comment":""
+    },
+    {
+      "id":6,
+      "name":"MIN_FUEL",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 0,
+      "comment":""
+    },
+    {
+      "id":7,
+      "name":"MAX_FUEL",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 40,
+      "comment":""
+    },
+    {
+      "id":8,
+      "name":"MIN_FUEL_PERCENT",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 0,
+      "comment":""
+    },
+    {
+      "id":9,
+      "name":"MAX_FUEL_PERCENT",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 100,
+      "comment":""
+    },
+    {
+      "id":10,
+      "name":"MIN_MUX_FRAME_NUMBER",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 1,
+      "comment":""
+    },
+    {
+      "id":11,
+      "name":"MAX_MUX_FRAME_NUMBER",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 100,
+      "comment":""
+    },
+    {
+      "id":12,
+      "name":"MIN_SPEED",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 0,
+      "comment":""
+    },
+    {
+      "id":13,
+      "name":"MAX_SPEED",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 255,
+      "comment":""
     }
   ]
 }
