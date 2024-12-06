@@ -346,6 +346,34 @@
     }
   ],
   "data": [
-
+    {
+      "id":1,
+      "name":"dashboard_state",
+      "type":"bcgv_frame_t",
+      "dimension":1,
+      "initialization_value":[
+        {
+          "name":"kilometer",
+          "value":0
+        },
+        {
+          "name":"rpm",
+          "value":0
+        },
+        {
+          "name":"speed",
+          "value":0
+        },
+        {
+          "name":"fuel_percent_level",
+          "value":0
+        },
+        {
+          "name":"dashboard_light",
+          "value":0
+        }
+      ],
+      "comment":"Defines the status of the instrument panel. It is used to find out the current status of the car at any given moment, and to determine the changes to be made according to the previous status."
+    }
   ]
 }
