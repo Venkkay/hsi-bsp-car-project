@@ -4,8 +4,8 @@ use serde::Deserialize;
 pub struct Type {
     pub(crate) name: String,
     pub(crate) kind: String,
-    pub(crate) declaration: DeclarationType,
-    pub(crate) domain: DomainType,
+    pub(crate) declaration: Option<DeclarationType>,
+    pub(crate) domain: Option<DomainType>,
     pub(crate) comment: String,
 }
 
