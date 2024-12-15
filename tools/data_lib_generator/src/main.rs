@@ -1,7 +1,7 @@
 use std::io::Write;
 pub mod models;
 
-use crate::models::{DataLib, Type};
+use crate::models::{DataLib};
 use std::{env, fs};
 use crate::models::data_init::InitialValueType;
 use crate::models::data_type::DeclarationType;
@@ -19,7 +19,7 @@ fn generate_header(mut header: fs::File, data_lib: &DataLib, file_name: &str) {
     writeln!(header, "#define {}_H\n", file_name.to_uppercase()).unwrap();
     writeln!(header, "#include <stddef.h>\n").unwrap();
     for data_constant in &data_lib.data {
-        if(data_constant.field_type == "define") {
+        if data_constant.field_type == "define" {
             if let Some(InitialValueType::Integer(initialization_value)) = &data_constant.initialization_value {
                 writeln!(header, "#define {} {}", data_constant.name, initialization_value).unwrap();
             }else {
@@ -29,7 +29,7 @@ fn generate_header(mut header: fs::File, data_lib: &DataLib, file_name: &str) {
     }
     writeln!(header, "\n").unwrap();
     for data_type in &data_lib.types {
-        if(data_type.kind == "atomic") {
+        if data_type.kind == "atomic" {
             if let Some(DeclarationType::String(declaration)) = &data_type.declaration {
                 writeln!(header, "typedef {} {};", declaration, data_type.name).unwrap();
             }else {
@@ -38,7 +38,7 @@ fn generate_header(mut header: fs::File, data_lib: &DataLib, file_name: &str) {
         }
     }
     for data_type in &data_lib.types {
-        if(data_type.kind == "flags") {
+        if data_type.kind == "flags" {
             if let Some(DeclarationType::FlagsStruct(declaration)) = &data_type.declaration {
                 writeln!(header, "typedef {} {};", declaration.field_type, data_type.name).unwrap();
             }else {
@@ -48,7 +48,7 @@ fn generate_header(mut header: fs::File, data_lib: &DataLib, file_name: &str) {
     }
     writeln!(header, "\n").unwrap();
     for data_type in &data_lib.types {
-        if(data_type.kind == "enum") {
+        if data_type.kind == "enum" {
             if let Some(DeclarationType::FieldEnumDeclarations(declaration)) = &data_type.declaration {
                 writeln!(header, "enum {} {{", data_type.name).unwrap();
                 for field_enum_declaration in declaration {
@@ -62,7 +62,7 @@ fn generate_header(mut header: fs::File, data_lib: &DataLib, file_name: &str) {
         }
     }
     for data_type in &data_lib.types {
-        if(data_type.kind == "struct") {
+        if data_type.kind == "struct" {
             if let Some(DeclarationType::FieldStructDeclarations(declaration)) = &data_type.declaration {
                 writeln!(header, "typedef struct {{").unwrap();
                 for field_struct_declaration in declaration {
@@ -82,15 +82,15 @@ fn generate_source(mut source: fs::File, data_lib: &DataLib, file_name: &str) {
     writeln!(source, "#include \"{}.h\"", file_name).unwrap();
     writeln!(source, "#include <stddef.h>\n").unwrap();
     for data_type in &data_lib.types {
-        if(data_type.kind == "flags") {
+        if data_type.kind == "flags" {
             if let Some(DeclarationType::FlagsStruct(declaration)) = &data_type.declaration {
                 //writeln!(source, "fn get{}\n", declaration.field_type).unwrap();
                 let total_size = declaration.flags.iter().fold(0, |acc, flag| acc + flag.bit_size);
-                println!("total_size: {}", total_size);
+                // println!("total_size: {}", total_size);
                 let mut shift = total_size;
                 for flag in &declaration.flags {
                     shift -= flag.bit_size;
-                    println!("flag bit size: {}", shift);
+                    // println!("flag bit size: {}", shift);
                     writeln!(source, "{} get_{}_from_{}({} instance) {{ return (instance & 0x{:0fill$x}) >> {}; }}", declaration.field_type, flag.name, data_type.name, data_type.name, flag.bit_size << shift, shift, fill=((total_size/4 )as usize)).unwrap();
                     //writeln!(source, "void set_{}_{}({}* instance, int value) {{ if(value) {{ *instance |= 0x{:0fill$x}; }} else {{ *instance &= ~0x{:0fill$x}; }} }}", data_type.name, flag.name, data_type.name, flag.bit_size << shift, flag.bit_size << shift, fill=((total_size/4 )as usize)).unwrap();
                     writeln!(source, "void set_{}_in_{}({}* instance, int value) {{ *instance &= ~0x{:0fill$x}; *instance |= value << {}; }}", flag.name, data_type.name, data_type.name, flag.bit_size << shift, shift,  fill=((total_size/4 )as usize)).unwrap();
@@ -137,10 +137,10 @@ fn parse_args() {
         parsed_args.push(arg.to_vec());
     }
     for pair in parsed_args {
-        if(pair[0] == "--json") {
+        if pair[0] == "--json" {
             env::set_var("JSON_FILE_PATH", pair[1].clone());
         }
-        if(pair[0] == "--dest") {
+        if pair[0] == "--dest" {
             env::set_var("DEST_PATH", pair[1].clone());
         }
     }

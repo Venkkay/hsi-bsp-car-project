@@ -1,5 +1,4 @@
 use serde::Deserialize;
-use crate::models::data_type::{FieldEnumDeclaration, FieldStructDeclaration};
 
 #[derive(Deserialize, Debug)]
 pub struct DataInit {
