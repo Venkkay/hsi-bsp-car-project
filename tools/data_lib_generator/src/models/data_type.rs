@@ -15,6 +15,7 @@ pub enum DeclarationType {
     String(String),
     FieldStructDeclarations(Vec<FieldStructDeclaration>),
     FieldEnumDeclarations(Vec<FieldEnumDeclaration>),
+    FlagsStruct(FlagsDeclarationStruct),
 }
 
 #[derive(Deserialize, Debug)]
@@ -41,4 +42,17 @@ pub enum DomainType {
 pub struct DomainMinMax {
     pub(crate) min: i32,
     pub(crate) max: i32,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct FlagsDeclarationStruct {
+    #[serde(rename = "type")]
+    pub(crate) field_type: String,
+    pub(crate) flags: Vec<FlagDeclaration>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct FlagDeclaration {
+    pub(crate) name: String,
+    pub(crate) bit_size: i32,
 }

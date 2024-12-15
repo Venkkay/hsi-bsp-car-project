@@ -2,8 +2,44 @@
   "types": [
     {
       "name": "comodo_frame_t",
-      "kind": "atomic",
-      "declaration": "uint8_t",
+      "kind": "flags",
+      "declaration": {
+        "type": "uint8_t",
+        "flags": [
+            {
+              "name": "cmd_warning",
+              "bit_size": 1
+            },
+            {
+                "name": "cmd_position_light",
+                "bit_size": 1
+            },
+            {
+                "name": "cmd_low_beam",
+                "bit_size": 1
+            },
+            {
+                "name": "cmd_high_beam",
+                "bit_size": 1
+            },
+            {
+                "name": "cmd_right_indicator",
+                "bit_size": 1
+            },
+            {
+                "name": "cmd_left_indicator",
+                "bit_size": 1
+            },
+            {
+                "name": "cmd_wipers",
+                "bit_size": 1
+            },
+            {
+                "name": "cmd_washer",
+                "bit_size": 1
+            }
+        ]
+      },
       "domain": "boolean",
       "comment": "READ ONLY\nType to describe the frame sent by the comodo to the BCGV"
     },
@@ -263,8 +299,76 @@
     },
     {
       "name": "dashboard_light_t",
-      "kind": "atomic",
-      "declaration": "uint16_t",
+      "kind": "flags",
+      "declaration": {
+        "type": "uint16_t",
+        "flags": [
+          {
+            "name": "position_light",
+            "bit_size": 1
+          },
+          {
+            "name": "low_beam",
+            "bit_size": 1
+          },
+          {
+            "name": "high_beam",
+            "bit_size": 1
+          },
+          {
+            "name": "fuel",
+            "bit_size": 1
+          },
+          {
+            "name": "motor_issue",
+            "bit_size": 1
+          },
+          {
+            "name": "pressure_issue",
+            "bit_size": 1
+          },
+          {
+            "name": "unused",
+            "bit_size": 1
+          },
+          {
+            "name": "discharged_battery",
+            "bit_size": 1
+          },
+          {
+            "name": "warning",
+            "bit_size": 1
+          },
+          {
+            "name": "battery_issue",
+            "bit_size": 1
+          },
+          {
+            "name": "coolant_temperature",
+            "bit_size": 1
+          },
+          {
+            "name": "motor_pressure",
+            "bit_size": 1
+          },
+          {
+            "name": "oil_overheat",
+            "bit_size": 1
+          },
+          {
+            "name": "brake_issue",
+            "bit_size": 1
+          },
+          {
+            "name": "wiper_active",
+            "bit_size": 1
+          },
+          {
+            "name": "washer_active",
+            "bit_size": 1
+          }
+        ]
+      },
       "domain": "",
       "comment": "Each piece of information is 1 bit long:\nwarning\nposition_light\nlow_beam\nhigh_beam\ntire_pressure\nbrake_issue\nengine_issue\nengine_pressure\ncooling\noil_overheat\nfuel_light\nlow_battery\ndead_battery\nuseless\n\nwipers\nwindscreen_washer"
     },

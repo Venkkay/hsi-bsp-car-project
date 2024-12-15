@@ -3,6 +3,7 @@ pub mod models;
 
 use crate::models::{DataLib, Type};
 use std::{env, fs};
+use crate::models::data_init::InitialValueType;
 use crate::models::data_type::DeclarationType;
 
 fn read_json() -> DataLib {
@@ -17,10 +18,29 @@ fn generate_header(mut header: fs::File, data_lib: &DataLib, file_name: &str) {
     writeln!(header, "#ifndef {}_H", file_name.to_uppercase()).unwrap();
     writeln!(header, "#define {}_H\n", file_name.to_uppercase()).unwrap();
     writeln!(header, "#include <stddef.h>\n").unwrap();
+    for data_constant in &data_lib.data {
+        if(data_constant.field_type == "define") {
+            if let Some(InitialValueType::Integer(initialization_value)) = &data_constant.initialization_value {
+                writeln!(header, "#define {} {}", data_constant.name, initialization_value).unwrap();
+            }else {
+                eprintln!("Error: initial_value is None for data_constant");
+            }
+        }
+    }
+    writeln!(header, "\n").unwrap();
     for data_type in &data_lib.types {
         if(data_type.kind == "atomic") {
             if let Some(DeclarationType::String(declaration)) = &data_type.declaration {
                 writeln!(header, "typedef {} {};", declaration, data_type.name).unwrap();
+            }else {
+                eprintln!("Error: declaration is None for atomic type");
+            }
+        }
+    }
+    for data_type in &data_lib.types {
+        if(data_type.kind == "flags") {
+            if let Some(DeclarationType::FlagsStruct(declaration)) = &data_type.declaration {
+                writeln!(header, "typedef {} {};", declaration.field_type, data_type.name).unwrap();
             }else {
                 eprintln!("Error: declaration is None for atomic type");
             }
@@ -58,6 +78,32 @@ fn generate_header(mut header: fs::File, data_lib: &DataLib, file_name: &str) {
     writeln!(header, "#endif").unwrap();
 }
 
+fn generate_source(mut source: fs::File, data_lib: &DataLib, file_name: &str) {
+    writeln!(source, "#include \"{}.h\"", file_name).unwrap();
+    writeln!(source, "#include <stddef.h>\n").unwrap();
+    for data_type in &data_lib.types {
+        if(data_type.kind == "flags") {
+            if let Some(DeclarationType::FlagsStruct(declaration)) = &data_type.declaration {
+                //writeln!(source, "fn get{}\n", declaration.field_type).unwrap();
+                let total_size = declaration.flags.iter().fold(0, |acc, flag| acc + flag.bit_size);
+                println!("total_size: {}", total_size);
+                let mut shift = total_size;
+                for flag in &declaration.flags {
+                    shift -= flag.bit_size;
+                    println!("flag bit size: {}", shift);
+                    writeln!(source, "{} get_{}_from_{}({} instance) {{ return (instance & 0x{:0fill$x}) >> {}; }}", declaration.field_type, flag.name, data_type.name, data_type.name, flag.bit_size << shift, shift, fill=((total_size/4 )as usize)).unwrap();
+                    //writeln!(source, "void set_{}_{}({}* instance, int value) {{ if(value) {{ *instance |= 0x{:0fill$x}; }} else {{ *instance &= ~0x{:0fill$x}; }} }}", data_type.name, flag.name, data_type.name, flag.bit_size << shift, flag.bit_size << shift, fill=((total_size/4 )as usize)).unwrap();
+                    writeln!(source, "void set_{}_in_{}({}* instance, int value) {{ *instance &= ~0x{:0fill$x}; *instance |= value << {}; }}", flag.name, data_type.name, data_type.name, flag.bit_size << shift, shift,  fill=((total_size/4 )as usize)).unwrap();
+
+                }
+                writeln!(source, "\n").unwrap();
+            }else {
+                eprintln!("Error: declaration is None for atomic type");
+            }
+        }
+    }
+}
+
 //TODO (2024-12-06) lucas Add flag section to json to create the getters
 fn generate_data_lib(data_lib: &DataLib) {
     let file_name = "data_management";
@@ -66,9 +112,10 @@ fn generate_data_lib(data_lib: &DataLib) {
         dest_path.push('/');
     }
     let header = fs::File::create(format!("{}{}.h", dest_path, file_name)).expect("Failed to create header file");
-    let mut source = fs::File::create(format!("{}{}.c", dest_path, file_name)).expect("Failed to create source file");
+    let source = fs::File::create(format!("{}{}.c", dest_path, file_name)).expect("Failed to create source file");
 
     generate_header(header, data_lib, file_name);
+    generate_source(source, data_lib, file_name);
     
 
     /*

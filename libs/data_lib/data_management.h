@@ -3,7 +3,20 @@
 
 #include <stddef.h>
 
-typedef uint8_t comodo_frame_t;
+#define MIN_RPM 0
+#define MAX_RPM 10000
+#define MIN_RPM_DASHBOARD 0
+#define MAX_RPM_DASHBOARD 1000
+#define MIN_FUEL 0
+#define MAX_FUEL 40
+#define MIN_FUEL_PERCENT 0
+#define MAX_FUEL_PERCENT 100
+#define MIN_MUX_FRAME_NUMBER 1
+#define MAX_MUX_FRAME_NUMBER 100
+#define MIN_SPEED 0
+#define MAX_SPEED 255
+
+
 typedef uint16_t bgf_trame_t;
 typedef uint32_t kilometer_t;
 typedef uint32_t rpm_t;
@@ -12,6 +25,7 @@ typedef uint8_t fuel_t;
 typedef uint8_t fuel_percent_t;
 typedef uint8_t mux_frame_number_t;
 typedef uint8_t speed_t;
+typedef uint8_t comodo_frame_t;
 typedef uint16_t dashboard_light_t;
 
 
