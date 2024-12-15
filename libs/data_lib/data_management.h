@@ -1,7 +1,7 @@
 #ifndef DATA_MANAGEMENT_H
 #define DATA_MANAGEMENT_H
 
-#include <stddef.h>
+#include <stdint.h>
 
 #define MIN_RPM 0
 #define MAX_RPM 10000
@@ -25,63 +25,64 @@ typedef uint8_t fuel_t;
 typedef uint8_t fuel_percent_t;
 typedef uint8_t mux_frame_number_t;
 typedef uint8_t speed_t;
+typedef uint8_t crc8_t;
 typedef uint8_t comodo_frame_t;
 typedef uint16_t dashboard_light_t;
 
 
-enum chassis_issues_t {
+typedef enum chassis_issues_t_struct {
     NOTHING_CHASSIS = 0,
     TIRES_PRESSURE = 1,
     BRAKE_FAILURE = 2,
-};
+} chassis_issues_t;
 
-enum engine_issues_t {
+typedef enum engine_issues_t_struct {
     NOTHING_ENGINE = 0,
     PRESSURE_FAULT = 1,
     COOLANT_TEMPERATURE = 2,
     OIL_OVERHEATING = 3,
-};
+} engine_issues_t;
 
-enum battery_issues_t {
+typedef enum battery_issues_t_struct {
     NOTHING_BATTERY = 0,
     UNLOADED = 1,
     OUTAGE = 2,
-};
+} battery_issues_t;
 
-enum bgf_message_t {
+typedef enum bgf_message_t_struct {
     POSITION_LIGHT = 0,
     LOW_BEAM = 1,
     HIGH_BEAM = 2,
     RIGHT_INDICATOR = 3,
     LEFT_INDICATOR = 4,
-};
+} bgf_message_t;
 
-enum light_status_t {
+typedef enum light_status_t_struct {
     OFF = 0,
     ON = 1,
-};
+} light_status_t;
 
-enum light_state_t {
+typedef enum light_state_t_struct {
     LIGHT_OFF = 0,
     LIGHT_ON = 1,
     LIGHT_ERROR = 2,
     LIGHT_ACQUITTED = 3,
-};
+} light_state_t;
 
-enum indicator_state_t {
+typedef enum indicator_state_t_struct {
     INDICATOR_OFF = 0,
     ACTIVATED_OFF = 1,
     ACTIVATED_ON = 2,
     INDICATOR_ERROR = 3,
     INDICATOR_ACQUITTED = 4,
-};
+} indicator_state_t;
 
-enum windscreen_wipers_state_t {
+typedef enum windscreen_wipers_state_t_struct {
     ALL_OFF = 0,
     WIPERS_ACTIVATED = 1,
     WDSCRN_CLN_WPRS_ACTIVATED = 2,
     TMR_WPRS_WDSCRN_CLN_OFF = 3,
-};
+} windscreen_wipers_state_t;
 
 typedef struct {
     kilometer_t kilometer;
@@ -89,10 +90,10 @@ typedef struct {
     fuel_t fuel_level;
     mux_frame_number_t frame_number;
     speed_t speed;
-    uint8_t chassis_issue;
-    uint8_t engine_issue;
-    uint8_t battery_issue;
-    uint8_t crc8;
+    chassis_issues_t chassis_issue;
+    engine_issues_t engine_issue;
+    battery_issues_t battery_issue;
+    crc8_t crc8;
 } mux_frame_t;
 
 typedef struct {

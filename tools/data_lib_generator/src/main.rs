@@ -4,7 +4,7 @@ pub mod models;
 use crate::models::{DataLib};
 use std::{env, fs};
 use crate::models::data_init::InitialValueType;
-use crate::models::data_type::DeclarationType;
+use crate::models::data_type::{DeclarationType, DomainType};
 
 fn read_json() -> DataLib {
     let json_file_path = "../../applicative_data.json";
@@ -17,7 +17,7 @@ fn read_json() -> DataLib {
 fn generate_header(mut header: fs::File, data_lib: &DataLib, file_name: &str) {
     writeln!(header, "#ifndef {}_H", file_name.to_uppercase()).unwrap();
     writeln!(header, "#define {}_H\n", file_name.to_uppercase()).unwrap();
-    writeln!(header, "#include <stddef.h>\n").unwrap();
+    writeln!(header, "#include <stdint.h>\n").unwrap();
     for data_constant in &data_lib.data {
         if data_constant.field_type == "define" {
             if let Some(InitialValueType::Integer(initialization_value)) = &data_constant.initialization_value {
@@ -50,11 +50,11 @@ fn generate_header(mut header: fs::File, data_lib: &DataLib, file_name: &str) {
     for data_type in &data_lib.types {
         if data_type.kind == "enum" {
             if let Some(DeclarationType::FieldEnumDeclarations(declaration)) = &data_type.declaration {
-                writeln!(header, "enum {} {{", data_type.name).unwrap();
+                writeln!(header, "typedef enum {}_struct {{", data_type.name).unwrap();
                 for field_enum_declaration in declaration {
                     writeln!(header, "    {} = {},", field_enum_declaration.name, field_enum_declaration.value).unwrap();
                 }
-                writeln!(header, "}};\n").unwrap();
+                writeln!(header, "}} {};\n", data_type.name).unwrap();
 
             }else {
                 eprintln!("Error: declaration is None for enum type");
@@ -80,20 +80,80 @@ fn generate_header(mut header: fs::File, data_lib: &DataLib, file_name: &str) {
 
 fn generate_source(mut source: fs::File, data_lib: &DataLib, file_name: &str) {
     writeln!(source, "#include \"{}.h\"", file_name).unwrap();
-    writeln!(source, "#include <stddef.h>\n").unwrap();
+    writeln!(source, "#include <stdint.h>\n").unwrap();
+
+    for data_type in &data_lib.types {
+        if data_type.kind == "atomic" {
+            if let Some(DeclarationType::String(declaration)) = &data_type.declaration {
+                //writeln!(source, "/**\n * Get the value of {}.\n *\n * @param[in] instance An instance of {}.\n * @return Return the value of the instance.\n */", data_type.name, data_type.name).unwrap();
+                //writeln!(source, "{} get_{}({} instance) {{\n    return instance;\n}}", declaration, data_type.name, data_type.name).unwrap();
+                writeln!(source, "/**\n * Set the value of {}.\n *\n * @param[out] instance An instance of {}.\n * @return Return void.\n */", data_type.name, data_type.name).unwrap();
+                if let Some(DomainType::DomainMinMax(domain)) = &data_type.domain {
+                    writeln!(source, "void set_{}({}* instance, {} value) {{\n    if (value >= {} && value <= {}) {{\n        *instance = value;\n    }}\n}}\n", data_type.name, data_type.name, declaration, domain.min, domain.max).unwrap();
+                }else {
+                    writeln!(source, "void set_{}({}* instance, {} value) {{\n    *instance = value;\n}}\n", data_type.name, data_type.name, declaration).unwrap();
+                }
+            }else {
+                eprintln!("Error: declaration is None for atomic type");
+            }
+        }
+    }
+
     for data_type in &data_lib.types {
         if data_type.kind == "flags" {
             if let Some(DeclarationType::FlagsStruct(declaration)) = &data_type.declaration {
-                //writeln!(source, "fn get{}\n", declaration.field_type).unwrap();
                 let total_size = declaration.flags.iter().fold(0, |acc, flag| acc + flag.bit_size);
                 // println!("total_size: {}", total_size);
                 let mut shift = total_size;
+                writeln!(source, "// Flags for {}.\n", data_type.name).unwrap();
                 for flag in &declaration.flags {
                     shift -= flag.bit_size;
                     // println!("flag bit size: {}", shift);
-                    writeln!(source, "{} get_{}_from_{}({} instance) {{ return (instance & 0x{:0fill$x}) >> {}; }}", declaration.field_type, flag.name, data_type.name, data_type.name, flag.bit_size << shift, shift, fill=((total_size/4 )as usize)).unwrap();
-                    //writeln!(source, "void set_{}_{}({}* instance, int value) {{ if(value) {{ *instance |= 0x{:0fill$x}; }} else {{ *instance &= ~0x{:0fill$x}; }} }}", data_type.name, flag.name, data_type.name, flag.bit_size << shift, flag.bit_size << shift, fill=((total_size/4 )as usize)).unwrap();
-                    writeln!(source, "void set_{}_in_{}({}* instance, int value) {{ *instance &= ~0x{:0fill$x}; *instance |= value << {}; }}", flag.name, data_type.name, data_type.name, flag.bit_size << shift, shift,  fill=((total_size/4 )as usize)).unwrap();
+                    writeln!(source, "/**\n * Get {} flag from {}.\n *\n * @param[in] instance An instance of {}.\n * @return Return the value of the got flag.\n */", flag.name, data_type.name, data_type.name).unwrap();
+                    writeln!(source, "{} get_{}_from_{}({} instance) {{\n    return (instance & 0x{:0fill$x}) >> {};\n}}", declaration.field_type, flag.name, data_type.name, data_type.name, flag.bit_size << shift, shift, fill=((total_size/4 )as usize)).unwrap();
+                    writeln!(source, "/**\n * Set {} flag in {}.\n *\n * @param[out] instance An instance of {}.\n * @return Return void.\n */", flag.name, data_type.name, data_type.name).unwrap();
+                    writeln!(source, "void set_{}_in_{}({}* instance, int value) {{\n    *instance &= ~0x{:0fill$x};\n    *instance |= value << {};\n}}\n", flag.name, data_type.name, data_type.name, flag.bit_size << shift, shift,  fill=((total_size/4 )as usize)).unwrap();
+
+                }
+                writeln!(source, "/**\n * Set all flag in {}.\n *\n * @param[out] instance An instance of {}.\n * @return Return void.\n */", data_type.name, data_type.name).unwrap();
+                writeln!(source, "void set_{}({}* instance, {} value) {{\n    *instance = value;\n}}\n", data_type.name, data_type.name, data_type.name).unwrap();
+                writeln!(source, "\n").unwrap();
+            }else {
+                eprintln!("Error: declaration is None for atomic type");
+            }
+        }
+    }
+
+    writeln!(source, "// Enums Setter\n").unwrap();
+    for data_type in &data_lib.types {
+        if data_type.kind == "enum" {
+            if let Some(DeclarationType::FieldEnumDeclarations(declaration)) = &data_type.declaration {
+                //writeln!(source, "/**\n * Get the value of {}.\n *\n * @param[in] instance An instance of {}.\n * @return Return the value of the instance.\n */", data_type.name, data_type.name).unwrap();
+                //writeln!(source, "{} get_{}({} instance) {{\n    return instance;\n}}", data_type.name, data_type.name, data_type.name).unwrap();
+                writeln!(source, "/**\n * Set the value of {}.\n *\n * @param[out] instance An instance of {}.\n * @return Return void.\n */", data_type.name, data_type.name).unwrap();
+                writeln!(source, "void set_{}({}* instance, {} value) {{\n    *instance = value;\n}}\n", data_type.name, data_type.name, data_type.name).unwrap();
+                writeln!(source, "\n").unwrap();
+            }else {
+                eprintln!("Error: declaration is None for atomic type");
+            }
+        }
+    }
+
+    writeln!(source, "// Struct getter and setter\n").unwrap();
+    for data_type in &data_lib.types {
+        if data_type.kind == "struct" {
+            if let Some(DeclarationType::FieldStructDeclarations(declaration)) = &data_type.declaration {
+                //writeln!(source, "fn get{}\n", declaration.field_type).unwrap();
+                // let total_size = declaration.flags.iter().fold(0, |acc, flag| acc + flag.bit_size);
+                // println!("total_size: {}", total_size);
+                // let mut shift = total_size;
+                for field_struct_declaration in declaration {
+                    //shift -= flag.bit_size;
+                    // println!("flag bit size: {}", shift);
+                    writeln!(source, "/**\n * Get {} flag from {}.\n *\n * @param[in] instance An instance of {}.\n * @return Return the value of the got flag.\n */", field_struct_declaration.name, data_type.name, data_type.name).unwrap();
+                    writeln!(source, "{} get_{}_from_{}({} instance) {{\n    return instance.{};\n}}", field_struct_declaration.field_type, field_struct_declaration.name, data_type.name, data_type.name, field_struct_declaration.name).unwrap();
+                    writeln!(source, "/**\n * Set {} flag in {}.\n *\n * @param[out] instance An instance of {}.\n * @return Return void.\n */", field_struct_declaration.name, data_type.name, data_type.name).unwrap();
+                    writeln!(source, "void set_{}_in_{}({}* instance, {} value) {{\n    set_{}(&instance->{}, value);\n}}\n", field_struct_declaration.name, data_type.name, data_type.name, field_struct_declaration.field_type, field_struct_declaration.field_type, field_struct_declaration.name).unwrap();
 
                 }
                 writeln!(source, "\n").unwrap();

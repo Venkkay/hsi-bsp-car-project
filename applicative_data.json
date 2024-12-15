@@ -69,19 +69,19 @@
         },
         {
           "name": "chassis_issue",
-          "type": "uint8_t"
+          "type": "chassis_issues_t"
         },
         {
           "name": "engine_issue",
-          "type": "uint8_t"
+          "type": "engine_issues_t"
         },
         {
           "name": "battery_issue",
-          "type": "uint8_t"
+          "type": "battery_issues_t"
         },
         {
           "name": "crc8",
-          "type": "uint8_t"
+          "type": "crc8_t"
         }
       ],
       "domain": "",
@@ -252,6 +252,13 @@
       ],
       "domain": "",
       "comment": "Use to describe the battery's issue"
+    },
+    {
+      "name": "crc8_t",
+      "kind": "atomic",
+      "declaration": "uint8_t",
+      "domain": "",
+      "comment": "CRC8"
     },
     {
       "name": "bgf_message_t",
