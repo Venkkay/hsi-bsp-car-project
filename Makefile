@@ -8,13 +8,16 @@ CC = gcc
 CFLAGS = -W -Wall -pedantic -Wextra -O2
 
 # Driver library
-LIBS = drv_api.a
+LIBS = drv_api.a libs/data_lib/libdata.a
 
 # Source files
 SRC = app.c
 
 # Default rules
-all: $(TARGET)
+all: libs/data_lib/libdata.a $(TARGET)
+
+libs/data_lib/libdata.a:
+	$(MAKE) -C libs/data_lib
 
 # Compilation
 $(TARGET): $(SRC)
@@ -23,3 +26,4 @@ $(TARGET): $(SRC)
 # Cleaning generated files
 clean:
 	rm -f $(TARGET)
+	$(MAKE) -C libs/data_lib clean

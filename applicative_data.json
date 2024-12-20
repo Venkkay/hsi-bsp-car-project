@@ -2,8 +2,44 @@
   "types": [
     {
       "name": "comodo_frame_t",
-      "kind": "atomic",
-      "declaration": "uint8_t",
+      "kind": "flags",
+      "declaration": {
+        "type": "uint8_t",
+        "flags": [
+            {
+              "name": "cmd_warning",
+              "bit_size": 1
+            },
+            {
+                "name": "cmd_position_light",
+                "bit_size": 1
+            },
+            {
+                "name": "cmd_low_beam",
+                "bit_size": 1
+            },
+            {
+                "name": "cmd_high_beam",
+                "bit_size": 1
+            },
+            {
+                "name": "cmd_right_indicator",
+                "bit_size": 1
+            },
+            {
+                "name": "cmd_left_indicator",
+                "bit_size": 1
+            },
+            {
+                "name": "cmd_wipers",
+                "bit_size": 1
+            },
+            {
+                "name": "cmd_washer",
+                "bit_size": 1
+            }
+        ]
+      },
       "domain": "boolean",
       "comment": "READ ONLY\nType to describe the frame sent by the comodo to the BCGV"
     },
@@ -33,19 +69,19 @@
         },
         {
           "name": "chassis_issue",
-          "type": "uint8_t"
+          "type": "chassis_issues_t"
         },
         {
           "name": "engine_issue",
-          "type": "uint8_t"
+          "type": "engine_issues_t"
         },
         {
           "name": "battery_issue",
-          "type": "uint8_t"
+          "type": "battery_issues_t"
         },
         {
           "name": "crc8",
-          "type": "uint8_t"
+          "type": "crc8_t"
         }
       ],
       "domain": "",
@@ -218,6 +254,13 @@
       "comment": "Use to describe the battery's issue"
     },
     {
+      "name": "crc8_t",
+      "kind": "atomic",
+      "declaration": "uint8_t",
+      "domain": "",
+      "comment": "CRC8"
+    },
+    {
       "name": "bgf_message_t",
       "kind": "enum",
       "declaration": [
@@ -263,8 +306,76 @@
     },
     {
       "name": "dashboard_light_t",
-      "kind": "atomic",
-      "declaration": "uint16_t",
+      "kind": "flags",
+      "declaration": {
+        "type": "uint16_t",
+        "flags": [
+          {
+            "name": "position_light",
+            "bit_size": 1
+          },
+          {
+            "name": "low_beam",
+            "bit_size": 1
+          },
+          {
+            "name": "high_beam",
+            "bit_size": 1
+          },
+          {
+            "name": "fuel",
+            "bit_size": 1
+          },
+          {
+            "name": "motor_issue",
+            "bit_size": 1
+          },
+          {
+            "name": "pressure_issue",
+            "bit_size": 1
+          },
+          {
+            "name": "unused",
+            "bit_size": 1
+          },
+          {
+            "name": "discharged_battery",
+            "bit_size": 1
+          },
+          {
+            "name": "warning",
+            "bit_size": 1
+          },
+          {
+            "name": "battery_issue",
+            "bit_size": 1
+          },
+          {
+            "name": "coolant_temperature",
+            "bit_size": 1
+          },
+          {
+            "name": "motor_pressure",
+            "bit_size": 1
+          },
+          {
+            "name": "oil_overheat",
+            "bit_size": 1
+          },
+          {
+            "name": "brake_issue",
+            "bit_size": 1
+          },
+          {
+            "name": "wiper_active",
+            "bit_size": 1
+          },
+          {
+            "name": "washer_active",
+            "bit_size": 1
+          }
+        ]
+      },
       "domain": "",
       "comment": "Each piece of information is 1 bit long:\nwarning\nposition_light\nlow_beam\nhigh_beam\ntire_pressure\nbrake_issue\nengine_issue\nengine_pressure\ncooling\noil_overheat\nfuel_light\nlow_battery\ndead_battery\nuseless\n\nwipers\nwindscreen_washer"
     },
@@ -374,6 +485,102 @@
         }
       ],
       "comment":"Defines the status of the instrument panel. It is used to find out the current status of the car at any given moment, and to determine the changes to be made according to the previous status."
+    },
+    {
+      "id":2,
+      "name":"MIN_RPM",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 0,
+      "comment":""
+    },
+    {
+      "id":3,
+      "name":"MAX_RPM",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 10000,
+      "comment":""
+    },
+    {
+      "id":4,
+      "name":"MIN_RPM_DASHBOARD",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 0,
+      "comment":""
+    },
+    {
+      "id":5,
+      "name":"MAX_RPM_DASHBOARD",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 1000,
+      "comment":""
+    },
+    {
+      "id":6,
+      "name":"MIN_FUEL",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 0,
+      "comment":""
+    },
+    {
+      "id":7,
+      "name":"MAX_FUEL",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 40,
+      "comment":""
+    },
+    {
+      "id":8,
+      "name":"MIN_FUEL_PERCENT",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 0,
+      "comment":""
+    },
+    {
+      "id":9,
+      "name":"MAX_FUEL_PERCENT",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 100,
+      "comment":""
+    },
+    {
+      "id":10,
+      "name":"MIN_MUX_FRAME_NUMBER",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 1,
+      "comment":""
+    },
+    {
+      "id":11,
+      "name":"MAX_MUX_FRAME_NUMBER",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 100,
+      "comment":""
+    },
+    {
+      "id":12,
+      "name":"MIN_SPEED",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 0,
+      "comment":""
+    },
+    {
+      "id":13,
+      "name":"MAX_SPEED",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 255,
+      "comment":""
     }
   ]
 }
