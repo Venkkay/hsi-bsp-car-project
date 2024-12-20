@@ -33,12 +33,10 @@ bool set_kilometer_t(kilometer_t* instance, const uint32_t value) {
 }
 
 bool check_rpm_t(const uint32_t value){
-    if(value) {
-        return true;
-    }
-    return false;
+    if (value > 10000) { return false; }
+    return true;
 }
-  
+
 bool set_rpm_t(rpm_t* instance, const uint32_t value) {
     if (check_rpm_t(value)) {
         *instance = value;
@@ -635,7 +633,7 @@ bool set_dashboard_light_t(dashboard_light_t* instance, const dashboard_light_t 
 // Enums Setter
 
 bool check_chassis_issues_t(const uint8_t value){
-    if(!(value == 0 || value == 1 || value == 2)) {
+    if(!(value == NOTHING_CHASSIS || value == TIRES_PRESSURE || value == BRAKE_FAILURE)) {
         return false;
     }
     return true;
@@ -650,7 +648,7 @@ bool set_chassis_issues_t(chassis_issues_t* instance, const uint8_t value) {
 }
 
 bool check_engine_issues_t(const uint8_t value){
-    if(!(value == 0 || value == 1 || value == 2 || value == 4)) {
+    if(!(value == NOTHING_ENGINE || value == PRESSURE_FAULT || value == COOLANT_TEMPERATURE || value == OIL_OVERHEATING)) {
         return false;
     }
     return true;
@@ -665,7 +663,7 @@ bool set_engine_issues_t(engine_issues_t* instance, const uint8_t value) {
 }
 
 bool check_battery_issues_t(const uint8_t value){
-    if(!(value == 0 || value == 1 || value == 2)) {
+    if(!(value == NOTHING_BATTERY || value == UNLOADED || value == OUTAGE)) {
         return false;
     }
     return true;
@@ -680,7 +678,7 @@ bool set_battery_issues_t(battery_issues_t* instance, const uint8_t value) {
 }
 
 bool check_bgf_message_t(const uint8_t value){
-    if(!(value == 0 || value == 1 || value == 2 || value == 3 || value == 4)) {
+    if(!(value == POSITION_LIGHT || value == LOW_BEAM || value == HIGH_BEAM || value == RIGHT_INDICATOR || value == LEFT_INDICATOR)) {
         return false;
     }
     return true;
@@ -695,7 +693,7 @@ bool set_bgf_message_t(bgf_message_t* instance, const uint8_t value) {
 }
 
 bool check_light_status_t(const uint8_t value){
-    if(!(value == 0 || value == 1)) {
+    if(!(value == OFF || value == ON)) {
         return false;
     }
     return true;
@@ -710,7 +708,7 @@ bool set_light_status_t(light_status_t* instance, const uint8_t value) {
 }
 
 bool check_light_state_t(const uint8_t value){
-    if(!(value == 0 || value == 1 || value == 2 || value == 3)) {
+    if(!(value == LIGHT_OFF || value == LIGHT_ON || value == LIGHT_ERROR || value == LIGHT_ACQUITTED)) {
         return false;
     }
     return true;
@@ -725,7 +723,7 @@ bool set_light_state_t(light_state_t* instance, const uint8_t value) {
 }
 
 bool check_indicator_state_t(const uint8_t value){
-    if(!(value == 0 || value == 1 || value == 2 || value == 3 || value == 4)) {
+    if(!(value == INDICATOR_OFF || value == ACTIVATED_OFF || value == ACTIVATED_ON || value == INDICATOR_ERROR || value == INDICATOR_ACQUITTED)) {
         return false;
     }
     return true;
@@ -740,7 +738,7 @@ bool set_indicator_state_t(indicator_state_t* instance, const uint8_t value) {
 }
 
 bool check_windscreen_wipers_state_t(const uint8_t value){
-    if(!(value == 0 || value == 1 || value == 2 || value == 3)) {
+    if(!(value == ALL_OFF || value == WIPERS_ACTIVATED || value == WDSCRN_CLN_WPRS_ACTIVATED || value == TMR_WPRS_WDSCRN_CLN_OFF)) {
         return false;
     }
     return true;

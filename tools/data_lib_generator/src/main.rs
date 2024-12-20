@@ -110,7 +110,7 @@ fn generate_source(mut source: File, mut header: File, data_lib: &DataLib, file_
                         let regex_int_size = Regex::new(r"u?(\d+)").unwrap();
                         let int_size_result: Option<Match> = regex_int_size.find(declaration);
                         let int_size = int_size_result.unwrap().as_str().parse::<i32>().unwrap_or(0);
-                        if int_size <= 32 && max < (2_i64.pow(int_size as u32) - 1) as i32 {
+                        if int_size == 32 || (int_size < 32 && max < (2_i32.pow(int_size as u32) - 1)) {
                             writeln!(source, "    if (value > {}) {{ return false; }}", max).unwrap();
                             check_number += 1;
                         }
@@ -341,10 +341,10 @@ fn parse_args() {
         }
     }
     if env::var("JSON_FILE_PATH").is_err() {
-        env::set_var("JSON_FILE_PATH", "../../applicative_data.json");
+        env::set_var("JSON_FILE_PATH", "applicative_data.json");
     }
     if env::var("DEST_PATH").is_err() {
-        env::set_var("DEST_PATH", "../../libs/data_lib");
+        env::set_var("DEST_PATH", "libs/data_lib");
     }
 }
 
@@ -355,6 +355,5 @@ fn main() {
     println!("{:?}", env::var("JSON_FILE_PATH"));
     println!("{:?}", env::var("DEST_PATH"));
     let data_lib = read_json();
-    println!("{:?}", data_lib);
     generate_data_lib(&data_lib);
 }
