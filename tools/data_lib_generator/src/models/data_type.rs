@@ -14,7 +14,7 @@ pub struct Type {
 pub enum DeclarationType {
     String(String),
     FieldStructDeclarations(Vec<FieldStructDeclaration>),
-    FieldEnumDeclarations(Vec<FieldEnumDeclaration>),
+    FieldEnumDeclarations(EnumDeclaration),
     FlagsStruct(FlagsDeclarationStruct),
 }
 
@@ -29,6 +29,12 @@ pub struct FieldStructDeclaration {
 pub struct FieldEnumDeclaration {
     pub(crate) name: String,
     pub(crate) value: i8,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct EnumDeclaration {
+    pub(crate) value_type: String,
+    pub(crate) values: Vec<FieldEnumDeclaration>,
 }
 
 #[derive(Deserialize, Debug)]

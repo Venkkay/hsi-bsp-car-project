@@ -192,64 +192,73 @@
     {
       "name": "chassis_issues_t",
       "kind": "enum",
-      "declaration": [
-        {
+      "declaration": {
+        "value_type": "uint8_t",
+        "values": [
+          {
             "name": "NOTHING_CHASSIS",
             "value": 0
-        },
-        {
+          },
+          {
             "name": "TIRES_PRESSURE",
             "value": 1
-        },
-        {
-          "name": "BRAKE_FAILURE",
-          "value": 2
-        }
-      ],
+          },
+          {
+            "name": "BRAKE_FAILURE",
+            "value": 2
+          }
+        ]
+      },
       "domain": "",
       "comment": "Use to describe de chassis issue"
     },
     {
       "name": "engine_issues_t",
       "kind": "enum",
-      "declaration": [
-        {
-          "name": "NOTHING_ENGINE",
-          "value": 0
-        },
-        {
-          "name": "PRESSURE_FAULT",
-          "value": 1
-        },
-        {
-          "name": "COOLANT_TEMPERATURE",
-          "value": 2
-        },
-        {
-          "name": "OIL_OVERHEATING",
-          "value": 4
-        }
-      ],
+      "declaration": {
+        "value_type": "uint8_t",
+        "values": [
+          {
+            "name": "NOTHING_ENGINE",
+            "value": 0
+          },
+          {
+            "name": "PRESSURE_FAULT",
+            "value": 1
+          },
+          {
+            "name": "COOLANT_TEMPERATURE",
+            "value": 2
+          },
+          {
+            "name": "OIL_OVERHEATING",
+            "value": 4
+          }
+        ]
+      },
       "domain": "",
       "comment": "Use to describe to engine's issue"
     },
     {
       "name": "battery_issues_t",
       "kind": "enum",
-      "declaration": [
-        {
-          "name": "NOTHING_BATTERY",
-          "value": 0
-        },
-        {
-          "name": "UNLOADED",
-          "value": 1
-        },
-        {
-          "name": "OUTAGE",
-          "value": 2
-        }
-      ],
+      "declaration": {
+        "value_type": "uint8_t",
+        "values": [
+          {
+            "name": "NOTHING_BATTERY",
+            "value": 0
+          },
+          {
+            "name": "UNLOADED",
+            "value": 1
+          },
+          {
+            "name": "OUTAGE",
+            "value": 2
+          }
+        ]
+      },
       "domain": "",
       "comment": "Use to describe the battery's issue"
     },
@@ -263,44 +272,50 @@
     {
       "name": "bgf_message_t",
       "kind": "enum",
-      "declaration": [
-        {
-          "name": "POSITION_LIGHT",
-          "value": 0
-        },
-        {
-          "name": "LOW_BEAM",
-          "value": 1
-        },
-        {
-          "name": "HIGH_BEAM",
-          "value": 2
-        },
-        {
-          "name": "RIGHT_INDICATOR",
-          "value": 3
-        },
-        {
-          "name": "LEFT_INDICATOR",
-          "value": 4
-        }
-      ],
+      "declaration": {
+        "value_type": "uint8_t",
+        "values": [
+          {
+            "name": "POSITION_LIGHT",
+            "value": 0
+          },
+          {
+            "name": "LOW_BEAM",
+            "value": 1
+          },
+          {
+            "name": "HIGH_BEAM",
+            "value": 2
+          },
+          {
+            "name": "RIGHT_INDICATOR",
+            "value": 3
+          },
+          {
+            "name": "LEFT_INDICATOR",
+            "value": 4
+          }
+        ]
+      },
       "domain": "",
       "comment": "Use to define the type of message to be sent and received from the BGF."
     },
     {
       "name": "light_status_t",
       "kind": "enum",
-      "declaration": [
-        {
-          "name": "OFF",
-          "value": 0
-        },
-        {
-          "name": "ON",
-          "value": 1
-        }
-      ],
+      "declaration": {
+        "value_type": "uint8_t",
+        "values": [
+          {
+            "name": "OFF",
+            "value": 0
+          },
+          {
+            "name": "ON",
+            "value": 1
+          }
+        ]
+      },
       "domain": "",
       "comment": "Use to define and find out the status of the element concerned according to the BGF message type.\nUse to define the status of the light on the dashboard according to the information from the issues or information."
     },
@@ -382,76 +397,85 @@
     {
       "name": "light_state_t",
       "kind": "enum",
-      "declaration": [
-        {
-          "name": "LIGHT_OFF",
-          "value": 0
-        },
-        {
-          "name": "LIGHT_ON",
-          "value": 1
-        },
-        {
-          "name": "LIGHT_ERROR",
-          "value": 2
-        },
-        {
-          "name": "LIGHT_ACQUITTED",
-          "value": 3
-        }
-      ],
+      "declaration": {
+        "value_type": "uint8_t",
+        "values": [
+          {
+            "name": "LIGHT_OFF",
+            "value": 0
+          },
+          {
+            "name": "LIGHT_ON",
+            "value": 1
+          },
+          {
+            "name": "LIGHT_ERROR",
+            "value": 2
+          },
+          {
+            "name": "LIGHT_ACQUITTED",
+            "value": 3
+          }
+        ]
+      },
       "domain": "",
       "comment": "Describe the possible states of the lights (positions, low, high) "
     },
     {
       "name": "indicator_state_t",
       "kind": "enum",
-      "declaration": [
-        {
-          "name": "INDICATOR_OFF",
-          "value": 0
-        },
-        {
-          "name": "ACTIVATED_OFF",
-          "value": 1
-        },
-        {
-          "name": "ACTIVATED_ON",
-          "value": 2
-        },
-        {
-          "name": "INDICATOR_ERROR",
-          "value": 3
-        },
-        {
-          "name": "INDICATOR_ACQUITTED",
-          "value": 4
-        }
-      ],
+      "declaration": {
+        "value_type": "uint8_t",
+        "values": [
+          {
+            "name": "INDICATOR_OFF",
+            "value": 0
+          },
+          {
+            "name": "ACTIVATED_OFF",
+            "value": 1
+          },
+          {
+            "name": "ACTIVATED_ON",
+            "value": 2
+          },
+          {
+            "name": "INDICATOR_ERROR",
+            "value": 3
+          },
+          {
+            "name": "INDICATOR_ACQUITTED",
+            "value": 4
+          }
+        ]
+      },
       "domain": "",
       "comment": "Describe the possible states of indicators and warnings"
     },
     {
       "name": "windscreen_wipers_state_t",
       "kind": "enum",
-      "declaration": [
-        {
-          "name": "ALL_OFF",
-          "value": 0
-        },
-        {
-          "name": "WIPERS_ACTIVATED",
-          "value": 1
-        },
-        {
-          "name": "WDSCRN_CLN_WPRS_ACTIVATED",
-          "value": 2
-        },
-        {
-          "name": "TMR_WPRS_WDSCRN_CLN_OFF",
-          "value": 3
-        }
-      ],
+      "declaration": {
+        "value_type": "uint8_t",
+        "values": [
+          {
+            "name": "ALL_OFF",
+            "value": 0
+          },
+          {
+            "name": "WIPERS_ACTIVATED",
+            "value": 1
+          },
+          {
+            "name": "WDSCRN_CLN_WPRS_ACTIVATED",
+            "value": 2
+          },
+          {
+            "name": "TMR_WPRS_WDSCRN_CLN_OFF",
+            "value": 3
+          }
+        ]
+      },
       "domain": "",
       "comment": "Describe the possible states of the wipers and the windscreen washer"
     }
@@ -460,6 +484,7 @@
     {
       "id":1,
       "name":"dashboard_state",
+      "kind":"init",
       "type":"bcgv_frame_t",
       "dimension":1,
       "initialization_value":[
@@ -489,7 +514,8 @@
     {
       "id":2,
       "name":"MIN_RPM",
-      "type":"define",
+      "kind":"define",
+      "type":"",
       "dimension": 1,
       "initialization_value": 0,
       "comment":""
@@ -497,88 +523,88 @@
     {
       "id":3,
       "name":"MAX_RPM",
-      "type":"define",
-      "dimension": 1,
+      "kind":"define",
+      "type":"",      "dimension": 1,
       "initialization_value": 10000,
       "comment":""
     },
     {
       "id":4,
       "name":"MIN_RPM_DASHBOARD",
-      "type":"define",
-      "dimension": 1,
+      "kind":"define",
+      "type":"",      "dimension": 1,
       "initialization_value": 0,
       "comment":""
     },
     {
       "id":5,
       "name":"MAX_RPM_DASHBOARD",
-      "type":"define",
-      "dimension": 1,
+      "kind":"define",
+      "type":"",      "dimension": 1,
       "initialization_value": 1000,
       "comment":""
     },
     {
       "id":6,
       "name":"MIN_FUEL",
-      "type":"define",
-      "dimension": 1,
+      "kind":"define",
+      "type":"",      "dimension": 1,
       "initialization_value": 0,
       "comment":""
     },
     {
       "id":7,
       "name":"MAX_FUEL",
-      "type":"define",
-      "dimension": 1,
+      "kind":"define",
+      "type":"",      "dimension": 1,
       "initialization_value": 40,
       "comment":""
     },
     {
       "id":8,
       "name":"MIN_FUEL_PERCENT",
-      "type":"define",
-      "dimension": 1,
+      "kind":"define",
+      "type":"",      "dimension": 1,
       "initialization_value": 0,
       "comment":""
     },
     {
       "id":9,
       "name":"MAX_FUEL_PERCENT",
-      "type":"define",
-      "dimension": 1,
+      "kind":"define",
+      "type":"",      "dimension": 1,
       "initialization_value": 100,
       "comment":""
     },
     {
       "id":10,
       "name":"MIN_MUX_FRAME_NUMBER",
-      "type":"define",
-      "dimension": 1,
+      "kind":"define",
+      "type":"",      "dimension": 1,
       "initialization_value": 1,
       "comment":""
     },
     {
       "id":11,
       "name":"MAX_MUX_FRAME_NUMBER",
-      "type":"define",
-      "dimension": 1,
+      "kind":"define",
+      "type":"",      "dimension": 1,
       "initialization_value": 100,
       "comment":""
     },
     {
       "id":12,
       "name":"MIN_SPEED",
-      "type":"define",
-      "dimension": 1,
+      "kind":"define",
+      "type":"",      "dimension": 1,
       "initialization_value": 0,
       "comment":""
     },
     {
       "id":13,
       "name":"MAX_SPEED",
-      "type":"define",
-      "dimension": 1,
+      "kind":"define",
+      "type":"",      "dimension": 1,
       "initialization_value": 255,
       "comment":""
     }

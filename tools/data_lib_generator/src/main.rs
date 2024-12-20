@@ -4,6 +4,7 @@ pub mod models;
 use crate::models::{DataLib};
 use std::{env, fs};
 use std::fs::File;
+use regex::{Match, Regex};
 use crate::models::data_init::InitialValueType;
 use crate::models::data_type::{DeclarationType, DomainType};
 
@@ -20,7 +21,7 @@ fn generate_header(mut header: File, data_lib: &DataLib, file_name: &str) {
     writeln!(header, "#define {}_H\n", file_name.to_uppercase()).unwrap();
     writeln!(header, "#include <stdint.h>\n#include <stdbool.h>\n").unwrap();
     for data_constant in &data_lib.data {
-        if data_constant.field_type == "define" {
+        if data_constant.kind == "define" {
             if let Some(InitialValueType::Integer(initialization_value)) = &data_constant.initialization_value {
                 writeln!(header, "#define {} {}", data_constant.name, initialization_value).unwrap();
             }else {
@@ -55,7 +56,7 @@ fn generate_header(mut header: File, data_lib: &DataLib, file_name: &str) {
             if let Some(DeclarationType::FieldEnumDeclarations(declaration)) = &data_type.declaration {
                 writeln!(header, "/**\n * Enum {}.\n *\n * \\details {} \n*/", data_type.name, data_type.comment).unwrap();
                 writeln!(header, "typedef enum {}_struct {{", data_type.name).unwrap();
-                for field_enum_declaration in declaration {
+                for field_enum_declaration in &declaration.values {
                     writeln!(header, "    {} = {},", field_enum_declaration.name, field_enum_declaration.value).unwrap();
                 }
                 writeln!(header, "}} {};\n", data_type.name).unwrap();
@@ -93,24 +94,33 @@ fn generate_source(mut source: File, mut header: File, data_lib: &DataLib, file_
             if let Some(DeclarationType::String(declaration)) = &data_type.declaration {
                 //writeln!(source, "/**\n * Get the value of {}.\n *\n * @param[in] instance An instance of {}.\n * @return Return the value of the instance.\n */", data_type.name, data_type.name).unwrap();
                 //writeln!(source, "{} get_{}({} instance) {{\n    return instance;\n}}", declaration, data_type.name, data_type.name).unwrap();
+                let mut check_number = 0;
+                writeln!(header, "/**\n * Check the value of {}.\n *\n * \\param[in] value : The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
+                writeln!(header, "bool check_{}(const {} value);", data_type.name, declaration).unwrap();
+                writeln!(source, "bool check_{}(const {} value){{", data_type.name, declaration).unwrap();
                 if let Some(DomainType::DomainMinMax(domain)) = &data_type.domain {
-                    //TODo check system for flags and enum ?
-                    writeln!(header, "/**\n * Check the value of {}.\n *\n * \\param[in] value : The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
-                    writeln!(header, "bool check_{}(const {} value);", data_type.name, declaration).unwrap();
-                    writeln!(source, "bool check_{}(const {} value){{", data_type.name, declaration).unwrap();
                     if let Some(min) = domain.min {
                         if !(declaration.starts_with('u') && min <= 0) {
                             writeln!(source, "    if (value < {}) {{ return false; }}", min).unwrap();
+                            check_number += 1;
                         }
                     }
                     if let Some(max) = domain.max {
-                        writeln!(source, "    if (value > {}) {{ return false; }}", max).unwrap();
+                        let regex_int_size = Regex::new(r"u?(\d+)").unwrap();
+                        let int_size_result: Option<Match> = regex_int_size.find(declaration);
+                        let int_size = int_size_result.unwrap().as_str().parse::<i32>().unwrap_or(0);
+                        if(int_size <= 32 && max < (2_i64.pow(int_size as u32) - 1) as i32) {
+                            writeln!(source, "    if (value > {}) {{ return false; }}", max).unwrap();
+                            check_number += 1;
+                        }
                     }
+                }
+
+                if (check_number > 0){
                     writeln!(source, "    return true;\n}}\n").unwrap();
-                }else {
-                    writeln!(header, "/**\n * Check the value of {}.\n *\n * \\param[in] value : The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
-                    writeln!(header, "bool check_{}(const {} value);", data_type.name, declaration).unwrap();
-                    writeln!(source, "bool check_{}(const {} value){{\n    if(value) {{\n        return true;\n    }}\n    return false;\n}}\n  ", data_type.name, declaration).unwrap();
+                }
+                else{
+                    writeln!(source, "    if(value) {{\n        return true;\n    }}\n    return false;\n}}\n  ").unwrap();
                 }
                 writeln!(header, "/**\n * Set the value of {}.\n *\n * \\param[out] instance : An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool : Return True if the value is set, False otherwise.\n */", data_type.name, data_type.name).unwrap();
                 writeln!(header, "bool set_{}({}* instance, const {} value);", data_type.name, data_type.name, declaration).unwrap();
@@ -126,12 +136,10 @@ fn generate_source(mut source: File, mut header: File, data_lib: &DataLib, file_
         if data_type.kind == "flags" {
             if let Some(DeclarationType::FlagsStruct(declaration)) = &data_type.declaration {
                 let total_size = declaration.flags.iter().fold(0, |acc, flag| acc + flag.bit_size);
-                // println!("total_size: {}", total_size);
                 let mut shift = total_size;
                 writeln!(source, "// Flags for {}.\n", data_type.name).unwrap();
                 for flag in &declaration.flags {
                     shift -= flag.bit_size;
-                    // println!("flag bit size: {}", shift);
                     writeln!(header, "/**\n * Get {} flag from {}.\n *\n * @param[in] instance An instance of {}.\n * @return {} : Return the value of the got flag.\n */", flag.name, data_type.name, data_type.name, declaration.field_type).unwrap();
                     writeln!(header, "{} get_{}_from_{}(const {} instance);", declaration.field_type, flag.name, data_type.name, data_type.name).unwrap();
                     writeln!(source, "{} get_{}_from_{}(const {} instance) {{\n    return (instance & 0x{:0fill$x}) >> {};\n}}", declaration.field_type, flag.name, data_type.name, data_type.name, flag.bit_size << shift, shift, fill=((total_size/4 )as usize)).unwrap();
@@ -181,12 +189,11 @@ fn generate_source(mut source: File, mut header: File, data_lib: &DataLib, file_
                 //writeln!(source, "/**\n * Get the value of {}.\n *\n * @param[in] instance An instance of {}.\n * @return Return the value of the instance.\n */", data_type.name, data_type.name).unwrap();
                 //writeln!(source, "{} get_{}({} instance) {{\n    return instance;\n}}", data_type.name, data_type.name, data_type.name).unwrap();
                 writeln!(header, "/**\n * Check the value of {}.\n *\n * \\param[in] value The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
-                writeln!(header, "bool check_{}({} value);", data_type.name, data_type.name).unwrap();
-                //writeln!(source, "bool check_{}(const {} value){{\n    if(value) {{\n        return true;\n    }}\n    return false;\n}}\n  ", data_type.name, data_type.name).unwrap();
+                writeln!(header, "bool check_{}({} value);", data_type.name, declaration.value_type).unwrap();
 
-                write!(source, "bool check_{}(const int value){{\n    if(!(", data_type.name).unwrap();
-                for (i, field_enum_declaration) in declaration.iter().enumerate() {
-                    if i < declaration.len() - 1 {
+                write!(source, "bool check_{}(const {} value){{\n    if(!(", data_type.name, declaration.value_type).unwrap();
+                for (i, field_enum_declaration) in declaration.values.iter().enumerate() {
+                    if i < declaration.values.len() - 1 {
                         write!(source, "value == {} || ", field_enum_declaration.value).unwrap();
                     }
                     else {
@@ -197,8 +204,8 @@ fn generate_source(mut source: File, mut header: File, data_lib: &DataLib, file_
 
 
                 writeln!(header, "/**\n * Set the value of {}.\n *\n * \\param[out] instance An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
-                writeln!(header, "bool set_{}({}* instance, {} value);", data_type.name, data_type.name, data_type.name).unwrap();
-                writeln!(source, "bool set_{}({}* instance, const int value) {{\n    if (check_{}(value)) {{\n        *instance = value;\n        return true;\n    }}\n    return false;\n}}\n", data_type.name, data_type.name, data_type.name).unwrap();
+                writeln!(header, "bool set_{}({}* instance, {} value);", data_type.name, data_type.name, declaration.value_type).unwrap();
+                writeln!(source, "bool set_{}({}* instance, const {} value) {{\n    if (check_{}(value)) {{\n        *instance = value;\n        return true;\n    }}\n    return false;\n}}\n", data_type.name, data_type.name, declaration.value_type, data_type.name).unwrap();
 
             }else {
                 eprintln!("Error: declaration is None for atomic type");
@@ -211,13 +218,7 @@ fn generate_source(mut source: File, mut header: File, data_lib: &DataLib, file_
     for data_type in &data_lib.types {
         if data_type.kind == "struct" {
             if let Some(DeclarationType::FieldStructDeclarations(declaration)) = &data_type.declaration {
-                //writeln!(source, "fn get{}\n", declaration.field_type).unwrap();
-                // let total_size = declaration.flags.iter().fold(0, |acc, flag| acc + flag.bit_size);
-                // println!("total_size: {}", total_size);
-                // let mut shift = total_size;
                 for field_struct_declaration in declaration {
-                    //shift -= flag.bit_size;
-                    // println!("flag bit size: {}", shift);
                     writeln!(header, "/**\n * Get {} field from {}.\n *\n * \\param[in] instance An instance of {}.\n * \\return {} : Return the value of the got field.\n */", field_struct_declaration.name, data_type.name, data_type.name, field_struct_declaration.field_type).unwrap();
                     writeln!(header, "{} get_{}_from_{}(const {} instance);", field_struct_declaration.field_type, field_struct_declaration.name, data_type.name, data_type.name).unwrap();
                     writeln!(source, "{} get_{}_from_{}(const {} instance) {{\n    return instance.{};\n}}", field_struct_declaration.field_type, field_struct_declaration.name, data_type.name, data_type.name, field_struct_declaration.name).unwrap();
@@ -278,6 +279,23 @@ fn generate_source(mut source: File, mut header: File, data_lib: &DataLib, file_
         }
     }
 
+    for data_init in &data_lib.data {
+        if data_init.field_type == "init" {
+            writeln!(source, "{} init_{}(){{\n", data_init.field_type, data_init.name).unwrap();
+            if let Some(InitialValueType::FieldStructInitDeclarations(declaration)) = &data_init.initialization_value {
+                writeln!(source, "    {} {} = {{", data_init.field_type, data_init.name).unwrap();
+                for (i, field_struct_init_declaration) in declaration.iter().enumerate() {
+                    if i < declaration.len() - 1 {
+                        writeln!(source, "        .{} = {},", field_struct_init_declaration.name, field_struct_init_declaration.value).unwrap();
+                    } else {
+                        writeln!(source, "        .{} = {}", field_struct_init_declaration.name, field_struct_init_declaration.value).unwrap();
+                    }
+                }
+                writeln!(source, "    }};\n    return {};\n}}\n", data_init.name).unwrap();
+            }
+        }
+    }
+
     writeln!(header, "#endif").unwrap();
 }
 
@@ -331,69 +349,3 @@ fn main() {
     let data_lib = read_json();
     generate_data_lib(&data_lib);
 }
-
-/*
-use std::fs::File;
-use std::io::{self, Write};
-
-fn generate_c_code(spec: &TypeSpec) {
-    for t in &spec.types {
-        let mut header = File::create(format!("{}.h", t.name)).expect("Failed to create header file");
-        let mut source = File::create(format!("{}.c", t.name)).expect("Failed to create source file");
-
-        // Générer le fichier d'en-tête
-        writeln!(header, "#ifndef {}_H", t.name.to_uppercase()).unwrap();
-        writeln!(header, "#define {}_H\n", t.name.to_uppercase()).unwrap();
-
-        writeln!(header, "typedef struct {{").unwrap();
-        for field in &t.fields {
-            writeln!(header, "    {} {};", field.field_type, field.name).unwrap();
-        }
-        writeln!(header, "}} {};\n", t.name).unwrap();
-
-        for field in &t.fields {
-            if field.getter {
-                writeln!(
-                    header,
-                    "{} get_{}_{}({}* instance);",
-                    field.field_type, t.name, field.name, t.name
-                )
-                .unwrap();
-            }
-            if field.setter {
-                writeln!(
-                    header,
-                    "void set_{}_{}({}* instance, {} value);",
-                    t.name, field.name, t.name, field.field_type
-                )
-                .unwrap();
-            }
-        }
-
-        writeln!(header, "\n#endif").unwrap();
-
-        // Générer le fichier source
-        writeln!(source, "#include \"{}.h\"\n", t.name).unwrap();
-
-        for field in &t.fields {
-            if field.getter {
-                writeln!(
-                    source,
-                    "{} get_{}_{}({}* instance) {{ return instance->{}; }}",
-                    field.field_type, t.name, field.name, t.name, field.name
-                )
-                .unwrap();
-            }
-            if field.setter {
-                writeln!(
-                    source,
-                    "void set_{}_{}({}* instance, {} value) {{ instance->{} = value; }}",
-                    t.name, field.name, t.name, field.field_type, field.name
-                )
-                .unwrap();
-            }
-        }
-    }
-}
-
- */
