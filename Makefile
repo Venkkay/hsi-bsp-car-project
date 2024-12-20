@@ -1,29 +1,14 @@
-# Name of the executable
-TARGET = app
 
-# Compiler
-CC = gcc
+.PHONY: all data_lib app clean
 
-# Compiler Options
-CFLAGS = -W -Wall -pedantic -Wextra -O2
+all: data_lib app
 
-# Driver library
-LIBS = drv_api.a libs/data_lib/data_management.a
+data_lib:
+	$(MAKE) -C libs/data_lib -f datalib_Makefile
 
-# Source files
-SRC = app.c
+app: data_lib
+	$(MAKE) -f app_Makefile
 
-# Default rules
-all: libs/data_lib/data_management.a $(TARGET)
-
-libs/data_lib/libdata.a:
-	$(MAKE) -C libs/data_lib
-
-# Compilation
-$(TARGET): $(SRC)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SRC) $(LIBS)
-
-# Cleaning generated files
 clean:
-	rm -f $(TARGET)
-	$(MAKE) -C libs/data_lib clean
+	$(MAKE) -C libs/data_lib -f datalib_Makefile clean
+	$(MAKE) -f app_Makefile clean

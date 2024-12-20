@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -O2
+CFLAGS = -W -Wall -pedantic
 
 CFILES = data_management.c
 OFILES = $(CFILES:.c=.o)

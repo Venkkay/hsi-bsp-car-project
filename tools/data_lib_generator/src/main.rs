@@ -95,18 +95,18 @@ fn generate_source(mut source: File, mut header: File, data_lib: &DataLib, file_
                 //writeln!(source, "{} get_{}({} instance) {{\n    return instance;\n}}", declaration, data_type.name, data_type.name).unwrap();
                 if let Some(DomainType::DomainMinMax(domain)) = &data_type.domain {
                     //TODo check system for flags ?
-                    writeln!(source, "/**\n * Check the value of {}.\n *\n * \\param[in] value : The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
-                    writeln!(source, "bool check_{}({} value){{\n    if (value >= {} && value <= {}) {{\n        return true;\n    }}\n    return false;\n}}\n  ", data_type.name, declaration, domain.min, domain.max).unwrap();
+                    writeln!(header, "/**\n * Check the value of {}.\n *\n * \\param[in] value : The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
                     writeln!(header, "bool check_{}({} value);", data_type.name, declaration).unwrap();
+                    writeln!(source, "bool check_{}({} value){{\n    if (value >= {} && value <= {}) {{\n        return true;\n    }}\n    return false;\n}}\n  ", data_type.name, declaration, domain.min, domain.max).unwrap();
 
                 }else {
-                    writeln!(source, "/**\n * Check the value of {}.\n *\n * \\param[in] value : The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
-                    writeln!(source, "bool check_{}({} value){{\n    return true;\n}}\n  ", data_type.name, declaration).unwrap();
+                    writeln!(header, "/**\n * Check the value of {}.\n *\n * \\param[in] value : The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
                     writeln!(header, "bool check_{}({} value);", data_type.name, declaration).unwrap();
+                    writeln!(source, "bool check_{}({} value){{\n    return true;\n}}\n  ", data_type.name, declaration).unwrap();
                 }
-                writeln!(source, "/**\n * Set the value of {}.\n *\n * \\param[out] instance : An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool : Return True if the value is set, False otherwise.\n */", data_type.name, data_type.name).unwrap();
-                writeln!(source, "bool set_{}({}* instance, {} value) {{\n    if (check_{}(value)) {{\n        *instance = value;\n        return true;\n    }}\n    return false;\n}}\n", data_type.name, data_type.name, declaration, data_type.name).unwrap();
+                writeln!(header, "/**\n * Set the value of {}.\n *\n * \\param[out] instance : An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool : Return True if the value is set, False otherwise.\n */", data_type.name, data_type.name).unwrap();
                 writeln!(header, "bool set_{}({}* instance, {} value);", data_type.name, data_type.name, declaration).unwrap();
+                writeln!(source, "bool set_{}({}* instance, {} value) {{\n    if (check_{}(value)) {{\n        *instance = value;\n        return true;\n    }}\n    return false;\n}}\n", data_type.name, data_type.name, declaration, data_type.name).unwrap();
             }else {
                 eprintln!("Error: declaration is None for atomic type");
             }
@@ -124,34 +124,35 @@ fn generate_source(mut source: File, mut header: File, data_lib: &DataLib, file_
                 for flag in &declaration.flags {
                     shift -= flag.bit_size;
                     // println!("flag bit size: {}", shift);
-                    writeln!(source, "/**\n * Get {} flag from {}.\n *\n * @param[in] instance An instance of {}.\n * @return {} : Return the value of the got flag.\n */", flag.name, data_type.name, data_type.name, declaration.field_type).unwrap();
-                    writeln!(source, "{} get_{}_from_{}({} instance) {{\n    return (instance & 0x{:0fill$x}) >> {};\n}}", declaration.field_type, flag.name, data_type.name, data_type.name, flag.bit_size << shift, shift, fill=((total_size/4 )as usize)).unwrap();
+                    writeln!(header, "/**\n * Get {} flag from {}.\n *\n * @param[in] instance An instance of {}.\n * @return {} : Return the value of the got flag.\n */", flag.name, data_type.name, data_type.name, declaration.field_type).unwrap();
                     writeln!(header, "{} get_{}_from_{}({} instance);", declaration.field_type, flag.name, data_type.name, data_type.name).unwrap();
+                    writeln!(source, "{} get_{}_from_{}({} instance) {{\n    return (instance & 0x{:0fill$x}) >> {};\n}}", declaration.field_type, flag.name, data_type.name, data_type.name, flag.bit_size << shift, shift, fill=((total_size/4 )as usize)).unwrap();
 
-                    writeln!(source, "/**\n * Set {} flag in {}.\n *\n * @param[out] instance An instance of {}.\n * \\param[in] value : The value to set.\n * @return Return True if the value is valid, False otherwise.\n */", flag.name, data_type.name, data_type.name).unwrap();
-                    writeln!(source, "bool set_{}_in_{}({}* instance, {} value) {{\n    *instance &= ~0x{:0fill$x};\n    *instance |= value << {};\n    return true;\n}}\n", flag.name, data_type.name, data_type.name, declaration.field_type,flag.bit_size << shift, shift,  fill=((total_size/4 )as usize)).unwrap();
+                    writeln!(header, "/**\n * Set {} flag in {}.\n *\n * @param[out] instance An instance of {}.\n * \\param[in] value : The value to set.\n * @return Return True if the value is valid, False otherwise.\n */", flag.name, data_type.name, data_type.name).unwrap();
                     writeln!(header, "bool set_{}_in_{}({}* instance, {} value);", flag.name, data_type.name, data_type.name, declaration.field_type).unwrap();
+                    writeln!(source, "bool set_{}_in_{}({}* instance, {} value) {{\n    *instance &= ~0x{:0fill$x};\n    *instance |= value << {};\n    return true;\n}}\n", flag.name, data_type.name, data_type.name, declaration.field_type,flag.bit_size << shift, shift,  fill=((total_size/4 )as usize)).unwrap();
                 }
-                writeln!(source, "/**\n * Set all flag in {}.\n *\n * @param[out] instance An instance of {}.\n * @return Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
-                write!(source, "bool set_all_flag_{}({}* instance", data_type.name, data_type.name).unwrap();
+                writeln!(header, "/**\n * Set all flag in {}.\n *\n * @param[out] instance An instance of {}.\n * @return Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
                 write!(header, "bool set_all_flag_{}({}* instance", data_type.name, data_type.name).unwrap();
+                write!(source, "bool set_all_flag_{}({}* instance", data_type.name, data_type.name).unwrap();
                 for flag in &declaration.flags {
-                    write!(source, ", {} {}", declaration.field_type, flag.name).unwrap();
                     write!(header, ", {} {}", declaration.field_type, flag.name).unwrap();
+                    write!(source, ", {} {}", declaration.field_type, flag.name).unwrap();
                 }
-                writeln!(source, ") {{").unwrap();
                 writeln!(header, ");").unwrap();
+                writeln!(source, ") {{").unwrap();
                 for flag in &declaration.flags {
                     writeln!(source, "    set_{}_in_{}(instance, {});", flag.name, data_type.name, flag.name).unwrap();
                 }
                 writeln!(source, "    return true;\n}}\n").unwrap();
 
-                writeln!(source, "/**\n * Check the value of {}.\n *\n * \\param[in] value : The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
-                writeln!(source, "bool check_{}({} value){{\n    return true;\n}}\n  ", data_type.name, declaration.field_type).unwrap();
+                writeln!(header, "/**\n * Check the value of {}.\n *\n * \\param[in] value : The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
                 writeln!(header, "bool check_{}({} value);", data_type.name, declaration.field_type).unwrap();
-                writeln!(source, "/**\n * Set {}.\n *\n * \\param[out] instance An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
-                writeln!(source, "bool set_{}({}* instance, {} value) {{\n    *instance = value;\n    return true;\n}}\n", data_type.name, data_type.name, data_type.name).unwrap();
+                writeln!(source, "bool check_{}({} value){{\n    return true;\n}}\n  ", data_type.name, declaration.field_type).unwrap();
+
+                writeln!(header, "/**\n * Set {}.\n *\n * \\param[out] instance An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
                 writeln!(header, "bool set_{}({}* instance, {} value);", data_type.name, data_type.name, declaration.field_type).unwrap();
+                writeln!(source, "bool set_{}({}* instance, {} value) {{\n    *instance = value;\n    return true;\n}}\n", data_type.name, data_type.name, data_type.name).unwrap();
                 writeln!(source, "\n").unwrap();
             }else {
                 eprintln!("Error: declaration is None for atomic type");
@@ -166,13 +167,13 @@ fn generate_source(mut source: File, mut header: File, data_lib: &DataLib, file_
             if let Some(DeclarationType::FieldEnumDeclarations(declaration)) = &data_type.declaration {
                 //writeln!(source, "/**\n * Get the value of {}.\n *\n * @param[in] instance An instance of {}.\n * @return Return the value of the instance.\n */", data_type.name, data_type.name).unwrap();
                 //writeln!(source, "{} get_{}({} instance) {{\n    return instance;\n}}", data_type.name, data_type.name, data_type.name).unwrap();
-                writeln!(source, "/**\n * Check the value of {}.\n *\n * \\param[in] value The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
-                writeln!(source, "bool check_{}({} value){{\n    return true;\n}}\n  ", data_type.name, data_type.name).unwrap();
+                writeln!(header, "/**\n * Check the value of {}.\n *\n * \\param[in] value The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
                 writeln!(header, "bool check_{}({} value);", data_type.name, data_type.name).unwrap();
+                writeln!(source, "bool check_{}({} value){{\n    return true;\n}}\n  ", data_type.name, data_type.name).unwrap();
 
-                writeln!(source, "/**\n * Set the value of {}.\n *\n * \\param[out] instance An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
-                writeln!(source, "bool set_{}({}* instance, {} value) {{\n    *instance = value;\n    return true;\n}}\n\n", data_type.name, data_type.name, data_type.name).unwrap();
+                writeln!(header, "/**\n * Set the value of {}.\n *\n * \\param[out] instance An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
                 writeln!(header, "bool set_{}({}* instance, {} value);", data_type.name, data_type.name, data_type.name).unwrap();
+                writeln!(source, "bool set_{}({}* instance, {} value) {{\n    *instance = value;\n    return true;\n}}\n\n", data_type.name, data_type.name, data_type.name).unwrap();
             }else {
                 eprintln!("Error: declaration is None for atomic type");
             }
@@ -191,45 +192,45 @@ fn generate_source(mut source: File, mut header: File, data_lib: &DataLib, file_
                 for field_struct_declaration in declaration {
                     //shift -= flag.bit_size;
                     // println!("flag bit size: {}", shift);
-                    writeln!(source, "/**\n * Get {} field from {}.\n *\n * \\param[in] instance An instance of {}.\n * \\return {} : Return the value of the got field.\n */", field_struct_declaration.name, data_type.name, data_type.name, field_struct_declaration.field_type).unwrap();
-                    writeln!(source, "{} get_{}_from_{}({} instance) {{\n    return instance.{};\n}}", field_struct_declaration.field_type, field_struct_declaration.name, data_type.name, data_type.name, field_struct_declaration.name).unwrap();
+                    writeln!(header, "/**\n * Get {} field from {}.\n *\n * \\param[in] instance An instance of {}.\n * \\return {} : Return the value of the got field.\n */", field_struct_declaration.name, data_type.name, data_type.name, field_struct_declaration.field_type).unwrap();
                     writeln!(header, "{} get_{}_from_{}({} instance);", field_struct_declaration.field_type, field_struct_declaration.name, data_type.name, data_type.name).unwrap();
+                    writeln!(source, "{} get_{}_from_{}({} instance) {{\n    return instance.{};\n}}", field_struct_declaration.field_type, field_struct_declaration.name, data_type.name, data_type.name, field_struct_declaration.name).unwrap();
 
-                    writeln!(source, "/**\n * Set {} field in {}.\n *\n * \\param[out] instance : An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool :  Return True if the value is valid, False otherwise.\n */", field_struct_declaration.name, data_type.name, data_type.name).unwrap();
-                    writeln!(source, "bool set_{}_in_{}({}* instance, {} value) {{\n    return set_{}(&instance->{}, value);\n}}\n", field_struct_declaration.name, data_type.name, data_type.name, field_struct_declaration.field_type, field_struct_declaration.field_type, field_struct_declaration.name).unwrap();
+                    writeln!(header, "/**\n * Set {} field in {}.\n *\n * \\param[out] instance : An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool :  Return True if the value is valid, False otherwise.\n */", field_struct_declaration.name, data_type.name, data_type.name).unwrap();
                     writeln!(header, "bool set_{}_in_{}({}* instance, {} value);", field_struct_declaration.name, data_type.name, data_type.name, field_struct_declaration.field_type).unwrap();
+                    writeln!(source, "bool set_{}_in_{}({}* instance, {} value) {{\n    return set_{}(&instance->{}, value);\n}}\n", field_struct_declaration.name, data_type.name, data_type.name, field_struct_declaration.field_type, field_struct_declaration.field_type, field_struct_declaration.name).unwrap();
                 }
 
-                writeln!(source, "/**\n * Check all values to set in {}.\n *\n * \\param[out] instance : An instance of {}.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
-                write!(source, "bool check_{}(", data_type.name).unwrap();
+                writeln!(header, "/**\n * Check all values to set in {}.\n *\n * \\param[out] instance : An instance of {}.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
                 write!(header, "bool check_{}(", data_type.name).unwrap();
+                write!(source, "bool check_{}(", data_type.name).unwrap();
                 for (i, field) in declaration.iter().enumerate() {
                     if i < declaration.len() - 1  {
-                        write!(source, "{} {}, ", field.field_type, field.name).unwrap();
                         write!(header, "{} {}, ", field.field_type, field.name).unwrap();
+                        write!(source, "{} {}, ", field.field_type, field.name).unwrap();
                     }
                     else{
-                        write!(source, "{} {}", field.field_type, field.name).unwrap();
                         write!(header, "{} {}", field.field_type, field.name).unwrap();
+                        write!(source, "{} {}", field.field_type, field.name).unwrap();
                     }
                 }
-                writeln!(source, ") {{").unwrap();
                 writeln!(header, ");").unwrap();
+                writeln!(source, ") {{").unwrap();
                 //writeln!(source, "    if ").unwrap();
                 for field in declaration {
                     writeln!(source, "    if (!check_{}({})) {{ return false;}}", field.field_type, field.name).unwrap();
                 }
                 writeln!(source, "    return true;\n}}\n\n").unwrap();
 
-                writeln!(source, "/**\n * Set all field in {}.\n *\n * \\param[out] instance : An instance of {}.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
-                write!(source, "bool set_{}({}* instance", data_type.name, data_type.name).unwrap();
+                writeln!(header, "/**\n * Set all field in {}.\n *\n * \\param[out] instance : An instance of {}.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
                 write!(header, "bool set_{}({}* instance", data_type.name, data_type.name).unwrap();
+                write!(source, "bool set_{}({}* instance", data_type.name, data_type.name).unwrap();
                 for field in declaration {
-                    write!(source, ", {} {}", field.field_type, field.name).unwrap();
                     write!(header, ", {} {}", field.field_type, field.name).unwrap();
+                    write!(source, ", {} {}", field.field_type, field.name).unwrap();
                 }
-                writeln!(source, ") {{").unwrap();
                 writeln!(header, ");").unwrap();
+                writeln!(source, ") {{").unwrap();
                 write!(source, "    if (!check_{}(", data_type.name).unwrap();
                 for (i, field) in declaration.iter().enumerate() {
                     if i < declaration.len() - 1 {
