@@ -88,7 +88,7 @@
       "comment": "READ ONLY"
     },
     {
-      "name": "bgf_trame_t",
+      "name": "bgf_frame_t",
       "kind": "atomic",
       "declaration": "uint16_t",
       "domain": "unsigned int",
@@ -112,7 +112,7 @@
         },
         {
           "name": "fuel_percent_level",
-          "type": "fuel_t"
+          "type": "fuel_percent_t"
         },
         {
           "name": "dashboard_light",

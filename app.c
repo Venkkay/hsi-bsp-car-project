@@ -7,7 +7,7 @@
 #include "decode.h"
 
 int main() {
-    int32_t drv_fd, drv_frame;
+    int32_t drv_frame;
     uint8_t udp_frame[DRV_UDP_100MS_FRAME_SIZE];
     mux_frame_t mux_frame;
 
@@ -15,7 +15,7 @@ int main() {
     uint32_t data_len = 0;
     comodo_frame_t comodo_frame[DRV_MAX_FRAMES];
 
-    drv_fd = drv_open();
+    int32_t drv_fd = drv_open();
     if (drv_fd == DRV_ERROR) {
         printf("Open connection with driver failed : %s...\n", strerror(errno));
         return DRV_ERROR;
@@ -58,7 +58,7 @@ int main() {
             break;
         }
         // The result is in comodo_frame.
-        // You need to data_len to retreive the data from the table.
+        // You need to data_len to retrieve the data from the table.
         decode_comodo_frame(serial_frame, data_len, comodo_frame);
     }
 

@@ -8,10 +8,10 @@ CC = gcc
 CFLAGS = -W -Wall -pedantic
 
 # Driver library
-LIBS = drv_api.a libs/data_lib/data_management.a
+LIBS = drv_api.a libs/data_lib/libdata.a
 
 # Source files
-SRC = app.c
+SRC = app.c decode.c
 
 # Default rules
 all: $(TARGET)

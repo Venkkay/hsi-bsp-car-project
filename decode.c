@@ -48,10 +48,11 @@ mux_frame_t decode_mux_frame(uint8_t udpFrame[DRV_UDP_100MS_FRAME_SIZE]){
     printf("\nENGINE : NO ISSUE\n");
   }*/
 
-  uint32_t temp_rpm = udpFrame[9];
+  rpm_t temp_rpm = udpFrame[9];
   temp_rpm = (temp_rpm << 8) | udpFrame[10];
   temp_rpm = (temp_rpm << 8) | udpFrame[11];
   temp_rpm = (temp_rpm << 8) | udpFrame[12];
+  printf("temp_RPM: %x\n", temp_rpm);
 
   /*if(mux_frame.battery_issue != NOTHING_BATTERY){
     if((mux_frame.battery_issue & 0x1) == UNLOADED){
@@ -64,8 +65,23 @@ mux_frame_t decode_mux_frame(uint8_t udpFrame[DRV_UDP_100MS_FRAME_SIZE]){
     printf("\nBATTERY : NO ISSUE\n");
   }*/
 
-  if(set_mux_frame_t(&mux_frame, temp_kilometer, temp_rpm, udpFrame[8], udpFrame[0], udpFrame[5], udpFrame[6], udpFrame[7], udpFrame[13], udpFrame[14]) == false){
-    printf("Set mux frame failed : %s\n", strerror(errno));
+  uint8_t crc8 = udpFrame[14];
+  uint8_t polynomial = 0x07; // CRC8 polynomial
+  uint8_t initial_value = 0x00; // Initial CRC value
+
+  uint8_t computed_crc = check_crc8(udpFrame, DRV_UDP_100MS_FRAME_SIZE-1, polynomial, initial_value); // Calculate CRC for first 13 bytes
+
+  printf("Computed CRC8: 0x%02X\n", computed_crc);
+  printf("Provided CRC8: 0x%02X\n", crc8);
+
+  if (computed_crc == crc8) {
+    printf("CRC is valid.\n");
+  } else {
+    printf("CRC is invalid.\n");
+  }
+
+  if(set_mux_frame_t(&mux_frame, temp_kilometer, temp_rpm, udpFrame[8], udpFrame[0], udpFrame[5], udpFrame[6], udpFrame[7], udpFrame[13], crc8) == false){
+    printf("Set mux frame failed : %s(%d)\n", strerror(errno), errno);
   }
 
   return mux_frame;
@@ -80,4 +96,21 @@ void decode_comodo_frame(serial_frame_t serial_frame[DRV_MAX_FRAMES], uint32_t d
       }
     }
   }
+}
+
+uint8_t check_crc8(uint8_t *data, size_t length, uint8_t polynomial, uint8_t initial_value){
+  uint8_t crc = initial_value;
+
+  for (size_t i = 0; i < length; i++) {
+    crc ^= data[i]; // XOR current byte with CRC
+
+    for (uint8_t bit = 0; bit < 8; bit++) {
+      if (crc & 0x80) { // If MSB is set
+        crc = (crc << 1) ^ polynomial;
+      } else {
+        crc = (crc << 1);
+      }
+    }
+  }
+  return crc;
 }
