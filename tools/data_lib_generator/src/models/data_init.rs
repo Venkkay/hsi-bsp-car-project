@@ -4,6 +4,7 @@ use serde::Deserialize;
 pub struct DataInit {
     pub(crate) id: i32,
     pub(crate) name: String,
+    pub(crate) kind: String,
     #[serde(rename = "type")]
     pub(crate) field_type: String,
     pub(crate) dimension: i32,

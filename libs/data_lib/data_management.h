@@ -949,7 +949,7 @@ bool set_dashboard_light_t(dashboard_light_t* instance, const uint16_t value);
  * \param[in] value The value to check.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool check_chassis_issues_t(chassis_issues_t value);
+bool check_chassis_issues_t(uint8_t value);
 /**
  * Set the value of chassis_issues_t.
  *
@@ -957,14 +957,14 @@ bool check_chassis_issues_t(chassis_issues_t value);
  * \param[in] value : The value to set.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool set_chassis_issues_t(chassis_issues_t* instance, chassis_issues_t value);
+bool set_chassis_issues_t(chassis_issues_t* instance, uint8_t value);
 /**
  * Check the value of engine_issues_t.
  *
  * \param[in] value The value to check.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool check_engine_issues_t(engine_issues_t value);
+bool check_engine_issues_t(uint8_t value);
 /**
  * Set the value of engine_issues_t.
  *
@@ -972,14 +972,14 @@ bool check_engine_issues_t(engine_issues_t value);
  * \param[in] value : The value to set.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool set_engine_issues_t(engine_issues_t* instance, engine_issues_t value);
+bool set_engine_issues_t(engine_issues_t* instance, uint8_t value);
 /**
  * Check the value of battery_issues_t.
  *
  * \param[in] value The value to check.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool check_battery_issues_t(battery_issues_t value);
+bool check_battery_issues_t(uint8_t value);
 /**
  * Set the value of battery_issues_t.
  *
@@ -987,14 +987,14 @@ bool check_battery_issues_t(battery_issues_t value);
  * \param[in] value : The value to set.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool set_battery_issues_t(battery_issues_t* instance, battery_issues_t value);
+bool set_battery_issues_t(battery_issues_t* instance, uint8_t value);
 /**
  * Check the value of bgf_message_t.
  *
  * \param[in] value The value to check.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool check_bgf_message_t(bgf_message_t value);
+bool check_bgf_message_t(uint8_t value);
 /**
  * Set the value of bgf_message_t.
  *
@@ -1002,14 +1002,14 @@ bool check_bgf_message_t(bgf_message_t value);
  * \param[in] value : The value to set.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool set_bgf_message_t(bgf_message_t* instance, bgf_message_t value);
+bool set_bgf_message_t(bgf_message_t* instance, uint8_t value);
 /**
  * Check the value of light_status_t.
  *
  * \param[in] value The value to check.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool check_light_status_t(light_status_t value);
+bool check_light_status_t(uint8_t value);
 /**
  * Set the value of light_status_t.
  *
@@ -1017,14 +1017,14 @@ bool check_light_status_t(light_status_t value);
  * \param[in] value : The value to set.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool set_light_status_t(light_status_t* instance, light_status_t value);
+bool set_light_status_t(light_status_t* instance, uint8_t value);
 /**
  * Check the value of light_state_t.
  *
  * \param[in] value The value to check.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool check_light_state_t(light_state_t value);
+bool check_light_state_t(uint8_t value);
 /**
  * Set the value of light_state_t.
  *
@@ -1032,14 +1032,14 @@ bool check_light_state_t(light_state_t value);
  * \param[in] value : The value to set.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool set_light_state_t(light_state_t* instance, light_state_t value);
+bool set_light_state_t(light_state_t* instance, uint8_t value);
 /**
  * Check the value of indicator_state_t.
  *
  * \param[in] value The value to check.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool check_indicator_state_t(indicator_state_t value);
+bool check_indicator_state_t(uint8_t value);
 /**
  * Set the value of indicator_state_t.
  *
@@ -1047,14 +1047,14 @@ bool check_indicator_state_t(indicator_state_t value);
  * \param[in] value : The value to set.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool set_indicator_state_t(indicator_state_t* instance, indicator_state_t value);
+bool set_indicator_state_t(indicator_state_t* instance, uint8_t value);
 /**
  * Check the value of windscreen_wipers_state_t.
  *
  * \param[in] value The value to check.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool check_windscreen_wipers_state_t(windscreen_wipers_state_t value);
+bool check_windscreen_wipers_state_t(uint8_t value);
 /**
  * Set the value of windscreen_wipers_state_t.
  *
@@ -1062,7 +1062,7 @@ bool check_windscreen_wipers_state_t(windscreen_wipers_state_t value);
  * \param[in] value : The value to set.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool set_windscreen_wipers_state_t(windscreen_wipers_state_t* instance, windscreen_wipers_state_t value);
+bool set_windscreen_wipers_state_t(windscreen_wipers_state_t* instance, uint8_t value);
 
 // Struct getter and setter
 /**

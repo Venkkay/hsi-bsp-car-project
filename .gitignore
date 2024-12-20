@@ -17,7 +17,7 @@
 *.pch
 
 # Libraries
-*.lib
+#*.lib
 *.la
 *.lo
 
@@ -30,7 +30,7 @@
 # Executables
 *.exe
 *.out
-*.app
+#*.app
 *.i*86
 *.x86_64
 *.hex

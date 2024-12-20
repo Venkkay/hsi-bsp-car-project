@@ -31,10 +31,12 @@ bool set_kilometer_t(kilometer_t* instance, const uint32_t value) {
 }
 
 bool check_rpm_t(const uint32_t value){
-    if (value > 10000) { return false; }
-    return true;
+    if(value) {
+        return true;
+    }
+    return false;
 }
-
+  
 bool set_rpm_t(rpm_t* instance, const uint32_t value) {
     if (check_rpm_t(value)) {
         *instance = value;
@@ -97,10 +99,12 @@ bool set_mux_frame_number_t(mux_frame_number_t* instance, const uint8_t value) {
 }
 
 bool check_speed_t(const uint8_t value){
-    if (value > 255) { return false; }
-    return true;
+    if(value) {
+        return true;
+    }
+    return false;
 }
-
+  
 bool set_speed_t(speed_t* instance, const uint8_t value) {
     if (check_speed_t(value)) {
         *instance = value;
@@ -628,14 +632,14 @@ bool set_dashboard_light_t(dashboard_light_t* instance, const dashboard_light_t 
 
 // Enums Setter
 
-bool check_chassis_issues_t(const int value){
+bool check_chassis_issues_t(const uint8_t value){
     if(!(value == 0 || value == 1 || value == 2)) {
         return false;
     }
     return true;
 }
 
-bool set_chassis_issues_t(chassis_issues_t* instance, const int value) {
+bool set_chassis_issues_t(chassis_issues_t* instance, const uint8_t value) {
     if (check_chassis_issues_t(value)) {
         *instance = value;
         return true;
@@ -643,14 +647,14 @@ bool set_chassis_issues_t(chassis_issues_t* instance, const int value) {
     return false;
 }
 
-bool check_engine_issues_t(const int value){
+bool check_engine_issues_t(const uint8_t value){
     if(!(value == 0 || value == 1 || value == 2 || value == 4)) {
         return false;
     }
     return true;
 }
 
-bool set_engine_issues_t(engine_issues_t* instance, const int value) {
+bool set_engine_issues_t(engine_issues_t* instance, const uint8_t value) {
     if (check_engine_issues_t(value)) {
         *instance = value;
         return true;
@@ -658,14 +662,14 @@ bool set_engine_issues_t(engine_issues_t* instance, const int value) {
     return false;
 }
 
-bool check_battery_issues_t(const int value){
+bool check_battery_issues_t(const uint8_t value){
     if(!(value == 0 || value == 1 || value == 2)) {
         return false;
     }
     return true;
 }
 
-bool set_battery_issues_t(battery_issues_t* instance, const int value) {
+bool set_battery_issues_t(battery_issues_t* instance, const uint8_t value) {
     if (check_battery_issues_t(value)) {
         *instance = value;
         return true;
@@ -673,14 +677,14 @@ bool set_battery_issues_t(battery_issues_t* instance, const int value) {
     return false;
 }
 
-bool check_bgf_message_t(const int value){
+bool check_bgf_message_t(const uint8_t value){
     if(!(value == 0 || value == 1 || value == 2 || value == 3 || value == 4)) {
         return false;
     }
     return true;
 }
 
-bool set_bgf_message_t(bgf_message_t* instance, const int value) {
+bool set_bgf_message_t(bgf_message_t* instance, const uint8_t value) {
     if (check_bgf_message_t(value)) {
         *instance = value;
         return true;
@@ -688,14 +692,14 @@ bool set_bgf_message_t(bgf_message_t* instance, const int value) {
     return false;
 }
 
-bool check_light_status_t(const int value){
+bool check_light_status_t(const uint8_t value){
     if(!(value == 0 || value == 1)) {
         return false;
     }
     return true;
 }
 
-bool set_light_status_t(light_status_t* instance, const int value) {
+bool set_light_status_t(light_status_t* instance, const uint8_t value) {
     if (check_light_status_t(value)) {
         *instance = value;
         return true;
@@ -703,14 +707,14 @@ bool set_light_status_t(light_status_t* instance, const int value) {
     return false;
 }
 
-bool check_light_state_t(const int value){
+bool check_light_state_t(const uint8_t value){
     if(!(value == 0 || value == 1 || value == 2 || value == 3)) {
         return false;
     }
     return true;
 }
 
-bool set_light_state_t(light_state_t* instance, const int value) {
+bool set_light_state_t(light_state_t* instance, const uint8_t value) {
     if (check_light_state_t(value)) {
         *instance = value;
         return true;
@@ -718,14 +722,14 @@ bool set_light_state_t(light_state_t* instance, const int value) {
     return false;
 }
 
-bool check_indicator_state_t(const int value){
+bool check_indicator_state_t(const uint8_t value){
     if(!(value == 0 || value == 1 || value == 2 || value == 3 || value == 4)) {
         return false;
     }
     return true;
 }
 
-bool set_indicator_state_t(indicator_state_t* instance, const int value) {
+bool set_indicator_state_t(indicator_state_t* instance, const uint8_t value) {
     if (check_indicator_state_t(value)) {
         *instance = value;
         return true;
@@ -733,14 +737,14 @@ bool set_indicator_state_t(indicator_state_t* instance, const int value) {
     return false;
 }
 
-bool check_windscreen_wipers_state_t(const int value){
+bool check_windscreen_wipers_state_t(const uint8_t value){
     if(!(value == 0 || value == 1 || value == 2 || value == 3)) {
         return false;
     }
     return true;
 }
 
-bool set_windscreen_wipers_state_t(windscreen_wipers_state_t* instance, const int value) {
+bool set_windscreen_wipers_state_t(windscreen_wipers_state_t* instance, const uint8_t value) {
     if (check_windscreen_wipers_state_t(value)) {
         *instance = value;
         return true;
