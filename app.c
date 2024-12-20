@@ -5,6 +5,7 @@
 #include "libs/data_lib/data_management.h"
 
 #include "decode.h"
+#include "encode.h"
 
 int main() {
     int32_t drv_frame;
@@ -14,6 +15,9 @@ int main() {
     serial_frame_t serial_frame[DRV_MAX_FRAMES];
     uint32_t data_len = 0;
     comodo_frame_t comodo_frame[DRV_MAX_FRAMES];
+
+    bcgv_frame_t bcgv_frame;
+    uint8_t udp_frame_bcgv[DRV_UDP_200MS_FRAME_SIZE];
 
     int32_t drv_fd = drv_open();
     if (drv_fd == DRV_ERROR) {
@@ -60,6 +64,14 @@ int main() {
         // The result is in comodo_frame.
         // You need to data_len to retrieve the data from the table.
         decode_comodo_frame(serial_frame, data_len, comodo_frame);
+
+        bcgv_to_mux(&bcgv_frame, 0, get_speed_from_mux_frame_t(mux_frame), get_kilometer_from_mux_frame_t(mux_frame), get_fuel_level_from_mux_frame_t(mux_frame), get_rpm_from_mux_frame_t(mux_frame));
+        create_bcgv_to_mux_frame(&bcgv_frame, udp_frame_bcgv);
+        drv_frame = drv_write_udp_200ms(drv_fd, udp_frame_bcgv);
+        if (drv_frame != DRV_SUCCESS) {
+            printf("UDP frame write failed : %s...\n", strerror(errno));
+            break;
+        }
     }
 
     drv_close(drv_fd);

@@ -71,7 +71,7 @@ void decode_mux_frame(mux_frame_t* mux_frame, uint8_t udpFrame[DRV_UDP_100MS_FRA
 
   if (computed_crc == crc8) {
     if(set_mux_frame_t(mux_frame, temp_kilometer, temp_rpm, udpFrame[8], udpFrame[0], udpFrame[5], udpFrame[6], udpFrame[7], udpFrame[13], crc8) == false){
-    	printf("ERROR - set_mux_frame_t failed : %s(%d)\n", strerror(errno), errno);
+		printf("ERROR - set_mux_frame_t failed : %s(%d)\n", strerror(errno), errno);
     }
   } else {
     printf("ERROR - CRC8 failed : %s(%d)\n", strerror(errno), errno);

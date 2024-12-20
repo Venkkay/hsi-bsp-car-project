@@ -11,7 +11,7 @@ CFLAGS = -W -Wall -pedantic
 LIBS = drv_api.a libs/data_lib/libdata.a
 
 # Source files
-SRC = app.c decode.c
+SRC = app.c decode.c encode.c
 
 # Default rules
 all: $(TARGET)
