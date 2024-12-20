@@ -581,6 +581,22 @@
       "dimension": 1,
       "initialization_value": 255,
       "comment":""
+    },
+    {
+      "id":14,
+      "name":"SERIAL_BGF",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 11,
+      "comment":""
+    },
+    {
+      "id":15,
+      "name":"SERIAL_COM",
+      "type":"define",
+      "dimension": 1,
+      "initialization_value": 12,
+      "comment":""
     }
   ]
 }

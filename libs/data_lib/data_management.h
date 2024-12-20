@@ -16,7 +16,8 @@
 #define MAX_MUX_FRAME_NUMBER 100
 #define MIN_SPEED 0
 #define MAX_SPEED 255
-
+#define SERIAL_BGF 11
+#define SERIAL_COM 12
 
 /**
  * Atomic type bgf_trame_t.

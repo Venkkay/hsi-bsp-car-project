@@ -3,7 +3,7 @@ CFLAGS = -W -Wall -pedantic
 
 CFILES = data_management.c
 OFILES = $(CFILES:.c=.o)
-NAME = data_management.a
+NAME = libdata.a
 
 all: $(NAME)
 
