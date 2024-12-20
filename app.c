@@ -33,7 +33,7 @@ int main() {
             break;
         }
 
-        mux_frame = decode_mux_frame(udp_frame);
+        decode_mux_frame(&mux_frame, udp_frame);
         /*printf("\n================\n");
         printf("Mux number:%d\n", mux_frame.frame_number);
         printf("Mux kilometer:%d\n", mux_frame.kilometer);

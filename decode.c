@@ -14,7 +14,7 @@ uint8_t udpFrame[DRV_UDP_100MS_FRAME_SIZE (15)] == toutes les infos connus
 
 */
 
-mux_frame_t* decode_mux_frame(uint8_t udpFrame[DRV_UDP_100MS_FRAME_SIZE]){
+void decode_mux_frame(mux_frame_t* mux_frame, uint8_t udpFrame[DRV_UDP_100MS_FRAME_SIZE]){
 
 
   uint32_t temp_kilometer = udpFrame[1];
@@ -70,15 +70,12 @@ mux_frame_t* decode_mux_frame(uint8_t udpFrame[DRV_UDP_100MS_FRAME_SIZE]){
   uint8_t computed_crc = check_crc8(udpFrame, DRV_UDP_100MS_FRAME_SIZE-1, polynomial, initial_value);
 
   if (computed_crc == crc8) {
-    mux_frame_t mux_frame;
-    if(set_mux_frame_t(&mux_frame, temp_kilometer, temp_rpm, udpFrame[8], udpFrame[0], udpFrame[5], udpFrame[6], udpFrame[7], udpFrame[13], crc8) == false){
+    if(set_mux_frame_t(mux_frame, temp_kilometer, temp_rpm, udpFrame[8], udpFrame[0], udpFrame[5], udpFrame[6], udpFrame[7], udpFrame[13], crc8) == false){
     	printf("ERROR - set_mux_frame_t failed : %s(%d)\n", strerror(errno), errno);
     }
-    return &mux_frame;
   } else {
     printf("ERROR - CRC8 failed : %s(%d)\n", strerror(errno), errno);
   }
-  return NULL;
 }
 
 void decode_comodo_frame(serial_frame_t serial_frame[DRV_MAX_FRAMES], uint32_t data_len, comodo_frame_t comodo_frame[DRV_MAX_FRAMES]){
