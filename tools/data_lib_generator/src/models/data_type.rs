@@ -7,6 +7,8 @@ pub struct Type {
     pub(crate) declaration: Option<DeclarationType>,
     pub(crate) domain: Option<DomainType>,
     pub(crate) comment: String,
+    #[serde(skip_deserializing)]
+    pub(crate) is_checked: bool,
 }
 
 #[derive(Deserialize, Debug)]

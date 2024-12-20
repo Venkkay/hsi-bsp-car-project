@@ -1,33 +1,15 @@
 #include "data_management.h"
+#include <stdint.h>
+#include <stdbool.h>
 
-bool check_bgf_trame_t(const uint16_t value){
-    if(value) {
-        return true;
-    }
-    return false;
-}
-  
-bool set_bgf_trame_t(bgf_trame_t* instance, const uint16_t value) {
-    if (check_bgf_trame_t(value)) {
-        *instance = value;
-        return true;
-    }
-    return false;
+bool set_bgf_frame_t(bgf_frame_t* instance, const uint16_t value) {
+    *instance = value;
+    return true;
 }
 
-bool check_kilometer_t(const uint32_t value){
-    if(value) {
-        return true;
-    }
-    return false;
-}
-  
 bool set_kilometer_t(kilometer_t* instance, const uint32_t value) {
-    if (check_kilometer_t(value)) {
-        *instance = value;
-        return true;
-    }
-    return false;
+    *instance = value;
+    return true;
 }
 
 bool check_rpm_t(const uint32_t value){
@@ -96,34 +78,14 @@ bool set_mux_frame_number_t(mux_frame_number_t* instance, const uint8_t value) {
     return false;
 }
 
-bool check_speed_t(const uint8_t value){
-    if(value) {
-        return true;
-    }
-    return false;
-}
-  
 bool set_speed_t(speed_t* instance, const uint8_t value) {
-    if (check_speed_t(value)) {
-        *instance = value;
-        return true;
-    }
-    return false;
+    *instance = value;
+    return true;
 }
 
-bool check_crc8_t(const uint8_t value){
-    if(value) {
-        return true;
-    }
-    return false;
-}
-  
 bool set_crc8_t(crc8_t* instance, const uint8_t value) {
-    if (check_crc8_t(value)) {
-        *instance = value;
-        return true;
-    }
-    return false;
+    *instance = value;
+    return true;
 }
 
 // Flags for comodo_frame_t.
@@ -755,82 +717,76 @@ bool set_windscreen_wipers_state_t(windscreen_wipers_state_t* instance, const ui
 kilometer_t get_kilometer_from_mux_frame_t(const mux_frame_t instance) {
     return instance.kilometer;
 }
-bool set_kilometer_in_mux_frame_t(mux_frame_t* instance, const kilometer_t value) {
+bool set_kilometer_in_mux_frame_t(mux_frame_t* instance, const uint32_t value) {
     return set_kilometer_t(&instance->kilometer, value);
 }
 
 rpm_t get_rpm_from_mux_frame_t(const mux_frame_t instance) {
     return instance.rpm;
 }
-bool set_rpm_in_mux_frame_t(mux_frame_t* instance, const rpm_t value) {
+bool set_rpm_in_mux_frame_t(mux_frame_t* instance, const uint32_t value) {
     return set_rpm_t(&instance->rpm, value);
 }
 
 fuel_t get_fuel_level_from_mux_frame_t(const mux_frame_t instance) {
     return instance.fuel_level;
 }
-bool set_fuel_level_in_mux_frame_t(mux_frame_t* instance, const fuel_t value) {
+bool set_fuel_level_in_mux_frame_t(mux_frame_t* instance, const uint8_t value) {
     return set_fuel_t(&instance->fuel_level, value);
 }
 
 mux_frame_number_t get_frame_number_from_mux_frame_t(const mux_frame_t instance) {
     return instance.frame_number;
 }
-bool set_frame_number_in_mux_frame_t(mux_frame_t* instance, const mux_frame_number_t value) {
+bool set_frame_number_in_mux_frame_t(mux_frame_t* instance, const uint8_t value) {
     return set_mux_frame_number_t(&instance->frame_number, value);
 }
 
 speed_t get_speed_from_mux_frame_t(const mux_frame_t instance) {
     return instance.speed;
 }
-bool set_speed_in_mux_frame_t(mux_frame_t* instance, const speed_t value) {
+bool set_speed_in_mux_frame_t(mux_frame_t* instance, const uint8_t value) {
     return set_speed_t(&instance->speed, value);
 }
 
 chassis_issues_t get_chassis_issue_from_mux_frame_t(const mux_frame_t instance) {
     return instance.chassis_issue;
 }
-bool set_chassis_issue_in_mux_frame_t(mux_frame_t* instance, const chassis_issues_t value) {
+bool set_chassis_issue_in_mux_frame_t(mux_frame_t* instance, const uint8_t value) {
     return set_chassis_issues_t(&instance->chassis_issue, value);
 }
 
 engine_issues_t get_engine_issue_from_mux_frame_t(const mux_frame_t instance) {
     return instance.engine_issue;
 }
-bool set_engine_issue_in_mux_frame_t(mux_frame_t* instance, const engine_issues_t value) {
+bool set_engine_issue_in_mux_frame_t(mux_frame_t* instance, const uint8_t value) {
     return set_engine_issues_t(&instance->engine_issue, value);
 }
 
 battery_issues_t get_battery_issue_from_mux_frame_t(const mux_frame_t instance) {
     return instance.battery_issue;
 }
-bool set_battery_issue_in_mux_frame_t(mux_frame_t* instance, const battery_issues_t value) {
+bool set_battery_issue_in_mux_frame_t(mux_frame_t* instance, const uint8_t value) {
     return set_battery_issues_t(&instance->battery_issue, value);
 }
 
 crc8_t get_crc8_from_mux_frame_t(const mux_frame_t instance) {
     return instance.crc8;
 }
-bool set_crc8_in_mux_frame_t(mux_frame_t* instance, const crc8_t value) {
+bool set_crc8_in_mux_frame_t(mux_frame_t* instance, const uint8_t value) {
     return set_crc8_t(&instance->crc8, value);
 }
 
-bool check_mux_frame_t(const kilometer_t kilometer, const rpm_t rpm, const fuel_t fuel_level, const mux_frame_number_t frame_number, const speed_t speed, const chassis_issues_t chassis_issue, const engine_issues_t engine_issue, const battery_issues_t battery_issue, const crc8_t crc8) {
-    if (!check_kilometer_t(kilometer)) { return false;}
+bool check_mux_frame_t(const rpm_t rpm, const fuel_t fuel_level, const mux_frame_number_t frame_number) {
     if (!check_rpm_t(rpm)) { return false;}
     if (!check_fuel_t(fuel_level)) { return false;}
     if (!check_mux_frame_number_t(frame_number)) { return false;}
-    if (!check_speed_t(speed)) { return false;}
-    if (!check_chassis_issues_t(chassis_issue)) { return false;}
-    if (!check_engine_issues_t(engine_issue)) { return false;}
-    if (!check_battery_issues_t(battery_issue)) { return false;}
-    if (!check_crc8_t(crc8)) { return false;}
     return true;
 }
 
 
 bool set_mux_frame_t(mux_frame_t* instance, kilometer_t kilometer, rpm_t rpm, fuel_t fuel_level, mux_frame_number_t frame_number, speed_t speed, chassis_issues_t chassis_issue, engine_issues_t engine_issue, battery_issues_t battery_issue, crc8_t crc8) {
-    if (!check_mux_frame_t(kilometer, rpm, fuel_level, frame_number, speed, chassis_issue, engine_issue, battery_issue, crc8)) {
+    if (!check_mux_frame_t(rpm, fuel_level, frame_number)) {
         return false;
     }
     set_kilometer_in_mux_frame_t(instance, kilometer);
@@ -851,50 +807,47 @@ bool set_mux_frame_t(mux_frame_t* instance, kilometer_t kilometer, rpm_t rpm, fu
 kilometer_t get_kilometer_from_bcgv_frame_t(const bcgv_frame_t instance) {
     return instance.kilometer;
 }
-bool set_kilometer_in_bcgv_frame_t(bcgv_frame_t* instance, const kilometer_t value) {
+bool set_kilometer_in_bcgv_frame_t(bcgv_frame_t* instance, const uint32_t value) {
     return set_kilometer_t(&instance->kilometer, value);
 }
 
 rpm_dashboard_t get_rpm_from_bcgv_frame_t(const bcgv_frame_t instance) {
     return instance.rpm;
 }
-bool set_rpm_in_bcgv_frame_t(bcgv_frame_t* instance, const rpm_dashboard_t value) {
+bool set_rpm_in_bcgv_frame_t(bcgv_frame_t* instance, const uint16_t value) {
     return set_rpm_dashboard_t(&instance->rpm, value);
 }
 
 speed_t get_speed_from_bcgv_frame_t(const bcgv_frame_t instance) {
     return instance.speed;
 }
-bool set_speed_in_bcgv_frame_t(bcgv_frame_t* instance, const speed_t value) {
+bool set_speed_in_bcgv_frame_t(bcgv_frame_t* instance, const uint8_t value) {
     return set_speed_t(&instance->speed, value);
 }
 
-fuel_t get_fuel_percent_level_from_bcgv_frame_t(const bcgv_frame_t instance) {
+fuel_percent_t get_fuel_percent_level_from_bcgv_frame_t(const bcgv_frame_t instance) {
     return instance.fuel_percent_level;
 }
-bool set_fuel_percent_level_in_bcgv_frame_t(bcgv_frame_t* instance, const fuel_t value) {
-    return set_fuel_t(&instance->fuel_percent_level, value);
+bool set_fuel_percent_level_in_bcgv_frame_t(bcgv_frame_t* instance, const uint8_t value) {
+    return set_fuel_percent_t(&instance->fuel_percent_level, value);
 }
 
 dashboard_light_t get_dashboard_light_from_bcgv_frame_t(const bcgv_frame_t instance) {
     return instance.dashboard_light;
 }
-bool set_dashboard_light_in_bcgv_frame_t(bcgv_frame_t* instance, const dashboard_light_t value) {
+bool set_dashboard_light_in_bcgv_frame_t(bcgv_frame_t* instance, const uint16_t value) {
     return set_dashboard_light_t(&instance->dashboard_light, value);
 }
 
-bool check_bcgv_frame_t(const kilometer_t kilometer, const rpm_dashboard_t rpm, const speed_t speed, const fuel_t fuel_percent_level, const dashboard_light_t dashboard_light) {
-    if (!check_kilometer_t(kilometer)) { return false;}
+bool check_bcgv_frame_t(const rpm_dashboard_t rpm, const fuel_percent_t fuel_percent_level) {
     if (!check_rpm_dashboard_t(rpm)) { return false;}
-    if (!check_speed_t(speed)) { return false;}
-    if (!check_fuel_t(fuel_percent_level)) { return false;}
-    if (!check_dashboard_light_t(dashboard_light)) { return false;}
+    if (!check_fuel_percent_t(fuel_percent_level)) { return false;}
     return true;
 }
 
 
-bool set_bcgv_frame_t(bcgv_frame_t* instance, kilometer_t kilometer, rpm_dashboard_t rpm, speed_t speed, fuel_t fuel_percent_level, dashboard_light_t dashboard_light) {
-    if (!check_bcgv_frame_t(kilometer, rpm, speed, fuel_percent_level, dashboard_light)) {
+bool set_bcgv_frame_t(bcgv_frame_t* instance, kilometer_t kilometer, rpm_dashboard_t rpm, speed_t speed, fuel_percent_t fuel_percent_level, dashboard_light_t dashboard_light) {
+    if (!check_bcgv_frame_t(rpm, fuel_percent_level)) {
         return false;
     }
     set_kilometer_in_bcgv_frame_t(instance, kilometer);

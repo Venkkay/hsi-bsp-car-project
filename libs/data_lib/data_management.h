@@ -19,12 +19,13 @@
 #define SERIAL_BGF 11
 #define SERIAL_COM 12
 
+
 /**
- * Atomic type bgf_trame_t.
+ * Atomic type bgf_frame_t.
  *
  * \details READ / WRITE 
 */
-typedef uint16_t bgf_trame_t;
+typedef uint16_t bgf_frame_t;
 /**
  * Atomic type kilometer_t.
  *
@@ -226,34 +227,20 @@ typedef struct {
     kilometer_t kilometer;
     rpm_dashboard_t rpm;
     speed_t speed;
-    fuel_t fuel_percent_level;
+    fuel_percent_t fuel_percent_level;
     dashboard_light_t dashboard_light;
 } bcgv_frame_t;
 
 // Function signatures
 // Atomic types setter
 /**
- * Check the value of bgf_trame_t.
+ * Set the value of bgf_frame_t.
  *
- * \param[in] value : The value to check.
- * \return bool : Return True if the value is valid, False otherwise.
- */
-bool check_bgf_trame_t(const uint16_t value);
-/**
- * Set the value of bgf_trame_t.
- *
- * \param[out] instance : An instance of bgf_trame_t.
+ * \param[out] instance : An instance of bgf_frame_t.
  * \param[in] value : The value to set.
  * \return bool : Return True if the value is set, False otherwise.
  */
-bool set_bgf_trame_t(bgf_trame_t* instance, const uint16_t value);
-/**
- * Check the value of kilometer_t.
- *
- * \param[in] value : The value to check.
- * \return bool : Return True if the value is valid, False otherwise.
- */
-bool check_kilometer_t(const uint32_t value);
+bool set_bgf_frame_t(bgf_frame_t* instance, const uint16_t value);
 /**
  * Set the value of kilometer_t.
  *
@@ -338,13 +325,6 @@ bool check_mux_frame_number_t(const uint8_t value);
  */
 bool set_mux_frame_number_t(mux_frame_number_t* instance, const uint8_t value);
 /**
- * Check the value of speed_t.
- *
- * \param[in] value : The value to check.
- * \return bool : Return True if the value is valid, False otherwise.
- */
-bool check_speed_t(const uint8_t value);
-/**
  * Set the value of speed_t.
  *
  * \param[out] instance : An instance of speed_t.
@@ -352,13 +332,6 @@ bool check_speed_t(const uint8_t value);
  * \return bool : Return True if the value is set, False otherwise.
  */
 bool set_speed_t(speed_t* instance, const uint8_t value);
-/**
- * Check the value of crc8_t.
- *
- * \param[in] value : The value to check.
- * \return bool : Return True if the value is valid, False otherwise.
- */
-bool check_crc8_t(const uint8_t value);
 /**
  * Set the value of crc8_t.
  *
@@ -1079,7 +1052,7 @@ kilometer_t get_kilometer_from_mux_frame_t(const mux_frame_t instance);
  * \param[in] value : The value to set.
  * \return bool :  Return True if the value is valid, False otherwise.
  */
-bool set_kilometer_in_mux_frame_t(mux_frame_t* instance, const kilometer_t value);
+bool set_kilometer_in_mux_frame_t(mux_frame_t* instance, const uint32_t value);
 /**
  * Get rpm field from mux_frame_t.
  *
@@ -1094,7 +1067,7 @@ rpm_t get_rpm_from_mux_frame_t(const mux_frame_t instance);
  * \param[in] value : The value to set.
  * \return bool :  Return True if the value is valid, False otherwise.
  */
-bool set_rpm_in_mux_frame_t(mux_frame_t* instance, const rpm_t value);
+bool set_rpm_in_mux_frame_t(mux_frame_t* instance, const uint32_t value);
 /**
  * Get fuel_level field from mux_frame_t.
  *
@@ -1109,7 +1082,7 @@ fuel_t get_fuel_level_from_mux_frame_t(const mux_frame_t instance);
  * \param[in] value : The value to set.
  * \return bool :  Return True if the value is valid, False otherwise.
  */
-bool set_fuel_level_in_mux_frame_t(mux_frame_t* instance, const fuel_t value);
+bool set_fuel_level_in_mux_frame_t(mux_frame_t* instance, const uint8_t value);
 /**
  * Get frame_number field from mux_frame_t.
  *
@@ -1124,7 +1097,7 @@ mux_frame_number_t get_frame_number_from_mux_frame_t(const mux_frame_t instance)
  * \param[in] value : The value to set.
  * \return bool :  Return True if the value is valid, False otherwise.
  */
-bool set_frame_number_in_mux_frame_t(mux_frame_t* instance, const mux_frame_number_t value);
+bool set_frame_number_in_mux_frame_t(mux_frame_t* instance, const uint8_t value);
 /**
  * Get speed field from mux_frame_t.
  *
@@ -1139,7 +1112,7 @@ speed_t get_speed_from_mux_frame_t(const mux_frame_t instance);
  * \param[in] value : The value to set.
  * \return bool :  Return True if the value is valid, False otherwise.
  */
-bool set_speed_in_mux_frame_t(mux_frame_t* instance, const speed_t value);
+bool set_speed_in_mux_frame_t(mux_frame_t* instance, const uint8_t value);
 /**
  * Get chassis_issue field from mux_frame_t.
  *
@@ -1154,7 +1127,7 @@ chassis_issues_t get_chassis_issue_from_mux_frame_t(const mux_frame_t instance);
  * \param[in] value : The value to set.
  * \return bool :  Return True if the value is valid, False otherwise.
  */
-bool set_chassis_issue_in_mux_frame_t(mux_frame_t* instance, const chassis_issues_t value);
+bool set_chassis_issue_in_mux_frame_t(mux_frame_t* instance, const uint8_t value);
 /**
  * Get engine_issue field from mux_frame_t.
  *
@@ -1169,7 +1142,7 @@ engine_issues_t get_engine_issue_from_mux_frame_t(const mux_frame_t instance);
  * \param[in] value : The value to set.
  * \return bool :  Return True if the value is valid, False otherwise.
  */
-bool set_engine_issue_in_mux_frame_t(mux_frame_t* instance, const engine_issues_t value);
+bool set_engine_issue_in_mux_frame_t(mux_frame_t* instance, const uint8_t value);
 /**
  * Get battery_issue field from mux_frame_t.
  *
@@ -1184,7 +1157,7 @@ battery_issues_t get_battery_issue_from_mux_frame_t(const mux_frame_t instance);
  * \param[in] value : The value to set.
  * \return bool :  Return True if the value is valid, False otherwise.
  */
-bool set_battery_issue_in_mux_frame_t(mux_frame_t* instance, const battery_issues_t value);
+bool set_battery_issue_in_mux_frame_t(mux_frame_t* instance, const uint8_t value);
 /**
  * Get crc8 field from mux_frame_t.
  *
@@ -1199,14 +1172,14 @@ crc8_t get_crc8_from_mux_frame_t(const mux_frame_t instance);
  * \param[in] value : The value to set.
  * \return bool :  Return True if the value is valid, False otherwise.
  */
-bool set_crc8_in_mux_frame_t(mux_frame_t* instance, const crc8_t value);
+bool set_crc8_in_mux_frame_t(mux_frame_t* instance, const uint8_t value);
 /**
  * Check all values to set in mux_frame_t.
  *
  * \param[out] instance : An instance of mux_frame_t.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool check_mux_frame_t(const kilometer_t kilometer, const rpm_t rpm, const fuel_t fuel_level, const mux_frame_number_t frame_number, const speed_t speed, const chassis_issues_t chassis_issue, const engine_issues_t engine_issue, const battery_issues_t battery_issue, const crc8_t crc8);
+bool check_mux_frame_t(const rpm_t rpm, const fuel_t fuel_level, const mux_frame_number_t frame_number);
 /**
  * Set all field in mux_frame_t.
  *
@@ -1228,7 +1201,7 @@ kilometer_t get_kilometer_from_bcgv_frame_t(const bcgv_frame_t instance);
  * \param[in] value : The value to set.
  * \return bool :  Return True if the value is valid, False otherwise.
  */
-bool set_kilometer_in_bcgv_frame_t(bcgv_frame_t* instance, const kilometer_t value);
+bool set_kilometer_in_bcgv_frame_t(bcgv_frame_t* instance, const uint32_t value);
 /**
  * Get rpm field from bcgv_frame_t.
  *
@@ -1243,7 +1216,7 @@ rpm_dashboard_t get_rpm_from_bcgv_frame_t(const bcgv_frame_t instance);
  * \param[in] value : The value to set.
  * \return bool :  Return True if the value is valid, False otherwise.
  */
-bool set_rpm_in_bcgv_frame_t(bcgv_frame_t* instance, const rpm_dashboard_t value);
+bool set_rpm_in_bcgv_frame_t(bcgv_frame_t* instance, const uint16_t value);
 /**
  * Get speed field from bcgv_frame_t.
  *
@@ -1258,14 +1231,14 @@ speed_t get_speed_from_bcgv_frame_t(const bcgv_frame_t instance);
  * \param[in] value : The value to set.
  * \return bool :  Return True if the value is valid, False otherwise.
  */
-bool set_speed_in_bcgv_frame_t(bcgv_frame_t* instance, const speed_t value);
+bool set_speed_in_bcgv_frame_t(bcgv_frame_t* instance, const uint8_t value);
 /**
  * Get fuel_percent_level field from bcgv_frame_t.
  *
  * \param[in] instance An instance of bcgv_frame_t.
- * \return fuel_t : Return the value of the got field.
+ * \return fuel_percent_t : Return the value of the got field.
  */
-fuel_t get_fuel_percent_level_from_bcgv_frame_t(const bcgv_frame_t instance);
+fuel_percent_t get_fuel_percent_level_from_bcgv_frame_t(const bcgv_frame_t instance);
 /**
  * Set fuel_percent_level field in bcgv_frame_t.
  *
@@ -1273,7 +1246,7 @@ fuel_t get_fuel_percent_level_from_bcgv_frame_t(const bcgv_frame_t instance);
  * \param[in] value : The value to set.
  * \return bool :  Return True if the value is valid, False otherwise.
  */
-bool set_fuel_percent_level_in_bcgv_frame_t(bcgv_frame_t* instance, const fuel_t value);
+bool set_fuel_percent_level_in_bcgv_frame_t(bcgv_frame_t* instance, const uint8_t value);
 /**
  * Get dashboard_light field from bcgv_frame_t.
  *
@@ -1288,19 +1261,19 @@ dashboard_light_t get_dashboard_light_from_bcgv_frame_t(const bcgv_frame_t insta
  * \param[in] value : The value to set.
  * \return bool :  Return True if the value is valid, False otherwise.
  */
-bool set_dashboard_light_in_bcgv_frame_t(bcgv_frame_t* instance, const dashboard_light_t value);
+bool set_dashboard_light_in_bcgv_frame_t(bcgv_frame_t* instance, const uint16_t value);
 /**
  * Check all values to set in bcgv_frame_t.
  *
  * \param[out] instance : An instance of bcgv_frame_t.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool check_bcgv_frame_t(const kilometer_t kilometer, const rpm_dashboard_t rpm, const speed_t speed, const fuel_t fuel_percent_level, const dashboard_light_t dashboard_light);
+bool check_bcgv_frame_t(const rpm_dashboard_t rpm, const fuel_percent_t fuel_percent_level);
 /**
  * Set all field in bcgv_frame_t.
  *
  * \param[out] instance : An instance of bcgv_frame_t.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool set_bcgv_frame_t(bcgv_frame_t* instance, kilometer_t kilometer, rpm_dashboard_t rpm, speed_t speed, fuel_t fuel_percent_level, dashboard_light_t dashboard_light);
+bool set_bcgv_frame_t(bcgv_frame_t* instance, kilometer_t kilometer, rpm_dashboard_t rpm, speed_t speed, fuel_percent_t fuel_percent_level, dashboard_light_t dashboard_light);
 #endif
