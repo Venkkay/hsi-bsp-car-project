@@ -1,6 +1,4 @@
 #include "data_management.h"
-#include <stdint.h>
-#include <stdbool.h>
 
 bool check_bgf_trame_t(const uint16_t value){
     if(value) {
