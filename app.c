@@ -26,7 +26,7 @@ int main() {
             break;
         }
 
-        printf("Trame UDP reçue : ");
+        printf("Trame UDP received : ");
         for (size_t i = 0; i < DRV_UDP_100MS_FRAME_SIZE; i++) {
             printf("%02X ", udp_frame[i]);
         }
