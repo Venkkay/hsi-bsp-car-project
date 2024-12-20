@@ -401,25 +401,76 @@
         "value_type": "uint8_t",
         "values": [
           {
-            "name": "LIGHT_OFF",
+            "name": "ST_LIGHT_ANY",
+          "value": -1
+        },
+        {
+          "name": "ST_LIGHT_INIT",
             "value": 0
           },
           {
-            "name": "LIGHT_ON",
+            "name": "ST_LIGHT_OFF",
             "value": 1
           },
           {
-            "name": "LIGHT_ERROR",
+            "name": "ST_LIGHT_ON",
             "value": 2
           },
           {
-            "name": "LIGHT_ACQUITTED",
+            "name": "ST_LIGHT_ERROR",
             "value": 3
-          }
-        ]
-      },
+          },
+        {
+          "name": "ST_LIGHT_ACQUITTED",
+          "value": 4
+        },
+        {
+          "name": "ST_LIGHT_TERM",
+          "value": 255
+        }
+      ]},
       "domain": "",
-      "comment": "Describe the possible states of the lights (positions, low, high) "
+      "comment": "Describe the possible states of the lights (positions, low, high)"
+    },
+    {
+      "name": "light_event_t",
+      "kind": "enum",
+      "declaration": [
+        {
+          "name": "EV_LIGHT_ANY",
+          "value": -1
+        },
+        {
+          "name": "EV_LIGHT_NONE",
+          "value": 0
+        },
+        {
+          "name": "EV_LIGHT_CMD_0",
+          "value": 1
+        },
+        {
+          "name": "EV_LIGHT_CMD_1",
+          "value": 2
+        },
+        {
+          "name": "EV_LIGHT_ACK_RCV",
+          "value": 3
+        },
+        {
+          "name": "EV_LIGHT_ACK_NRCV",
+          "value": 4
+        },
+        {
+          "name": "EV_LIGHT_ERROR",
+          "value": 5
+        },
+        {
+          "name": "EV_LIGHT_TERM",
+          "value": 255
+        }
+      ],
+      "domain": "",
+      "comment": "Describe the possible events of the lights (positions, low, high)"
     },
     {
       "name": "indicator_state_t",
@@ -428,29 +479,88 @@
         "value_type": "uint8_t",
         "values": [
           {
-            "name": "INDICATOR_OFF",
+            "name": "ST_INDICATOR_ANY",
+          "value": -1
+        },
+        {
+          "name": "ST_INDICATOR_INIT",
             "value": 0
           },
           {
-            "name": "ACTIVATED_OFF",
+            "name": "ST_INDICATOR_OFF",
             "value": 1
           },
           {
-            "name": "ACTIVATED_ON",
+            "name": "ST_INDICATOR_ACTIVATED_OFF",
             "value": 2
           },
           {
-            "name": "INDICATOR_ERROR",
+            "name": "ST_INDICATOR_ACTIVATED_ON",
             "value": 3
           },
           {
-            "name": "INDICATOR_ACQUITTED",
+            "name": "ST_INDICATOR_ERROR",
             "value": 4
-          }
-        ]
-      },
+          },
+        {
+          "name": "ST_INDICATOR_ACQUITTED_OFF",
+          "value": 5
+        },
+        {
+          "name": "ST_INDICATOR_ACQUITTED_ON",
+          "value": 6
+        },
+        {
+          "name": "ST_INDICATOR_TERM",
+          "value": 255
+        }
+      ]},
       "domain": "",
       "comment": "Describe the possible states of indicators and warnings"
+    },
+    {
+      "name": "indicator_event_t",
+      "kind": "enum",
+      "declaration": [
+        {
+          "name": "EV_INDICATOR_ANY",
+          "value": -1
+        },
+        {
+          "name": "EV_INDICATOR_NONE",
+          "value": 0
+        },
+        {
+          "name": "EV_INDICATOR_CMD_0",
+          "value": 1
+        },
+        {
+          "name": "EV_INDICATOR_CMD_1",
+          "value": 2
+        },
+        {
+          "name": "EV_INDICATOR_ACK_RCV",
+          "value": 3
+        },
+        {
+          "name": "EV_INDICATOR_ACK_NRCV",
+          "value": 4
+        },
+        {
+          "name": "EV_INDICATOR_TMR_EQ_1",
+          "value": 5
+        },
+        {
+          "name": "EV_INDICATOR_ERROR",
+          "value": 6
+        },
+        {
+          "name": "EV_INDICATOR_TERM",
+          "value": 255
+        }
+      ],
+      "domain": "",
+      "comment": "Describe the possible events of indicators and warnings"
     },
     {
       "name": "windscreen_wipers_state_t",
@@ -459,25 +569,84 @@
         "value_type": "uint8_t",
         "values": [
           {
-            "name": "ALL_OFF",
+            "name": "ST_WS_WP_ANY",
+          "value": -1
+        },
+        {
+          "name": "ST_WS_WP_INIT",
             "value": 0
           },
           {
-            "name": "WIPERS_ACTIVATED",
+            "name": "ST_WS_WP_ALL_OFF",
             "value": 1
           },
           {
-            "name": "WDSCRN_CLN_WPRS_ACTIVATED",
+            "name": "ST_WP_ACTIVATED",
             "value": 2
           },
           {
-            "name": "TMR_WPRS_WDSCRN_CLN_OFF",
+            "name": "ST_WS_WP_ON",
             "value": 3
-          }
-        ]
-      },
+          },
+        {
+          "name": "ST_TMR_WP_WS_OFF",
+          "value": 4
+        },
+        {
+          "name": "ST_WS_WP_TERM",
+          "value": 255
+        }
+      ]},
       "domain": "",
       "comment": "Describe the possible states of the wipers and the windscreen washer"
+    },
+    {
+      "name": "windscreen_wipers_event_t",
+      "kind": "enum",
+      "declaration": [
+        {
+          "name": "EV_WS_WP_ANY",
+          "value": -1
+        },
+        {
+          "name": "EV_WS_WP_NONE",
+          "value": 0
+        },
+        {
+          "name": "EV_WS_WP_CMD_EG_0_CMD_LG_0",
+          "value": 1
+        },
+        {
+          "name": "EV_WS_WP_CMD_EG_0",
+          "value": 2
+        },
+        {
+          "name": "EV_WS_WP_CMD_EG_1",
+          "value": 3
+        },
+        {
+          "name": "EV_WS_WP_CMD_LG_0",
+          "value": 4
+        },
+        {
+          "name": "EV_WS_WP_CMD_LG_1",
+          "value": 5
+        },
+        {
+          "name": "EV_WS_WP_TMR_GT2",
+          "value": 6
+        },
+        {
+          "name": "EV_WS_WP_TMR_LT2",
+          "value": 7
+        },
+        {
+          "name": "EV_WS_WP_ERROR",
+          "value": 8
+        }
+      ],
+      "domain": "",
+      "comment": "Describe the possible events of the wipers and the windscreen washer"
     }
   ],
   "data": [
@@ -509,7 +678,7 @@
           "value":0
         }
       ],
-      "comment":"Defines the status of the instrument panel. It is used to find out the current status of the car at any given moment, and to determine the changes to be made according to the previous status."
+      "comment":"Defines the status of the instrument panel. It is used to find out the current status of the car at any given moment, and to determine the changes to be made according to the previous status"
     },
     {
       "id":2,

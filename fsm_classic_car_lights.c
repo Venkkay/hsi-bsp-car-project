@@ -11,28 +11,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "fsm_classic_car_lights.h"
-
-/* States */
-typedef enum {
-    ST_ANY = -1,                            /* Any state */
-    ST_INIT = 0,                            /* Init state */
-    ST_SWITCH_OFF = 1,
-    ST_SWITCH_ON = 2,
-    ST_ACK = 3,
-    ST_ERROR = 4,
-    ST_TERM = 255                           /* Final state */
-} fsm_state_t;
-
-/* Events */
-typedef enum {
-    EV_ANY = -1,                            /* Any event */
-    EV_NONE = 0,                            /* No event */
-    EV_CMD_0 = 1,
-    EV_CMD_1 = 2,
-    EV_ACK_RCV = 3,
-    EV_ACK_NRCV = 4,
-    EV_ERR = 255                            /* Error event */
-} fsm_event_t;
+#include "libs/data_lib/data_management.h"
 
 /* Callback functions called on transitions */
 static int callback_init (void) { return 0; };
@@ -49,25 +28,25 @@ static int callback_any_error(void) { return 0; };
 
 /* Transition structure */
 typedef struct {
-    fsm_state_t state;
-    fsm_event_t event;
+    light_state_t state;
+    light_event_t event;
     int (*callback)(void);
     int next_state;
 } tTransition;
 
 /* Transition table */
 tTransition trans[] = {
-    { ST_INIT, EV_NONE, &callback_init, ST_SWITCH_OFF},
-    { ST_SWITCH_OFF, EV_CMD_0, &callback_switch_off_loop, ST_SWITCH_OFF},
-    { ST_SWITCH_OFF, EV_CMD_1, &callback_switch_off_switch_on, ST_SWITCH_ON},
-    { ST_SWITCH_ON, EV_CMD_0, &callback_switch_on_switch_off, ST_SWITCH_OFF},
-    { ST_SWITCH_ON, EV_CMD_1, &callback_switch_on_loop, ST_SWITCH_ON},
-    { ST_SWITCH_ON, EV_ACK_RCV, &callback_switch_on_ack, ST_ACK},
-    { ST_SWITCH_ON, EV_ACK_NRCV, &callback_switch_on_error, ST_ERROR},
-    { ST_ACK, EV_CMD_0, &callback_ack_switch_off, ST_SWITCH_OFF},
-    { ST_ACK, EV_CMD_1, &callback_ack_loop, ST_ACK},
-    { ST_ANY, EV_ANY, &callback_any_term, ST_TERM},
-    { ST_ANY, EV_ERR, &callback_any_error, ST_TERM}
+    { ST_LIGHT_INIT, EV_LIGHT_NONE, &callback_init, ST_LIGHT_OFF},
+    { ST_LIGHT_OFF, EV_LIGHT_CMD_0, &callback_switch_off_loop, ST_LIGHT_OFF},
+    { ST_LIGHT_OFF, EV_LIGHT_CMD_1, &callback_switch_off_switch_on, ST_LIGHT_ON},
+    { ST_LIGHT_ON, EV_LIGHT_CMD_0, &callback_switch_on_switch_off, ST_LIGHT_OFF},
+    { ST_LIGHT_ON, EV_LIGHT_CMD_1, &callback_switch_on_loop, ST_LIGHT_ON},
+    { ST_LIGHT_ON, EV_LIGHT_ACK_RCV, &callback_switch_on_ack, ST_LIGHT_ACQUITTED},
+    { ST_LIGHT_ON, EV_LIGHT_ACK_NRCV, &callback_switch_on_error, ST_LIGHT_ERROR},
+    { ST_LIGHT_ACQUITTED, EV_LIGHT_CMD_0, &callback_ack_switch_off, ST_LIGHT_OFF},
+    { ST_LIGHT_ACQUITTED, EV_LIGHT_CMD_1, &callback_ack_loop, ST_LIGHT_ACQUITTED},
+    { ST_LIGHT_ANY, EV_LIGHT_ANY, &callback_any_term, ST_LIGHT_TERM}, /* not considered at this time */
+    { ST_LIGHT_ANY, EV_LIGHT_ERROR, &callback_any_error, ST_LIGHT_TERM}
 };
 
 #define TRANS_COUNT (sizeof(trans)/sizeof(*trans))
@@ -91,8 +70,8 @@ int get_next_event(int current_state) {
 int main(void) {
     int i = 0;
     int ret = 0;
-    int event = EV_NONE;
-    int state = ST_INIT;
+    int event = EV_LIGHT_NONE;
+    int state = ST_LIGHT_INIT;
 
     /* While FSM hasn't reach end state */
     while (state != ST_TERM) {
@@ -103,9 +82,9 @@ int main(void) {
         /* For each transitions */
         for (i = 0; i < TRANS_COUNT; i++) {
             /* If State is current state OR The transition applies to all states ...*/
-            if ((state == trans[i].state) || (ST_ANY == trans[i].state)) {
+            if ((state == trans[i].state) || (ST_LIGHT_ANY == trans[i].state)) {
                 /* If event is the transition event OR the event applies to all */
-                if ((event == trans[i].event) || (EV_ANY == trans[i].event)) {
+                if ((event == trans[i].event) || (EV_LIGHT_ANY == trans[i].event)) {
                     /* Apply the new state */
                     state = trans[i].next_state;
                     if (trans[i].callback != callback_null) {
