@@ -40,8 +40,8 @@ pub enum DomainType {
 
 #[derive(Deserialize, Debug)]
 pub struct DomainMinMax {
-    pub(crate) min: i32,
-    pub(crate) max: i32,
+    pub(crate) min: Option<i32>,
+    pub(crate) max: Option<i32>,
 }
 
 #[derive(Deserialize, Debug)]
