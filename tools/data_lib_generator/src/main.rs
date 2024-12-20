@@ -9,8 +9,9 @@ use crate::models::data_init::InitialValueType;
 use crate::models::data_type::{DeclarationType, DomainType};
 
 fn read_json() -> DataLib {
-    let json_file_path = "../../applicative_data.json";
+    let json_file_path = env::var("JSON_FILE_PATH").expect("JSON_FILE_PATH not found");
     //let file = File::open(json_file_path).expect("file not found");
+    println!("json_file_path: {}", json_file_path);
 
     let json_data: String = fs::read_to_string(json_file_path).expect("file not found");
     let data_lib: DataLib = serde_json::from_str(&json_data).expect("error while parsing json");
@@ -109,14 +110,14 @@ fn generate_source(mut source: File, mut header: File, data_lib: &DataLib, file_
                         let regex_int_size = Regex::new(r"u?(\d+)").unwrap();
                         let int_size_result: Option<Match> = regex_int_size.find(declaration);
                         let int_size = int_size_result.unwrap().as_str().parse::<i32>().unwrap_or(0);
-                        if(int_size <= 32 && max < (2_i64.pow(int_size as u32) - 1) as i32) {
+                        if int_size <= 32 && max < (2_i64.pow(int_size as u32) - 1) as i32 {
                             writeln!(source, "    if (value > {}) {{ return false; }}", max).unwrap();
                             check_number += 1;
                         }
                     }
                 }
 
-                if (check_number > 0){
+                if check_number > 0 {
                     writeln!(source, "    return true;\n}}\n").unwrap();
                 }
                 else{
@@ -194,10 +195,10 @@ fn generate_source(mut source: File, mut header: File, data_lib: &DataLib, file_
                 write!(source, "bool check_{}(const {} value){{\n    if(!(", data_type.name, declaration.value_type).unwrap();
                 for (i, field_enum_declaration) in declaration.values.iter().enumerate() {
                     if i < declaration.values.len() - 1 {
-                        write!(source, "value == {} || ", field_enum_declaration.value).unwrap();
+                        write!(source, "value == {} || ", field_enum_declaration.name).unwrap();
                     }
                     else {
-                        write!(source, "value == {}", field_enum_declaration.value).unwrap();
+                        write!(source, "value == {}", field_enum_declaration.name).unwrap();
                     }
                 }
                 writeln!(source, ")) {{\n        return false;\n    }}\n    return true;\n}}\n").unwrap();
@@ -330,6 +331,7 @@ fn parse_args() {
     for arg in args[1..].chunks(2) {
         parsed_args.push(arg.to_vec());
     }
+    println!("{:?}", parsed_args);
     for pair in parsed_args {
         if pair[0] == "--json" {
             env::set_var("JSON_FILE_PATH", pair[1].clone());
@@ -339,13 +341,20 @@ fn parse_args() {
         }
     }
     if env::var("JSON_FILE_PATH").is_err() {
-        env::set_var("JSON_FILE_PATH", "../../libs/data_lib");
+        env::set_var("JSON_FILE_PATH", "../../applicative_data.json");
+    }
+    if env::var("DEST_PATH").is_err() {
+        env::set_var("DEST_PATH", "../../libs/data_lib");
     }
 }
 
 fn main() {
     let args: Vec<String> = env::args().collect();
     println!("Hello, world!");
+    parse_args();
+    println!("{:?}", env::var("JSON_FILE_PATH"));
+    println!("{:?}", env::var("DEST_PATH"));
     let data_lib = read_json();
+    println!("{:?}", data_lib);
     generate_data_lib(&data_lib);
 }
