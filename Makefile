@@ -5,7 +5,7 @@ TARGET = app
 CC = gcc
 
 # Compiler Options
-CFLAGS = -Wall -Wextra -O2
+CFLAGS = -W -Wall -pedantic -Wextra -O2
 
 # Driver library
 LIBS = drv_api.a
