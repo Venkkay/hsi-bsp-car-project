@@ -52,7 +52,6 @@ mux_frame_t decode_mux_frame(uint8_t udpFrame[DRV_UDP_100MS_FRAME_SIZE]){
   temp_rpm = (temp_rpm << 8) | udpFrame[10];
   temp_rpm = (temp_rpm << 8) | udpFrame[11];
   temp_rpm = (temp_rpm << 8) | udpFrame[12];
-  printf("temp_RPM: %x\n", temp_rpm);
 
   /*if(mux_frame.battery_issue != NOTHING_BATTERY){
     if((mux_frame.battery_issue & 0x1) == UNLOADED){
