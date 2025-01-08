@@ -1,7 +1,7 @@
 # hsi-bsp-voiture
 Projet de Hardware Software Interface en Ing INEM
 
-## Generate teh data library
+## Generate tech data library
 
 ```bash
     ./tools/data_lib_generator/target/debug/data_lib_generator [options]
