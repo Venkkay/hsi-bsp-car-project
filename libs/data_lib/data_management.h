@@ -1,3 +1,9 @@
+/**
+ * \file	data_management.h
+ * \brief	Header file of the data management lib with the types, enums, structs and functions declarations.
+ * \author	data_lib_generator tool
+ */
+
 #ifndef DATA_MANAGEMENT_H
 #define DATA_MANAGEMENT_H
 
@@ -74,6 +80,8 @@ typedef uint8_t speed_t;
  * \details CRC8 
 */
 typedef uint8_t crc8_t;
+
+
 /**
  * Flag comodo_frame_t.
  *
@@ -109,7 +117,7 @@ typedef uint16_t dashboard_light_t;
 /**
  * Enum chassis_issues_t.
  *
- * \details Use to describe de chassis issue 
+ * \details Use to describe the chassis issue 
 */
 typedef enum chassis_issues_t_struct {
     NOTHING_CHASSIS = 0,
@@ -120,7 +128,7 @@ typedef enum chassis_issues_t_struct {
 /**
  * Enum engine_issues_t.
  *
- * \details Use to describe to engine's issue 
+ * \details Use to describe the engine's issue 
 */
 typedef enum engine_issues_t_struct {
     NOTHING_ENGINE = 0,
@@ -146,11 +154,11 @@ typedef enum battery_issues_t_struct {
  * \details Use to define the type of message to be sent and received from the BGF. 
 */
 typedef enum bgf_message_t_struct {
-    POSITION_LIGHT = 0,
-    LOW_BEAM = 1,
-    HIGH_BEAM = 2,
-    RIGHT_INDICATOR = 3,
-    LEFT_INDICATOR = 4,
+    POSITION_LIGHT = 1,
+    LOW_BEAM = 2,
+    HIGH_BEAM = 3,
+    RIGHT_INDICATOR = 4,
+    LEFT_INDICATOR = 5,
 } bgf_message_t;
 
 /**
@@ -167,14 +175,33 @@ typedef enum light_status_t_struct {
 /**
  * Enum light_state_t.
  *
- * \details Describe the possible states of the lights (positions, low, high)  
+ * \details Describe the possible states of the lights (positions, low, high) 
 */
 typedef enum light_state_t_struct {
-    LIGHT_OFF = 0,
-    LIGHT_ON = 1,
-    LIGHT_ERROR = 2,
-    LIGHT_ACQUITTED = 3,
+    ST_LIGHT_ANY = 0,
+    ST_LIGHT_INIT = 1,
+    ST_LIGHT_OFF = 2,
+    ST_LIGHT_ON = 3,
+    ST_LIGHT_ERROR = 4,
+    ST_LIGHT_ACQUITTED = 5,
+    ST_LIGHT_TERM = 255,
 } light_state_t;
+
+/**
+ * Enum light_event_t.
+ *
+ * \details Describe the possible events of the lights (positions, low, high) 
+*/
+typedef enum light_event_t_struct {
+    EV_LIGHT_ANY = 0,
+    EV_LIGHT_NONE = 1,
+    EV_LIGHT_CMD_0 = 2,
+    EV_LIGHT_CMD_1 = 3,
+    EV_LIGHT_ACK_RCV = 4,
+    EV_LIGHT_ACK_NRCV = 5,
+    EV_LIGHT_ERROR = 6,
+    EV_LIGHT_TERM = 255,
+} light_event_t;
 
 /**
  * Enum indicator_state_t.
@@ -182,12 +209,33 @@ typedef enum light_state_t_struct {
  * \details Describe the possible states of indicators and warnings 
 */
 typedef enum indicator_state_t_struct {
-    INDICATOR_OFF = 0,
-    ACTIVATED_OFF = 1,
-    ACTIVATED_ON = 2,
-    INDICATOR_ERROR = 3,
-    INDICATOR_ACQUITTED = 4,
+    ST_INDICATOR_ANY = 0,
+    ST_INDICATOR_INIT = 1,
+    ST_INDICATOR_OFF = 2,
+    ST_INDICATOR_ACTIVATED_OFF = 3,
+    ST_INDICATOR_ACTIVATED_ON = 4,
+    ST_INDICATOR_ERROR = 5,
+    ST_INDICATOR_ACQUITTED_OFF = 6,
+    ST_INDICATOR_ACQUITTED_ON = 7,
+    ST_INDICATOR_TERM = 255,
 } indicator_state_t;
+
+/**
+ * Enum indicator_event_t.
+ *
+ * \details Describe the possible events of indicators and warnings 
+*/
+typedef enum indicator_event_t_struct {
+    EV_INDICATOR_ANY = 0,
+    EV_INDICATOR_NONE = 1,
+    EV_INDICATOR_CMD_0 = 2,
+    EV_INDICATOR_CMD_1 = 3,
+    EV_INDICATOR_ACK_RCV = 4,
+    EV_INDICATOR_ACK_NRCV = 5,
+    EV_INDICATOR_TMR_EQ_1 = 6,
+    EV_INDICATOR_ERROR = 7,
+    EV_INDICATOR_TERM = 255,
+} indicator_event_t;
 
 /**
  * Enum windscreen_wipers_state_t.
@@ -195,11 +243,34 @@ typedef enum indicator_state_t_struct {
  * \details Describe the possible states of the wipers and the windscreen washer 
 */
 typedef enum windscreen_wipers_state_t_struct {
-    ALL_OFF = 0,
-    WIPERS_ACTIVATED = 1,
-    WDSCRN_CLN_WPRS_ACTIVATED = 2,
-    TMR_WPRS_WDSCRN_CLN_OFF = 3,
+    ST_WS_WP_ANY = 0,
+    ST_WS_WP_INIT = 1,
+    ST_WS_WP_ALL_OFF = 2,
+    ST_WP_ACTIVATED = 3,
+    ST_WS_WP_ON = 4,
+    ST_TMR_WP_WS_OFF = 5,
+    ST_WS_WP_TERM = 255,
 } windscreen_wipers_state_t;
+
+/**
+ * Enum windscreen_wipers_event_t.
+ *
+ * \details Describe the possible events of the wipers and the windscreen washer 
+*/
+typedef enum windscreen_wipers_event_t_struct {
+    EV_WS_WP_ANY = 0,
+    EV_WS_WP_NONE = 1,
+    EV_WS_WP_CMD_EG_0_CMD_LG_0 = 2,
+    EV_WS_WP_CMD_EG_0 = 3,
+    EV_WS_WP_CMD_EG_1 = 4,
+    EV_WS_WP_CMD_LG_0 = 5,
+    EV_WS_WP_CMD_LG_1 = 6,
+    EV_WS_WP_TMR_GT2 = 7,
+    EV_WS_WP_TMR_LT2 = 8,
+    EV_WS_WP_ERROR = 9,
+} windscreen_wipers_event_t;
+
+
 
 /**
  * Struct type mux_frame_t.
@@ -525,13 +596,6 @@ bool set_cmd_washer_in_comodo_frame_t(comodo_frame_t* instance, const uint8_t va
  * @return Return True if the value is valid, False otherwise.
  */
 bool set_all_flag_comodo_frame_t(comodo_frame_t* instance, const uint8_t cmd_warning, const uint8_t cmd_position_light, const uint8_t cmd_low_beam, const uint8_t cmd_high_beam, const uint8_t cmd_right_indicator, const uint8_t cmd_left_indicator, const uint8_t cmd_wipers, const uint8_t cmd_washer);
-/**
- * Check the value of comodo_frame_t.
- *
- * \param[in] value : The value to check.
- * \return bool : Return True if the value is valid, False otherwise.
- */
-bool check_comodo_frame_t(const uint8_t value);
 /**
  * Set comodo_frame_t.
  *
@@ -900,13 +964,6 @@ bool set_washer_active_in_dashboard_light_t(dashboard_light_t* instance, const u
  */
 bool set_all_flag_dashboard_light_t(dashboard_light_t* instance, const uint16_t position_light, const uint16_t low_beam, const uint16_t high_beam, const uint16_t fuel, const uint16_t motor_issue, const uint16_t pressure_issue, const uint16_t unused, const uint16_t discharged_battery, const uint16_t warning, const uint16_t battery_issue, const uint16_t coolant_temperature, const uint16_t motor_pressure, const uint16_t oil_overheat, const uint16_t brake_issue, const uint16_t wiper_active, const uint16_t washer_active);
 /**
- * Check the value of dashboard_light_t.
- *
- * \param[in] value : The value to check.
- * \return bool : Return True if the value is valid, False otherwise.
- */
-bool check_dashboard_light_t(const uint16_t value);
-/**
  * Set dashboard_light_t.
  *
  * \param[out] instance An instance of dashboard_light_t.
@@ -1007,6 +1064,21 @@ bool check_light_state_t(uint8_t value);
  */
 bool set_light_state_t(light_state_t* instance, uint8_t value);
 /**
+ * Check the value of light_event_t.
+ *
+ * \param[in] value The value to check.
+ * \return bool : Return True if the value is valid, False otherwise.
+ */
+bool check_light_event_t(uint8_t value);
+/**
+ * Set the value of light_event_t.
+ *
+ * \param[out] instance An instance of light_event_t.
+ * \param[in] value : The value to set.
+ * \return bool : Return True if the value is valid, False otherwise.
+ */
+bool set_light_event_t(light_event_t* instance, uint8_t value);
+/**
  * Check the value of indicator_state_t.
  *
  * \param[in] value The value to check.
@@ -1022,6 +1094,21 @@ bool check_indicator_state_t(uint8_t value);
  */
 bool set_indicator_state_t(indicator_state_t* instance, uint8_t value);
 /**
+ * Check the value of indicator_event_t.
+ *
+ * \param[in] value The value to check.
+ * \return bool : Return True if the value is valid, False otherwise.
+ */
+bool check_indicator_event_t(uint8_t value);
+/**
+ * Set the value of indicator_event_t.
+ *
+ * \param[out] instance An instance of indicator_event_t.
+ * \param[in] value : The value to set.
+ * \return bool : Return True if the value is valid, False otherwise.
+ */
+bool set_indicator_event_t(indicator_event_t* instance, uint8_t value);
+/**
  * Check the value of windscreen_wipers_state_t.
  *
  * \param[in] value The value to check.
@@ -1036,6 +1123,21 @@ bool check_windscreen_wipers_state_t(uint8_t value);
  * \return bool : Return True if the value is valid, False otherwise.
  */
 bool set_windscreen_wipers_state_t(windscreen_wipers_state_t* instance, uint8_t value);
+/**
+ * Check the value of windscreen_wipers_event_t.
+ *
+ * \param[in] value The value to check.
+ * \return bool : Return True if the value is valid, False otherwise.
+ */
+bool check_windscreen_wipers_event_t(uint8_t value);
+/**
+ * Set the value of windscreen_wipers_event_t.
+ *
+ * \param[out] instance An instance of windscreen_wipers_event_t.
+ * \param[in] value : The value to set.
+ * \return bool : Return True if the value is valid, False otherwise.
+ */
+bool set_windscreen_wipers_event_t(windscreen_wipers_event_t* instance, uint8_t value);
 
 // Struct getter and setter
 /**
@@ -1276,4 +1378,4 @@ bool check_bcgv_frame_t(const rpm_dashboard_t rpm, const fuel_percent_t fuel_per
  * \return bool : Return True if the value is valid, False otherwise.
  */
 bool set_bcgv_frame_t(bcgv_frame_t* instance, kilometer_t kilometer, rpm_dashboard_t rpm, speed_t speed, fuel_percent_t fuel_percent_level, dashboard_light_t dashboard_light);
-#endif
+#endif // DATA_MANAGEMENT_H

@@ -246,19 +246,9 @@ bool set_all_flag_comodo_frame_t(comodo_frame_t* instance, const uint8_t cmd_war
     return true;
 }
 
-bool check_comodo_frame_t(const uint8_t value){
-    if(value) {
-        return true;
-    }
-    return false;
-}
-  
 bool set_comodo_frame_t(comodo_frame_t* instance, const comodo_frame_t value) {
-    if (check_comodo_frame_t(value)) {
-        *instance = value;
-        return true;
-    }
-    return false;
+    *instance = value;
+    return true;
 }
 
 
@@ -573,19 +563,9 @@ bool set_all_flag_dashboard_light_t(dashboard_light_t* instance, const uint16_t 
     return true;
 }
 
-bool check_dashboard_light_t(const uint16_t value){
-    if(value) {
-        return true;
-    }
-    return false;
-}
-  
 bool set_dashboard_light_t(dashboard_light_t* instance, const dashboard_light_t value) {
-    if (check_dashboard_light_t(value)) {
-        *instance = value;
-        return true;
-    }
-    return false;
+    *instance = value;
+    return true;
 }
 
 
@@ -668,7 +648,7 @@ bool set_light_status_t(light_status_t* instance, const uint8_t value) {
 }
 
 bool check_light_state_t(const uint8_t value){
-    if(!(value == LIGHT_OFF || value == LIGHT_ON || value == LIGHT_ERROR || value == LIGHT_ACQUITTED)) {
+    if(!(value == ST_LIGHT_ANY || value == ST_LIGHT_INIT || value == ST_LIGHT_OFF || value == ST_LIGHT_ON || value == ST_LIGHT_ERROR || value == ST_LIGHT_ACQUITTED || value == ST_LIGHT_TERM)) {
         return false;
     }
     return true;
@@ -682,8 +662,23 @@ bool set_light_state_t(light_state_t* instance, const uint8_t value) {
     return false;
 }
 
+bool check_light_event_t(const uint8_t value){
+    if(!(value == EV_LIGHT_ANY || value == EV_LIGHT_NONE || value == EV_LIGHT_CMD_0 || value == EV_LIGHT_CMD_1 || value == EV_LIGHT_ACK_RCV || value == EV_LIGHT_ACK_NRCV || value == EV_LIGHT_ERROR || value == EV_LIGHT_TERM)) {
+        return false;
+    }
+    return true;
+}
+
+bool set_light_event_t(light_event_t* instance, const uint8_t value) {
+    if (check_light_event_t(value)) {
+        *instance = value;
+        return true;
+    }
+    return false;
+}
+
 bool check_indicator_state_t(const uint8_t value){
-    if(!(value == INDICATOR_OFF || value == ACTIVATED_OFF || value == ACTIVATED_ON || value == INDICATOR_ERROR || value == INDICATOR_ACQUITTED)) {
+    if(!(value == ST_INDICATOR_ANY || value == ST_INDICATOR_INIT || value == ST_INDICATOR_OFF || value == ST_INDICATOR_ACTIVATED_OFF || value == ST_INDICATOR_ACTIVATED_ON || value == ST_INDICATOR_ERROR || value == ST_INDICATOR_ACQUITTED_OFF || value == ST_INDICATOR_ACQUITTED_ON || value == ST_INDICATOR_TERM)) {
         return false;
     }
     return true;
@@ -697,8 +692,23 @@ bool set_indicator_state_t(indicator_state_t* instance, const uint8_t value) {
     return false;
 }
 
+bool check_indicator_event_t(const uint8_t value){
+    if(!(value == EV_INDICATOR_ANY || value == EV_INDICATOR_NONE || value == EV_INDICATOR_CMD_0 || value == EV_INDICATOR_CMD_1 || value == EV_INDICATOR_ACK_RCV || value == EV_INDICATOR_ACK_NRCV || value == EV_INDICATOR_TMR_EQ_1 || value == EV_INDICATOR_ERROR || value == EV_INDICATOR_TERM)) {
+        return false;
+    }
+    return true;
+}
+
+bool set_indicator_event_t(indicator_event_t* instance, const uint8_t value) {
+    if (check_indicator_event_t(value)) {
+        *instance = value;
+        return true;
+    }
+    return false;
+}
+
 bool check_windscreen_wipers_state_t(const uint8_t value){
-    if(!(value == ALL_OFF || value == WIPERS_ACTIVATED || value == WDSCRN_CLN_WPRS_ACTIVATED || value == TMR_WPRS_WDSCRN_CLN_OFF)) {
+    if(!(value == ST_WS_WP_ANY || value == ST_WS_WP_INIT || value == ST_WS_WP_ALL_OFF || value == ST_WP_ACTIVATED || value == ST_WS_WP_ON || value == ST_TMR_WP_WS_OFF || value == ST_WS_WP_TERM)) {
         return false;
     }
     return true;
@@ -706,6 +716,21 @@ bool check_windscreen_wipers_state_t(const uint8_t value){
 
 bool set_windscreen_wipers_state_t(windscreen_wipers_state_t* instance, const uint8_t value) {
     if (check_windscreen_wipers_state_t(value)) {
+        *instance = value;
+        return true;
+    }
+    return false;
+}
+
+bool check_windscreen_wipers_event_t(const uint8_t value){
+    if(!(value == EV_WS_WP_ANY || value == EV_WS_WP_NONE || value == EV_WS_WP_CMD_EG_0_CMD_LG_0 || value == EV_WS_WP_CMD_EG_0 || value == EV_WS_WP_CMD_EG_1 || value == EV_WS_WP_CMD_LG_0 || value == EV_WS_WP_CMD_LG_1 || value == EV_WS_WP_TMR_GT2 || value == EV_WS_WP_TMR_LT2 || value == EV_WS_WP_ERROR)) {
+        return false;
+    }
+    return true;
+}
+
+bool set_windscreen_wipers_event_t(windscreen_wipers_event_t* instance, const uint8_t value) {
+    if (check_windscreen_wipers_event_t(value)) {
         *instance = value;
         return true;
     }

@@ -30,7 +30,7 @@ pub struct FieldStructDeclaration {
 #[derive(Deserialize, Debug)]
 pub struct FieldEnumDeclaration {
     pub(crate) name: String,
-    pub(crate) value: i8,
+    pub(crate) value: i32,
 }
 
 #[derive(Deserialize, Debug)]
