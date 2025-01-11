@@ -15,11 +15,14 @@ int main() {
     serial_frame_t serial_frame[DRV_MAX_FRAMES];
     uint32_t data_len = 0;
     comodo_frame_t comodo_frame[DRV_MAX_FRAMES];
+    bgf_frame_t bgf_frame[DRV_MAX_FRAMES];
 
     bcgv_frame_t bcgv_frame;
     uint8_t udp_frame_bcgv[DRV_UDP_200MS_FRAME_SIZE];
 
     uint8_t frame_number = 1;
+
+    dashboard_light_t dashboard_light;
 
     int32_t drv_fd = drv_open();
     if (drv_fd == DRV_ERROR) {
@@ -52,7 +55,7 @@ int main() {
         }
 
         decode_mux_frame(&mux_frame, udp_frame);
-
+        decode_lights(&mux_frame);
         drv_frame = drv_read_ser(drv_fd, serial_frame, &data_len);
         if (drv_frame != DRV_SUCCESS) {
             printf("Serial frame read failed : %s...\n", strerror(errno));
@@ -62,7 +65,9 @@ int main() {
         // You need to data_len to retrieve the data from the table.
         decode_comodo_frame(serial_frame, data_len, comodo_frame);
 
-        bcgv_to_mux(&bcgv_frame, 0, get_speed_from_mux_frame_t(mux_frame), get_kilometer_from_mux_frame_t(mux_frame), get_fuel_level_from_mux_frame_t(mux_frame), get_rpm_from_mux_frame_t(mux_frame));
+        dashboard_light = decode_lights(&mux_frame);
+
+        bcgv_to_mux(&bcgv_frame, dashboard_light, get_speed_from_mux_frame_t(mux_frame), get_kilometer_from_mux_frame_t(mux_frame), get_fuel_level_from_mux_frame_t(mux_frame), get_rpm_from_mux_frame_t(mux_frame));
         create_bcgv_to_mux_frame(&bcgv_frame, udp_frame_bcgv);
         drv_frame = drv_write_udp_200ms(drv_fd, udp_frame_bcgv);
         if (drv_frame != DRV_SUCCESS) {
