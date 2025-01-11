@@ -19,6 +19,8 @@ int main() {
     bcgv_frame_t bcgv_frame;
     uint8_t udp_frame_bcgv[DRV_UDP_200MS_FRAME_SIZE];
 
+    uint8_t frame_number = 1;
+
     int32_t drv_fd = drv_open();
     if (drv_fd == DRV_ERROR) {
         printf("Open connection with driver failed : %s...\n", strerror(errno));
@@ -36,25 +38,20 @@ int main() {
             printf("UDP frame read failed : %s...\n", strerror(errno));
             break;
         }
+        if (frame_number > MAX_MUX_FRAME_NUMBER) {
+            frame_number = 1;
+        }
+        // check frame number (if ok => decode ; if not log in error and continue for the next number)
+        if (frame_number != udp_frame[0]) {
+            frame_number = udp_frame[0];
+            frame_number = frame_number + 1;
+            printf("ERROR : UDP frame number wrong.\n");
+        }else {
+            frame_number = udp_frame[0];
+            frame_number = frame_number + 1;
+        }
 
         decode_mux_frame(&mux_frame, udp_frame);
-        /*printf("\n================\n");
-        printf("Mux number:%d\n", mux_frame.frame_number);
-        printf("Mux kilometer:%d\n", mux_frame.kilometer);
-        printf("Mux speed:%d\n", mux_frame.speed);
-        printf("Mux chassis issue:%d\n", mux_frame.chassis_issue);
-        printf("Mux engine issue:%d\n", mux_frame.engine_issue);
-        printf("Mux battery issue:%d\n", mux_frame.battery_issue);
-        printf("Mux fuel level:%d\n", mux_frame.fuel_level);
-        printf("Mux rpm:%d\n", mux_frame.rpm);
-        printf("Mux CRC8:%d\n", mux_frame.crc8);
-        printf("================\n");*/
-
-        /*for (size_t i = 0; i < DRV_UDP_100MS_FRAME_SIZE; i++) {
-            printf("%02X ", udp_frame[i]);
-        }
-        printf("\n");
-         */
 
         drv_frame = drv_read_ser(drv_fd, serial_frame, &data_len);
         if (drv_frame != DRV_SUCCESS) {
