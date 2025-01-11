@@ -6,7 +6,7 @@
 
 #include "decode.h"
 #include "encode.h"
-#include "fsm_classic_car_ligths.h"
+#include "fsm_classic_car_lights.h"
 
 int main() {
     int32_t drv_frame;
@@ -72,39 +72,29 @@ int main() {
         dashboard_light = decode_lights(&mux_frame);
 
         bcgv_to_mux(&bcgv_frame, dashboard_light, get_speed_from_mux_frame_t(mux_frame), get_kilometer_from_mux_frame_t(mux_frame), get_fuel_level_from_mux_frame_t(mux_frame), get_rpm_from_mux_frame_t(mux_frame));
+
         for (size_t i = 0; i < DRV_MAX_FRAMES; i++) { //être sûr qu'il y a une trame à traiter
             uint8_t position_light_value = get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]);
             uint8_t low_beam_value = get_cmd_low_beam_from_comodo_frame_t(comodo_frame[i]);
             uint8_t high_beam_value = get_cmd_high_beam_from_comodo_frame_t(comodo_frame[i]);
 
             light_state_t new_position_light_state = fsm_classic_car_lights(current_position_light_state, position_light_value);
-
-            } else if (low_beam_value != current_low_beam_value) {
-              // current_low_beam_value = appel fsm
-            } else if (high_beam_value != current_high_beam_value) {
-              //appel fsm
-            }
+            light_state_t new_low_beam_state = fsm_classic_car_lights(current_low_beam_state, low_beam_value);
+            light_state_t new_high_beam_value = fsm_classic_car_lights(current_high_beam_state, high_beam_value);
 
             uint8_t warning_value = get_cmd_warning_from_comodo_frame_t(comodo_frame[i]);
             uint8_t right_indicator_value = get_cmd_right_indicator_from_comodo_frame_t(comodo_frame[i]);
             uint8_t left_indicator_value = get_cmd_left_indicator_from_comodo_frame_t(comodo_frame[i]);
 
-            if (warning_value != current_warning_value) {
-                //appel fsm
-            } else if (right_indicator_value != current_right_indicator_value) {
-                //appel fsm
-            } else if (left_indicator_value != current_left_indicator_value) {
-                //appel fsm
-            }
+            light_state_t new_warning_state = fsm_flashing_lights_warnings(current_warning_state, warning_value);
+            light_state_t new_right_indicator_state = fsm_flashing_lights_warnings(current_right_indicator_state, right_indicator_value);
+            light_state_t new_left_indicator_value = fsm_flashing_lights_warnings(current_left_indicator_state, left_indicator_value);
 
             uint8_t wipers_value = get_cmd_wipers_from_comodo_frame_t(comodo_frame[i]);
             uint8_t washer_value = get_cmd_washer_from_comodo_frame_t(comodo_frame[i]);
 
-            if (wipers_value != current_wipers_value) {
-                //appel fsm
-            } else if (washer_value != current_washer_value) {
-                //appel fsm
-            }
+            light_state_t new_wipers_state = fsm_wiper_and_washer(current_wipers_state, wipers_value);
+            light_state_t new_washer_state = fsm_wiper_and_washer(current_washer_state, washer_value);
         }
 
         bcgv_to_mux(&bcgv_frame, 0, get_speed_from_mux_frame_t(mux_frame), get_kilometer_from_mux_frame_t(mux_frame), get_fuel_level_from_mux_frame_t(mux_frame), get_rpm_from_mux_frame_t(mux_frame));
