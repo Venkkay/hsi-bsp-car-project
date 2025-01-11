@@ -78,16 +78,95 @@ void decode_mux_frame(mux_frame_t* mux_frame, uint8_t udpFrame[DRV_UDP_100MS_FRA
   }
 }
 
+dashboard_light_t decode_lights(mux_frame_t* mux_frame){
+  	dashboard_light_t temp_light = 0;
+
+	chassis_issues_t chassis_issues = get_chassis_issue_from_mux_frame_t(*mux_frame);
+    printf("chassis_issues = %d\n", chassis_issues);
+    engine_issues_t engine_issues = get_engine_issue_from_mux_frame_t(*mux_frame);
+    printf("engine_issues = %d\n", engine_issues);
+    battery_issues_t battery_issues = get_battery_issue_from_mux_frame_t(*mux_frame);
+    printf("battery_issues = %d\n", battery_issues);
+
+  if((chassis_issues) != 0){
+    if((chassis_issues & BRAKE_FAILURE) != 0){
+      set_brake_issue_in_dashboard_light_t(&temp_light, 1);
+    }else {
+      set_brake_issue_in_dashboard_light_t(&temp_light, 0);
+    }
+    if((chassis_issues & TIRES_PRESSURE) != 0){
+      set_pressure_issue_in_dashboard_light_t(&temp_light, 1);
+    }else{
+      set_pressure_issue_in_dashboard_light_t(&temp_light, 0);
+    }
+  }else {
+    set_pressure_issue_in_dashboard_light_t(&temp_light, 0);
+    set_brake_issue_in_dashboard_light_t(&temp_light, 0);
+  }
+  if((engine_issues) != 0){
+    set_motor_issue_in_dashboard_light_t(&temp_light, 1);
+    if((engine_issues & PRESSURE_FAULT) != 0){ //engine_pressure
+      set_motor_pressure_in_dashboard_light_t(&temp_light, 1);
+    }else{
+      set_motor_pressure_in_dashboard_light_t(&temp_light, 0);
+    }
+    if((engine_issues & COOLANT_TEMPERATURE) != 0){ // cooling
+      set_coolant_temperature_in_dashboard_light_t(&temp_light, 1);
+    }else {
+      set_coolant_temperature_in_dashboard_light_t(&temp_light, 0);
+    }
+    if((engine_issues & OIL_OVERHEATING) != 0){ // oil_overheat
+      set_oil_overheat_in_dashboard_light_t(&temp_light, 1);
+    }else {
+      set_oil_overheat_in_dashboard_light_t(&temp_light, 0);
+    }
+  }else {
+    set_motor_issue_in_dashboard_light_t(&temp_light, 0);
+    set_coolant_temperature_in_dashboard_light_t(&temp_light, 0);
+    set_oil_overheat_in_dashboard_light_t(&temp_light, 0);
+  }
+
+  if((battery_issues) != 0){
+    if((battery_issues & UNLOADED) != 0){
+      set_discharged_battery_in_dashboard_light_t(&temp_light, 1);
+    }else {
+      set_discharged_battery_in_dashboard_light_t(&temp_light, 0);
+    }
+    if((battery_issues & OUTAGE) != 0){
+      set_battery_issue_in_dashboard_light_t(&temp_light, 1);
+    }else{
+      set_battery_issue_in_dashboard_light_t(&temp_light, 0);
+    }
+  }else {
+    set_battery_issue_in_dashboard_light_t(&temp_light, 0);
+    set_discharged_battery_in_dashboard_light_t(&temp_light, 0);
+  }
+
+  return temp_light;
+}
+
 void decode_comodo_frame(serial_frame_t serial_frame[DRV_MAX_FRAMES], uint32_t data_len, comodo_frame_t comodo_frame[DRV_MAX_FRAMES]){
   for (size_t j = 0; j < data_len; j++) {
     if (serial_frame[j].serNum == SERIAL_COM)
     for (size_t k = 0 ; k < serial_frame[j].frameSize ; k++) {
       if (set_comodo_frame_t(&comodo_frame[j], serial_frame[j].frame[k]) == false) {
-        printf("Set mux frame failed : %s\n", strerror(errno));
+        printf("Set comodo frame failed : %s\n", strerror(errno));
       }
     }
   }
 }
+
+void decode_bgf_frame(serial_frame_t serial_frame[DRV_MAX_FRAMES], uint32_t data_len, bgf_frame_t bgf_frame[DRV_MAX_FRAMES]){
+  for (size_t j = 0; j < data_len; j++) {
+    if (serial_frame[j].serNum == SERIAL_BGF)
+    for (size_t k = 0 ; k < serial_frame[j].frameSize ; k++) {
+      if (set_bgf_frame_t(&bgf_frame[j], serial_frame[j].frame[k]) == false) {
+        printf("Set bgf frame failed : %s\n", strerror(errno));
+      }
+    }
+  }
+}
+
 
 uint8_t check_crc8(uint8_t *data, size_t length, uint8_t polynomial, uint8_t initial_value){
   uint8_t crc = initial_value;
