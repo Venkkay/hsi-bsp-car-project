@@ -1,10 +1,10 @@
 #include "encode.h"
 
-void bgf_encode_trame(bgf_frame_t* tr, uint8_t id_message, uint8_t message) {
+void bgf_encode_frame(bgf_frame_t* fr, uint8_t id_message, uint8_t message) {
     uint16_t bgf_frame;
     bgf_frame = id_message;
     bgf_frame = (bgf_frame << 8) | message;
-	set_bgf_frame_t(tr, bgf_frame);
+	set_bgf_frame_t(fr, bgf_frame);
 }
 
 void bcgv_to_mux(bcgv_frame_t* bcgv_frame ,dashboard_light_t dashboard_light, speed_t speed, kilometer_t kilometer, fuel_t fuel, rpm_t rpm) {
@@ -26,16 +26,23 @@ void create_bcgv_to_mux_frame(bcgv_frame_t* bcgv_frame, uint8_t udpFrame[DRV_UDP
     uint8_t lightdash1 = 0x00;
     uint8_t lightdash2 = 0x00;
 
-    lightdash1 = (lightdash1 << 1) | get_position_light_from_dashboard_light_t(light);
+    lightdash1 = (lightdash1) | get_position_light_from_dashboard_light_t(light);
 	lightdash1 = (lightdash1 << 1) | get_low_beam_from_dashboard_light_t(light);
 	lightdash1 = (lightdash1 << 1) | get_high_beam_from_dashboard_light_t(light);
-	lightdash1 = (lightdash1 << 1) | get_fuel_from_dashboard_light_t(light);
+
+    // fuel light
+    if(fuel <= 5){
+	  lightdash1 = (lightdash1 << 1) | 1;
+    }else{
+      lightdash1 = (lightdash1 << 1) | 0;
+    }
+
 	lightdash1 = (lightdash1 << 1) | get_motor_issue_from_dashboard_light_t(light);
 	lightdash1 = (lightdash1 << 1) | get_pressure_issue_from_dashboard_light_t(light);
 	lightdash1 = (lightdash1 << 1);
 	lightdash1 = (lightdash1 << 1) | get_discharged_battery_from_dashboard_light_t(light);
 
-    lightdash2 = (lightdash2 << 1) | get_warning_from_dashboard_light_t(light);
+    lightdash2 = (lightdash2) | get_warning_from_dashboard_light_t(light);
 	lightdash2 = (lightdash2 << 1) | get_battery_issue_from_dashboard_light_t(light);
 	lightdash2 = (lightdash2 << 1) | get_coolant_temperature_from_dashboard_light_t(light);
 	lightdash2 = (lightdash2 << 1) | get_motor_pressure_from_dashboard_light_t(light);
