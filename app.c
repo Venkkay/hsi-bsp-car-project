@@ -6,6 +6,7 @@
 
 #include "decode.h"
 #include "encode.h"
+#include "fsm_classic_car_ligths.h"
 
 int main() {
     int32_t drv_frame;
@@ -21,6 +22,9 @@ int main() {
     uint8_t udp_frame_bcgv[DRV_UDP_200MS_FRAME_SIZE];
 
     uint8_t frame_number = 1;
+    light_state_t current_position_light_state = ST_LIGHT_OFF;
+    light_state_t current_low_beam_state = ST_LIGHT_OFF;
+    light_state_t current_high_beam_state = ST_LIGHT_OFF;
 
     dashboard_light_t dashboard_light;
 
@@ -49,7 +53,7 @@ int main() {
             frame_number = udp_frame[0];
             frame_number = frame_number + 1;
             printf("ERROR : UDP frame number wrong.\n");
-        }else {
+        } else {
             frame_number = udp_frame[0];
             frame_number = frame_number + 1;
         }
@@ -68,6 +72,42 @@ int main() {
         dashboard_light = decode_lights(&mux_frame);
 
         bcgv_to_mux(&bcgv_frame, dashboard_light, get_speed_from_mux_frame_t(mux_frame), get_kilometer_from_mux_frame_t(mux_frame), get_fuel_level_from_mux_frame_t(mux_frame), get_rpm_from_mux_frame_t(mux_frame));
+        for (size_t i = 0; i < DRV_MAX_FRAMES; i++) { //être sûr qu'il y a une trame à traiter
+            uint8_t position_light_value = get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]);
+            uint8_t low_beam_value = get_cmd_low_beam_from_comodo_frame_t(comodo_frame[i]);
+            uint8_t high_beam_value = get_cmd_high_beam_from_comodo_frame_t(comodo_frame[i]);
+
+            light_state_t new_position_light_state = fsm_classic_car_lights(current_position_light_state, position_light_value);
+
+            } else if (low_beam_value != current_low_beam_value) {
+              // current_low_beam_value = appel fsm
+            } else if (high_beam_value != current_high_beam_value) {
+              //appel fsm
+            }
+
+            uint8_t warning_value = get_cmd_warning_from_comodo_frame_t(comodo_frame[i]);
+            uint8_t right_indicator_value = get_cmd_right_indicator_from_comodo_frame_t(comodo_frame[i]);
+            uint8_t left_indicator_value = get_cmd_left_indicator_from_comodo_frame_t(comodo_frame[i]);
+
+            if (warning_value != current_warning_value) {
+                //appel fsm
+            } else if (right_indicator_value != current_right_indicator_value) {
+                //appel fsm
+            } else if (left_indicator_value != current_left_indicator_value) {
+                //appel fsm
+            }
+
+            uint8_t wipers_value = get_cmd_wipers_from_comodo_frame_t(comodo_frame[i]);
+            uint8_t washer_value = get_cmd_washer_from_comodo_frame_t(comodo_frame[i]);
+
+            if (wipers_value != current_wipers_value) {
+                //appel fsm
+            } else if (washer_value != current_washer_value) {
+                //appel fsm
+            }
+        }
+
+        bcgv_to_mux(&bcgv_frame, 0, get_speed_from_mux_frame_t(mux_frame), get_kilometer_from_mux_frame_t(mux_frame), get_fuel_level_from_mux_frame_t(mux_frame), get_rpm_from_mux_frame_t(mux_frame));
         create_bcgv_to_mux_frame(&bcgv_frame, udp_frame_bcgv);
         drv_frame = drv_write_udp_200ms(drv_fd, udp_frame_bcgv);
         if (drv_frame != DRV_SUCCESS) {

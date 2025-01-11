@@ -13,18 +13,17 @@
 #include "fsm_classic_car_lights.h"
 #include "libs/data_lib/data_management.h"
 
+#define TRANS_COUNT (sizeof(trans)/sizeof(*trans))
+
 /* Callback functions called on transitions */
-static int callback_init (void) { return 0; };
-static int callback_switch_off_loop (void) { return 0; };
+static int callback_switch_off_loop (void) { return 0; };/* à supprimer si pas de callack */
 static int callback_switch_off_switch_on (void) { return 0; };
 static int callback_switch_on_switch_off (void) { return 0; };
-static int callback_switch_on_loop (void) { return 0; };
+static int callback_switch_on_loop (void) { return 0; };/* à supprimer si pas de callack */
 static int callback_switch_on_ack (void) { return 0; };
 static int callback_switch_on_error (void) { return 0; };
 static int callback_ack_switch_off (void) { return 0; };
-static int callback_ack_loop (void) { return 0; };
-static int callback_any_term (void) { return 0; };
-static int callback_any_error(void) { return 0; };
+static int callback_ack_loop (void) { return 0; };/* à supprimer si pas de callack */
 
 /* Transition structure */
 typedef struct {
@@ -36,33 +35,53 @@ typedef struct {
 
 /* Transition table */
 tTransition trans[] = {
-    { ST_LIGHT_INIT, EV_LIGHT_NONE, &callback_init, ST_LIGHT_OFF},
-    { ST_LIGHT_OFF, EV_LIGHT_CMD_0, &callback_switch_off_loop, ST_LIGHT_OFF},
+    { ST_LIGHT_OFF, EV_LIGHT_CMD_0, &callback_switch_off_loop, ST_LIGHT_OFF},/* à supprimer si pas de callack */
     { ST_LIGHT_OFF, EV_LIGHT_CMD_1, &callback_switch_off_switch_on, ST_LIGHT_ON},
     { ST_LIGHT_ON, EV_LIGHT_CMD_0, &callback_switch_on_switch_off, ST_LIGHT_OFF},
-    { ST_LIGHT_ON, EV_LIGHT_CMD_1, &callback_switch_on_loop, ST_LIGHT_ON},
+    { ST_LIGHT_ON, EV_LIGHT_CMD_1, &callback_switch_on_loop, ST_LIGHT_ON}, /* à supprimer si pas de callack */
     { ST_LIGHT_ON, EV_LIGHT_ACK_RCV, &callback_switch_on_ack, ST_LIGHT_ACQUITTED},
     { ST_LIGHT_ON, EV_LIGHT_ACK_NRCV, &callback_switch_on_error, ST_LIGHT_ERROR},
     { ST_LIGHT_ACQUITTED, EV_LIGHT_CMD_0, &callback_ack_switch_off, ST_LIGHT_OFF},
-    { ST_LIGHT_ACQUITTED, EV_LIGHT_CMD_1, &callback_ack_loop, ST_LIGHT_ACQUITTED},
-    { ST_LIGHT_ANY, EV_LIGHT_ANY, &callback_any_term, ST_LIGHT_TERM}, /* not considered at this time */
-    { ST_LIGHT_ANY, EV_LIGHT_ERROR, &callback_any_error, ST_LIGHT_TERM}
+    { ST_LIGHT_ACQUITTED, EV_LIGHT_CMD_1, &callback_ack_loop, ST_LIGHT_ACQUITTED}, /* à supprimer si pas de callack */
 };
-
-#define TRANS_COUNT (sizeof(trans)/sizeof(*trans))
 
 int get_next_event(int current_state) {
     int event;
-    /* Here, you can get the parameters of your FSM */
-    /* Build all the events */
-    /* Example code :
-    if (PARAM1 == ...) {
-        event = EV_EVENT1
+
+    switch (current_state) {
+        case ST_LIGHT_OFF:
+            if (get_cmd_warning_from_comodo_frame_t(1) || get_cmd_position_light_from_comodo_frame_t(1) || get_cmd_low_beam_from_comodo_frame_t(1)) {
+                event = EV_LIGHT_CMD_1;
+            } else {
+                event = EV_LIGHT_CMD_0;
+            }
+        break;
+
+        case ST_LIGHT_ON:
+            if (get_cmd_warning_from_comodo_frame_t(1) || get_cmd_position_light_from_comodo_frame_t(1) || get_cmd_low_beam_from_comodo_frame_t(1)) {
+                event = EV_LIGHT_CMD_1;
+            } else {
+                event = EV_LIGHT_CMD_0;
+            }
+            // Management of the acquittal (Acquittal received & Acknowledgement not received after 1 second)
+        break;
+
+        case ST_LIGHT_ACQUITTED:
+            if (/*cmd == 0*/) {
+                event = EV_LIGHT_CMD_0;
+            } else if (/*cmd == 1*/) {
+                event = EV_LIGHT_CMD_1;
+            }
+        break;
+
+        case ST_LIGHT_ERROR:
+
+        break;
+
+        default:
+
+        break;
     }
-    else if (PARAM2 == ... && PARAM3 == ...) {
-        event = EV_EVENT2
-    }
-    ... */
 
     return event;
 }
@@ -70,11 +89,12 @@ int get_next_event(int current_state) {
 int main(void) {
     int i = 0;
     int ret = 0;
-    int event = EV_LIGHT_NONE;
-    int state = ST_LIGHT_INIT;
+    int event = EV_LIGHT_CMD_0;
+    int state = ST_LIGHT_OFF;
 
     /* While FSM hasn't reach end state */
-    while (state != ST_TERM) {
+    while (state != ST_LIGHT_ERROR) {
+	/* when we consider the end state */
 
         /* Get event */
         event = get_next_event(state);
@@ -82,7 +102,7 @@ int main(void) {
         /* For each transitions */
         for (i = 0; i < TRANS_COUNT; i++) {
             /* If State is current state OR The transition applies to all states ...*/
-            if ((state == trans[i].state) || (ST_LIGHT_ANY == trans[i].state)) {
+            if (state == trans[i].state) {
                 /* If event is the transition event OR the event applies to all */
                 if ((event == trans[i].event) || (EV_LIGHT_ANY == trans[i].event)) {
                     /* Apply the new state */

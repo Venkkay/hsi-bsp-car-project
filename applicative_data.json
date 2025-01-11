@@ -401,32 +401,20 @@
         "value_type": "uint8_t",
         "values": [
           {
-            "name": "ST_LIGHT_ANY",
+            "name": "ST_LIGHT_OFF",
             "value": 0
           },
           {
-            "name": "ST_LIGHT_INIT",
+            "name": "ST_LIGHT_ON",
             "value": 1
           },
           {
-            "name": "ST_LIGHT_OFF",
+            "name": "ST_LIGHT_ERROR",
             "value": 2
           },
           {
-            "name": "ST_LIGHT_ON",
-            "value": 3
-          },
-          {
-            "name": "ST_LIGHT_ERROR",
-            "value": 4
-          },
-          {
             "name": "ST_LIGHT_ACQUITTED",
-            "value": 5
-          },
-          {
-            "name": "ST_LIGHT_TERM",
-            "value": 255
+            "value": 3
           }
         ]
       },
@@ -440,36 +428,20 @@
         "value_type": "uint8_t",
         "values": [
           {
-            "name": "EV_LIGHT_ANY",
+            "name": "EV_LIGHT_CMD_0",
             "value": 0
           },
           {
-            "name": "EV_LIGHT_NONE",
+            "name": "EV_LIGHT_CMD_1",
             "value": 1
           },
           {
-            "name": "EV_LIGHT_CMD_0",
+            "name": "EV_LIGHT_ACK_RCV",
             "value": 2
           },
           {
-            "name": "EV_LIGHT_CMD_1",
-            "value": 3
-          },
-          {
-            "name": "EV_LIGHT_ACK_RCV",
-            "value": 4
-          },
-          {
             "name": "EV_LIGHT_ACK_NRCV",
-            "value": 5
-          },
-          {
-            "name": "EV_LIGHT_ERROR",
-            "value": 6
-          },
-          {
-            "name": "EV_LIGHT_TERM",
-            "value": 255
+            "value": 3
           }
         ]
       },
@@ -483,40 +455,28 @@
         "value_type": "uint8_t",
         "values": [
           {
-            "name": "ST_INDICATOR_ANY",
+            "name": "ST_INDICATOR_OFF",
             "value": 0
           },
           {
-            "name": "ST_INDICATOR_INIT",
+            "name": "ST_INDICATOR_ACTIVATED_OFF",
             "value": 1
           },
           {
-            "name": "ST_INDICATOR_OFF",
+            "name": "ST_INDICATOR_ACTIVATED_ON",
             "value": 2
           },
           {
-            "name": "ST_INDICATOR_ACTIVATED_OFF",
+            "name": "ST_INDICATOR_ERROR",
             "value": 3
           },
           {
-            "name": "ST_INDICATOR_ACTIVATED_ON",
+            "name": "ST_INDICATOR_ACQUITTED_OFF",
             "value": 4
           },
           {
-            "name": "ST_INDICATOR_ERROR",
-            "value": 5
-          },
-          {
-            "name": "ST_INDICATOR_ACQUITTED_OFF",
-            "value": 6
-          },
-          {
             "name": "ST_INDICATOR_ACQUITTED_ON",
-            "value": 7
-          },
-          {
-            "name": "ST_INDICATOR_TERM",
-            "value": 255
+            "value": 5
           }
         ]
       },
@@ -530,40 +490,28 @@
         "value_type": "uint8_t",
         "values": [
           {
-            "name": "EV_INDICATOR_ANY",
+            "name": "EV_INDICATOR_CMD_0",
             "value": 0
           },
           {
-            "name": "EV_INDICATOR_NONE",
+            "name": "EV_INDICATOR_CMD_1",
             "value": 1
           },
           {
-            "name": "EV_INDICATOR_CMD_0",
+            "name": "EV_INDICATOR_ACK_RCV",
             "value": 2
           },
           {
-            "name": "EV_INDICATOR_CMD_1",
+            "name": "EV_INDICATOR_ACK_NRCV",
             "value": 3
           },
           {
-            "name": "EV_INDICATOR_ACK_RCV",
+            "name": "EV_INDICATOR_TMR_EQ_1",
             "value": 4
           },
           {
-            "name": "EV_INDICATOR_ACK_NRCV",
-            "value": 5
-          },
-          {
-            "name": "EV_INDICATOR_TMR_EQ_1",
-            "value": 6
-          },
-          {
             "name": "EV_INDICATOR_ERROR",
-            "value": 7
-          },
-          {
-            "name": "EV_INDICATOR_TERM",
-            "value": 255
+            "value": 5
           }
         ]
       },
@@ -577,32 +525,20 @@
         "value_type": "uint8_t",
         "values": [
           {
-            "name": "ST_WS_WP_ANY",
+            "name": "ST_WS_WP_ALL_OFF",
             "value": 0
           },
           {
-            "name": "ST_WS_WP_INIT",
+            "name": "ST_WP_ACTIVATED",
             "value": 1
           },
           {
-            "name": "ST_WS_WP_ALL_OFF",
+            "name": "ST_WS_WP_ON",
             "value": 2
           },
           {
-            "name": "ST_WP_ACTIVATED",
-            "value": 3
-          },
-          {
-            "name": "ST_WS_WP_ON",
-            "value": 4
-          },
-          {
             "name": "ST_TMR_WP_WS_OFF",
-            "value": 5
-          },
-          {
-            "name": "ST_WS_WP_TERM",
-            "value": 255
+            "value": 3
           }
         ]
       },
@@ -616,44 +552,36 @@
         "value_type": "uint8_t",
         "values": [
           {
-            "name": "EV_WS_WP_ANY",
+            "name": "EV_WS_WP_CMD_EG_0_CMD_LG_0",
             "value": 0
           },
           {
-            "name": "EV_WS_WP_NONE",
+            "name": "EV_WS_WP_CMD_EG_0",
             "value": 1
           },
           {
-            "name": "EV_WS_WP_CMD_EG_0_CMD_LG_0",
+            "name": "EV_WS_WP_CMD_EG_1",
             "value": 2
           },
           {
-            "name": "EV_WS_WP_CMD_EG_0",
+            "name": "EV_WS_WP_CMD_LG_0",
             "value": 3
           },
           {
-            "name": "EV_WS_WP_CMD_EG_1",
+            "name": "EV_WS_WP_CMD_LG_1",
             "value": 4
           },
           {
-            "name": "EV_WS_WP_CMD_LG_0",
+            "name": "EV_WS_WP_TMR_GT2",
             "value": 5
           },
           {
-            "name": "EV_WS_WP_CMD_LG_1",
+            "name": "EV_WS_WP_TMR_LT2",
             "value": 6
           },
           {
-            "name": "EV_WS_WP_TMR_GT2",
-            "value": 7
-          },
-          {
-            "name": "EV_WS_WP_TMR_LT2",
-            "value": 8
-          },
-          {
             "name": "EV_WS_WP_ERROR",
-            "value": 9
+            "value": 7
           }
         ]
       },
@@ -694,6 +622,48 @@
     },
     {
       "id": 2,
+      "name": "light_state_current",
+      "kind": "init",
+      "type": "light_state_t",
+      "dimension": 1,
+      "initialization_value": [
+        {
+          "name": "",
+          "value": 1
+        },
+        {
+          "name": "",
+          "value": 1
+        },
+        {
+          "name": "",
+          "value": 1
+        },
+        {
+          "name": "",
+          "value": 1
+        },
+        {
+          "name": "",
+          "value": 1
+        },
+        {
+          "name": "",
+          "value": 1
+        },
+        {
+          "name": "",
+          "value": 1
+        },
+        {
+          "name": "",
+          "value": 1
+        }
+      ],
+      "comment": "Defines the status of different lights, wipers and washer. It is used to find out the current status of the car at any given moment, and to determine the changes to be made according to the previous status"
+    },
+    {
+      "id": 3,
       "name": "MIN_RPM",
       "kind": "define",
       "type": "",
@@ -702,7 +672,7 @@
       "comment": ""
     },
     {
-      "id": 3,
+      "id": 4,
       "name": "MAX_RPM",
       "kind": "define",
       "type": "",
@@ -711,7 +681,7 @@
       "comment": ""
     },
     {
-      "id": 4,
+      "id": 5,
       "name": "MIN_RPM_DASHBOARD",
       "kind": "define",
       "type": "",
@@ -720,7 +690,7 @@
       "comment": ""
     },
     {
-      "id": 5,
+      "id": 6,
       "name": "MAX_RPM_DASHBOARD",
       "kind": "define",
       "type": "",
@@ -729,7 +699,7 @@
       "comment": ""
     },
     {
-      "id": 6,
+      "id": 7,
       "name": "MIN_FUEL",
       "kind": "define",
       "type": "",
@@ -738,7 +708,7 @@
       "comment": ""
     },
     {
-      "id": 7,
+      "id": 8,
       "name": "MAX_FUEL",
       "kind": "define",
       "type": "",
@@ -747,7 +717,7 @@
       "comment": ""
     },
     {
-      "id": 8,
+      "id": 9,
       "name": "MIN_FUEL_PERCENT",
       "kind": "define",
       "type": "",
@@ -756,7 +726,7 @@
       "comment": ""
     },
     {
-      "id": 9,
+      "id": 10,
       "name": "MAX_FUEL_PERCENT",
       "kind": "define",
       "type": "",
@@ -765,7 +735,7 @@
       "comment": ""
     },
     {
-      "id": 10,
+      "id": 11,
       "name": "MIN_MUX_FRAME_NUMBER",
       "kind": "define",
       "type": "",
@@ -774,7 +744,7 @@
       "comment": ""
     },
     {
-      "id": 11,
+      "id": 12,
       "name": "MAX_MUX_FRAME_NUMBER",
       "kind": "define",
       "type": "",
@@ -783,7 +753,7 @@
       "comment": ""
     },
     {
-      "id": 12,
+      "id": 13,
       "name": "MIN_SPEED",
       "kind": "define",
       "type": "",
@@ -792,7 +762,7 @@
       "comment": ""
     },
     {
-      "id": 13,
+      "id": 14,
       "name": "MAX_SPEED",
       "kind": "define",
       "type": "",
@@ -801,7 +771,7 @@
       "comment": ""
     },
     {
-      "id": 14,
+      "id": 15,
       "name": "SERIAL_BGF",
       "kind": "define",
       "type": "",
@@ -810,7 +780,7 @@
       "comment": ""
     },
     {
-      "id": 15,
+      "id": 16,
       "name": "SERIAL_COM",
       "kind": "define",
       "type": "",
