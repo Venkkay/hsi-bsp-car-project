@@ -1,12 +1,3 @@
-/**
- * \file        fsm_classic_car_lights.c
- * \author      Yann Etrillard
- * \version     0.1
- * \date        19 december 2024
- * \brief       This is a file for the Finite State Machine for classic car lights.
- * \details
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -86,36 +77,33 @@ int get_next_event(int current_state) {
     return event;
 }
 
-int main(void) {
-    int i = 0;
-    int ret = 0;
-    int event = EV_LIGHT_CMD_0;
-    int state = ST_LIGHT_OFF;
+light_state_t fsm_classic_car_lights(light_state_t current_state, uint8_t value) {
+    uint8_t event = EV_LIGHT_CMD_0;
 
     /* While FSM hasn't reach end state */
-    while (state != ST_LIGHT_ERROR) {
+    while (current_state != ST_LIGHT_ERROR) {
 	/* when we consider the end state */
 
         /* Get event */
-        event = get_next_event(state);
+        event = get_next_event(current_state);
 
         /* For each transitions */
-        for (i = 0; i < TRANS_COUNT; i++) {
+        for (size_t i = 0; i < TRANS_COUNT; i++) {
             /* If State is current state OR The transition applies to all states ...*/
-            if (state == trans[i].state) {
+            if (current_state == trans[i].state) {
                 /* If event is the transition event OR the event applies to all */
-                if ((event == trans[i].event) || (EV_LIGHT_ANY == trans[i].event)) {
+                if (event == trans[i].event) {
                     /* Apply the new state */
-                    state = trans[i].next_state;
-                    if (trans[i].callback != callback_null) {
-                        /* Call the state function */
+                    current_state = trans[i].next_state;
+                    /*if (trans[i].callback != callback_null) {
+                        Call the state function
                         ret = (trans[i].callback)();
-                    }
+                    }*/
                     break;
                 }
             }
         }
     }
 
-    return ret;
+    return current_state;
 }

@@ -1,9 +1,3 @@
-/**
- * \file	data_management.c
- * \brief	Source file of the data management lib with the managements functions.
- * \author	data_lib_generator tool
- */
-
 #include "data_management.h"
 #include <stdint.h>
 #include <stdbool.h>
@@ -252,9 +246,19 @@ bool set_all_flag_comodo_frame_t(comodo_frame_t* instance, const uint8_t cmd_war
     return true;
 }
 
+bool check_comodo_frame_t(const uint8_t value){
+    if(value) {
+        return true;
+    }
+    return false;
+}
+  
 bool set_comodo_frame_t(comodo_frame_t* instance, const comodo_frame_t value) {
-    *instance = value;
-    return true;
+    if (check_comodo_frame_t(value)) {
+        *instance = value;
+        return true;
+    }
+    return false;
 }
 
 
@@ -550,9 +554,19 @@ bool set_all_flag_dashboard_light_t(dashboard_light_t* instance, const uint16_t 
     return true;
 }
 
+bool check_dashboard_light_t(const uint16_t value){
+    if(value) {
+        return true;
+    }
+    return false;
+}
+  
 bool set_dashboard_light_t(dashboard_light_t* instance, const dashboard_light_t value) {
-    *instance = value;
-    return true;
+    if (check_dashboard_light_t(value)) {
+        *instance = value;
+        return true;
+    }
+    return false;
 }
 
 
@@ -635,7 +649,7 @@ bool set_light_status_t(light_status_t* instance, const uint8_t value) {
 }
 
 bool check_light_state_t(const uint8_t value){
-    if(!(value == ST_LIGHT_ANY || value == ST_LIGHT_INIT || value == ST_LIGHT_OFF || value == ST_LIGHT_ON || value == ST_LIGHT_ERROR || value == ST_LIGHT_ACQUITTED || value == ST_LIGHT_TERM)) {
+    if(!(value == ST_LIGHT_OFF || value == ST_LIGHT_ON || value == ST_LIGHT_ERROR || value == ST_LIGHT_ACQUITTED)) {
         return false;
     }
     return true;
@@ -650,7 +664,7 @@ bool set_light_state_t(light_state_t* instance, const uint8_t value) {
 }
 
 bool check_light_event_t(const uint8_t value){
-    if(!(value == EV_LIGHT_ANY || value == EV_LIGHT_NONE || value == EV_LIGHT_CMD_0 || value == EV_LIGHT_CMD_1 || value == EV_LIGHT_ACK_RCV || value == EV_LIGHT_ACK_NRCV || value == EV_LIGHT_ERROR || value == EV_LIGHT_TERM)) {
+    if(!(value == EV_LIGHT_CMD_0 || value == EV_LIGHT_CMD_1 || value == EV_LIGHT_ACK_RCV || value == EV_LIGHT_ACK_NRCV)) {
         return false;
     }
     return true;
@@ -665,7 +679,7 @@ bool set_light_event_t(light_event_t* instance, const uint8_t value) {
 }
 
 bool check_indicator_state_t(const uint8_t value){
-    if(!(value == ST_INDICATOR_ANY || value == ST_INDICATOR_INIT || value == ST_INDICATOR_OFF || value == ST_INDICATOR_ACTIVATED_OFF || value == ST_INDICATOR_ACTIVATED_ON || value == ST_INDICATOR_ERROR || value == ST_INDICATOR_ACQUITTED_OFF || value == ST_INDICATOR_ACQUITTED_ON || value == ST_INDICATOR_TERM)) {
+    if(!(value == ST_INDICATOR_OFF || value == ST_INDICATOR_ACTIVATED_OFF || value == ST_INDICATOR_ACTIVATED_ON || value == ST_INDICATOR_ERROR || value == ST_INDICATOR_ACQUITTED_OFF || value == ST_INDICATOR_ACQUITTED_ON)) {
         return false;
     }
     return true;
@@ -680,7 +694,7 @@ bool set_indicator_state_t(indicator_state_t* instance, const uint8_t value) {
 }
 
 bool check_indicator_event_t(const uint8_t value){
-    if(!(value == EV_INDICATOR_ANY || value == EV_INDICATOR_NONE || value == EV_INDICATOR_CMD_0 || value == EV_INDICATOR_CMD_1 || value == EV_INDICATOR_ACK_RCV || value == EV_INDICATOR_ACK_NRCV || value == EV_INDICATOR_TMR_EQ_1 || value == EV_INDICATOR_ERROR || value == EV_INDICATOR_TERM)) {
+    if(!(value == EV_INDICATOR_CMD_0 || value == EV_INDICATOR_CMD_1 || value == EV_INDICATOR_ACK_RCV || value == EV_INDICATOR_ACK_NRCV || value == EV_INDICATOR_TMR_EQ_1 || value == EV_INDICATOR_ERROR)) {
         return false;
     }
     return true;
@@ -695,7 +709,7 @@ bool set_indicator_event_t(indicator_event_t* instance, const uint8_t value) {
 }
 
 bool check_windscreen_wipers_state_t(const uint8_t value){
-    if(!(value == ST_WS_WP_ANY || value == ST_WS_WP_INIT || value == ST_WS_WP_ALL_OFF || value == ST_WP_ACTIVATED || value == ST_WS_WP_ON || value == ST_TMR_WP_WS_OFF || value == ST_WS_WP_TERM)) {
+    if(!(value == ST_WS_WP_ALL_OFF || value == ST_WP_ACTIVATED || value == ST_WS_WP_ON || value == ST_TMR_WP_WS_OFF)) {
         return false;
     }
     return true;
@@ -710,7 +724,7 @@ bool set_windscreen_wipers_state_t(windscreen_wipers_state_t* instance, const ui
 }
 
 bool check_windscreen_wipers_event_t(const uint8_t value){
-    if(!(value == EV_WS_WP_ANY || value == EV_WS_WP_NONE || value == EV_WS_WP_CMD_EG_0_CMD_LG_0 || value == EV_WS_WP_CMD_EG_0 || value == EV_WS_WP_CMD_EG_1 || value == EV_WS_WP_CMD_LG_0 || value == EV_WS_WP_CMD_LG_1 || value == EV_WS_WP_TMR_GT2 || value == EV_WS_WP_TMR_LT2 || value == EV_WS_WP_ERROR)) {
+    if(!(value == EV_WS_WP_CMD_EG_0_CMD_LG_0 || value == EV_WS_WP_CMD_EG_0 || value == EV_WS_WP_CMD_EG_1 || value == EV_WS_WP_CMD_LG_0 || value == EV_WS_WP_CMD_LG_1 || value == EV_WS_WP_TMR_GT2 || value == EV_WS_WP_TMR_LT2 || value == EV_WS_WP_ERROR)) {
         return false;
     }
     return true;
