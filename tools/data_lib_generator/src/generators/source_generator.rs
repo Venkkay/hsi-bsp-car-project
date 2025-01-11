@@ -275,8 +275,9 @@ fn write_structs_functions(source: &mut File, header: &mut File, data_lib: &Data
 
 // Write the functions to init the data
 fn write_init_functions(source: &mut File, header: &mut File, data_lib: &DataLib) {
+    writeln!(source, "// Init functions\n").unwrap();
     for data_init in &data_lib.data {
-        if data_init.field_type == "init" {
+        if data_init.kind == "init" {
             writeln!(header, "/**\n * \\brief\tInit {}\n * \\return\t{} : the initialized struct.\n */", data_init.name, data_init.field_type).unwrap();
             writeln!(source, "{} init_{}(){{\n", data_init.field_type, data_init.name).unwrap();
             if let Some(InitialValueType::FieldStructInitDeclarations(declaration)) = &data_init.initialization_value {

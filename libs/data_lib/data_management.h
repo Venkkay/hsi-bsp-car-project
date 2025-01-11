@@ -1356,4 +1356,8 @@ bool check_bcgv_frame_t(const rpm_dashboard_t rpm, const fuel_percent_t fuel_per
  * \return bool : Return True if the value is valid, False otherwise.
  */
 bool set_bcgv_frame_t(bcgv_frame_t* instance, kilometer_t kilometer, rpm_dashboard_t rpm, speed_t speed, fuel_percent_t fuel_percent_level, dashboard_light_t dashboard_light);
+/**
+ * \brief	Init dashboard_state
+ * \return	bcgv_frame_t : the initialized struct.
+ */
 #endif // DATA_MANAGEMENT_H

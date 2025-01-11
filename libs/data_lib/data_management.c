@@ -873,3 +873,17 @@ bool set_bcgv_frame_t(bcgv_frame_t* instance, kilometer_t kilometer, rpm_dashboa
 
 
 
+// Init functions
+
+bcgv_frame_t init_dashboard_state(){
+
+    bcgv_frame_t dashboard_state = {
+        .kilometer = 0,
+        .rpm = 0,
+        .speed = 0,
+        .fuel_percent_level = 0,
+        .dashboard_light = 0
+    };
+    return dashboard_state;
+}
+
