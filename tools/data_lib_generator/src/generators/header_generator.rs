@@ -4,6 +4,7 @@ use crate::models::data_init::InitialValueType;
 use crate::models::data_type::DeclarationType;
 use crate::models::{DataInit, DataLib, Type};
 
+// Generate the header file
 pub fn generate_header(mut header: File, data_lib: &DataLib, file_name: &str) {
     write_header_top_guard(&mut header, file_name);
     write_include(&mut header);
@@ -15,16 +16,19 @@ pub fn generate_header(mut header: File, data_lib: &DataLib, file_name: &str) {
     //write_header_bottom_guard(&mut header, file_name);
 }
 
+// Write the top guard of the header file
 fn write_header_top_guard(header: &mut File, file_name: &str) {
     writeln!(header, "/**\n * \\file\t{}.h\n * \\brief\tHeader file of the data management lib with the types, enums, structs and functions declarations.\n * \\author\tdata_lib_generator tool\n */\n", file_name).unwrap();
     writeln!(header, "#ifndef {}_H", file_name.to_uppercase()).unwrap();
     writeln!(header, "#define {}_H\n", file_name.to_uppercase()).unwrap();
 }
 
+// Write the include statements
 fn write_include(header: &mut File) {
     writeln!(header, "#include <stdint.h>\n#include <stdbool.h>\n").unwrap();
 }
 
+// Write the define statements
 fn write_define(header: &mut File, data_constant: &Vec<DataInit>) {
     for data_constant in data_constant {
         if data_constant.kind == "define" {
@@ -38,6 +42,7 @@ fn write_define(header: &mut File, data_constant: &Vec<DataInit>) {
     writeln!(header, "\n").unwrap();
 }
 
+// Write the atomic types definitions
 fn write_atomic_type(header: &mut File, data_types: &Vec<Type>) {
     for data_type in data_types {
         if data_type.kind == "atomic" {
@@ -52,6 +57,7 @@ fn write_atomic_type(header: &mut File, data_types: &Vec<Type>) {
     writeln!(header, "\n").unwrap();
 }
 
+// Write the flags definitions
 fn write_flags(header: &mut File, data_types: &Vec<Type>) {
     for data_type in data_types {
         if data_type.kind == "flags" {
@@ -66,6 +72,7 @@ fn write_flags(header: &mut File, data_types: &Vec<Type>) {
     writeln!(header, "\n").unwrap();
 }
 
+// Write the enums definitions
 fn write_enums(header: &mut File, data_types: &Vec<Type>) {
     for data_type in data_types {
         if data_type.kind == "enum" {
@@ -85,6 +92,7 @@ fn write_enums(header: &mut File, data_types: &Vec<Type>) {
     writeln!(header, "\n").unwrap();
 }
 
+// Write the structs definitions
 fn write_structs(header: &mut File, data_types: &Vec<Type>) {
     for data_type in data_types {
         if data_type.kind == "struct" {

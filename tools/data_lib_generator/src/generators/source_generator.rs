@@ -6,6 +6,7 @@ use crate::models::data_init::InitialValueType;
 use crate::models::data_type::{DeclarationType, DomainType};
 use crate::models::{DataLib, Type};
 
+// Generate the source file of the data management lib
 pub fn generate_source(mut source: File, mut header: File, mut data_lib: &mut DataLib, file_name: &str) {
     write_source_include(&mut source, file_name);
 
@@ -20,11 +21,14 @@ pub fn generate_source(mut source: File, mut header: File, mut data_lib: &mut Da
     write_header_bottom_guard(&mut header, file_name);
 }
 
+// Write the include of the source file
 fn write_source_include(source: &mut File, file_name: &str) {
+    writeln!(source, "/**\n * \\file\t{}.c\n * \\brief\tSource file of the data management lib with the managements functions.\n * \\author\tdata_lib_generator tool\n */\n", file_name).unwrap();
     writeln!(source, "#include \"{}.h\"", file_name).unwrap();
     writeln!(source, "#include <stdint.h>\n#include <stdbool.h>\n").unwrap();
 }
 
+// Write the functions to manage the atomic types
 fn write_atomic_types_functions(source: &mut File, header: &mut File, data_lib: &mut DataLib) {
     writeln!(header, "// Atomic types setter").unwrap();
     for data_type in &mut data_lib.types {
@@ -76,6 +80,7 @@ fn write_atomic_types_functions(source: &mut File, header: &mut File, data_lib: 
     }
 }
 
+// Write the functions to manage the flags
 fn write_flags_functions(source: &mut File, header: &mut File, data_types: &Vec<Type>) {
     writeln!(header, "\n// Flags getter and setter").unwrap();
     for data_type in data_types {
@@ -124,6 +129,7 @@ fn write_flags_functions(source: &mut File, header: &mut File, data_types: &Vec<
     }
 }
 
+// write the functions to manage the enums
 fn write_enums_functions(source: &mut File, header: &mut File, data_types: &Vec<Type>) {
     writeln!(source, "// Enums Setter\n").unwrap();
     writeln!(header, "\n// Enums getter and setter").unwrap();
@@ -156,6 +162,7 @@ fn write_enums_functions(source: &mut File, header: &mut File, data_types: &Vec<
     }
 }
 
+// Write the functions to manage the structs
 fn write_structs_functions(source: &mut File, header: &mut File, data_lib: &DataLib) {
     writeln!(source, "// Struct getter and setter\n").unwrap();
     writeln!(header, "\n// Struct getter and setter").unwrap();
@@ -260,6 +267,7 @@ fn write_structs_functions(source: &mut File, header: &mut File, data_lib: &Data
     }
 }
 
+// Write the functions to init the data
 fn write_init_functions(source: &mut File, header: &mut File, data_lib: &DataLib) {
     for data_init in &data_lib.data {
         if data_init.field_type == "init" {
@@ -280,6 +288,7 @@ fn write_init_functions(source: &mut File, header: &mut File, data_lib: &DataLib
     }
 }
 
+// Write the bottom guard of the header file
 fn write_header_bottom_guard(header: &mut File, file_name: &str) {
     writeln!(header, "#endif // {}_H", file_name.to_uppercase()).unwrap();
 }

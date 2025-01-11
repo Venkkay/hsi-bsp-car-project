@@ -1,3 +1,9 @@
+/**
+ * \file	data_management.c
+ * \brief	Source file of the data management lib with the managements functions.
+ * \author	data_lib_generator tool
+ */
+
 #include "data_management.h"
 #include <stdint.h>
 #include <stdbool.h>
