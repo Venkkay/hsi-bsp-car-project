@@ -6,38 +6,38 @@
       "declaration": {
         "type": "uint8_t",
         "flags": [
-            {
-              "name": "cmd_warning",
-              "bit_size": 1
-            },
-            {
-                "name": "cmd_position_light",
-                "bit_size": 1
-            },
-            {
-                "name": "cmd_low_beam",
-                "bit_size": 1
-            },
-            {
-                "name": "cmd_high_beam",
-                "bit_size": 1
-            },
-            {
-                "name": "cmd_right_indicator",
-                "bit_size": 1
-            },
-            {
-                "name": "cmd_left_indicator",
-                "bit_size": 1
-            },
-            {
-                "name": "cmd_wipers",
-                "bit_size": 1
-            },
-            {
-                "name": "cmd_washer",
-                "bit_size": 1
-            }
+          {
+            "name": "cmd_warning",
+            "bit_size": 1
+          },
+          {
+            "name": "cmd_position_light",
+            "bit_size": 1
+          },
+          {
+            "name": "cmd_low_beam",
+            "bit_size": 1
+          },
+          {
+            "name": "cmd_high_beam",
+            "bit_size": 1
+          },
+          {
+            "name": "cmd_right_indicator",
+            "bit_size": 1
+          },
+          {
+            "name": "cmd_left_indicator",
+            "bit_size": 1
+          },
+          {
+            "name": "cmd_wipers",
+            "bit_size": 1
+          },
+          {
+            "name": "cmd_washer",
+            "bit_size": 1
+          }
         ]
       },
       "domain": "boolean",
@@ -210,7 +210,7 @@
         ]
       },
       "domain": "",
-      "comment": "Use to describe de chassis issue"
+      "comment": "Use to describe the chassis issue"
     },
     {
       "name": "engine_issues_t",
@@ -237,7 +237,7 @@
         ]
       },
       "domain": "",
-      "comment": "Use to describe to engine's issue"
+      "comment": "Use to describe the engine's issue"
     },
     {
       "name": "battery_issues_t",
@@ -277,23 +277,23 @@
         "values": [
           {
             "name": "POSITION_LIGHT",
-            "value": 0
-          },
-          {
-            "name": "LOW_BEAM",
             "value": 1
           },
           {
-            "name": "HIGH_BEAM",
+            "name": "LOW_BEAM",
             "value": 2
           },
           {
-            "name": "RIGHT_INDICATOR",
+            "name": "HIGH_BEAM",
             "value": 3
           },
           {
-            "name": "LEFT_INDICATOR",
+            "name": "RIGHT_INDICATOR",
             "value": 4
+          },
+          {
+            "name": "LEFT_INDICATOR",
+            "value": 5
           }
         ]
       },
@@ -402,10 +402,10 @@
         "values": [
           {
             "name": "ST_LIGHT_ANY",
-          "value": -1
-        },
-        {
-          "name": "ST_LIGHT_INIT",
+            "value": -1
+          },
+          {
+            "name": "ST_LIGHT_INIT",
             "value": 0
           },
           {
@@ -420,55 +420,59 @@
             "name": "ST_LIGHT_ERROR",
             "value": 3
           },
-        {
-          "name": "ST_LIGHT_ACQUITTED",
-          "value": 4
-        },
-        {
-          "name": "ST_LIGHT_TERM",
-          "value": 255
-        }
-      ]},
+          {
+            "name": "ST_LIGHT_ACQUITTED",
+            "value": 4
+          },
+          {
+            "name": "ST_LIGHT_TERM",
+            "value": 127
+          }
+        ]
+      },
       "domain": "",
       "comment": "Describe the possible states of the lights (positions, low, high)"
     },
     {
       "name": "light_event_t",
       "kind": "enum",
-      "declaration": [
-        {
-          "name": "EV_LIGHT_ANY",
-          "value": -1
-        },
-        {
-          "name": "EV_LIGHT_NONE",
-          "value": 0
-        },
-        {
-          "name": "EV_LIGHT_CMD_0",
-          "value": 1
-        },
-        {
-          "name": "EV_LIGHT_CMD_1",
-          "value": 2
-        },
-        {
-          "name": "EV_LIGHT_ACK_RCV",
-          "value": 3
-        },
-        {
-          "name": "EV_LIGHT_ACK_NRCV",
-          "value": 4
-        },
-        {
-          "name": "EV_LIGHT_ERROR",
-          "value": 5
-        },
-        {
-          "name": "EV_LIGHT_TERM",
-          "value": 255
-        }
-      ],
+      "declaration": {
+        "value_type": "uint8_t",
+        "values": [
+          {
+            "name": "EV_LIGHT_ANY",
+            "value": -1
+          },
+          {
+            "name": "EV_LIGHT_NONE",
+            "value": 0
+          },
+          {
+            "name": "EV_LIGHT_CMD_0",
+            "value": 1
+          },
+          {
+            "name": "EV_LIGHT_CMD_1",
+            "value": 2
+          },
+          {
+            "name": "EV_LIGHT_ACK_RCV",
+            "value": 3
+          },
+          {
+            "name": "EV_LIGHT_ACK_NRCV",
+            "value": 4
+          },
+          {
+            "name": "EV_LIGHT_ERROR",
+            "value": 5
+          },
+          {
+            "name": "EV_LIGHT_TERM",
+            "value": 127
+          }
+        ]
+      },
       "domain": "",
       "comment": "Describe the possible events of the lights (positions, low, high)"
     },
@@ -480,10 +484,10 @@
         "values": [
           {
             "name": "ST_INDICATOR_ANY",
-          "value": -1
-        },
-        {
-          "name": "ST_INDICATOR_INIT",
+            "value": -1
+          },
+          {
+            "name": "ST_INDICATOR_INIT",
             "value": 0
           },
           {
@@ -502,63 +506,67 @@
             "name": "ST_INDICATOR_ERROR",
             "value": 4
           },
-        {
-          "name": "ST_INDICATOR_ACQUITTED_OFF",
-          "value": 5
-        },
-        {
-          "name": "ST_INDICATOR_ACQUITTED_ON",
-          "value": 6
-        },
-        {
-          "name": "ST_INDICATOR_TERM",
-          "value": 255
-        }
-      ]},
+          {
+            "name": "ST_INDICATOR_ACQUITTED_OFF",
+            "value": 5
+          },
+          {
+            "name": "ST_INDICATOR_ACQUITTED_ON",
+            "value": 6
+          },
+          {
+            "name": "ST_INDICATOR_TERM",
+            "value": 127
+          }
+        ]
+      },
       "domain": "",
       "comment": "Describe the possible states of indicators and warnings"
     },
     {
       "name": "indicator_event_t",
       "kind": "enum",
-      "declaration": [
-        {
-          "name": "EV_INDICATOR_ANY",
-          "value": -1
-        },
-        {
-          "name": "EV_INDICATOR_NONE",
-          "value": 0
-        },
-        {
-          "name": "EV_INDICATOR_CMD_0",
-          "value": 1
-        },
-        {
-          "name": "EV_INDICATOR_CMD_1",
-          "value": 2
-        },
-        {
-          "name": "EV_INDICATOR_ACK_RCV",
-          "value": 3
-        },
-        {
-          "name": "EV_INDICATOR_ACK_NRCV",
-          "value": 4
-        },
-        {
-          "name": "EV_INDICATOR_TMR_EQ_1",
-          "value": 5
-        },
-        {
-          "name": "EV_INDICATOR_ERROR",
-          "value": 6
-        },
-        {
-          "name": "EV_INDICATOR_TERM",
-          "value": 255
-        }
-      ],
+      "declaration": {
+        "value_type": "uint8_t",
+        "values": [
+          {
+            "name": "EV_INDICATOR_ANY",
+            "value": -1
+          },
+          {
+            "name": "EV_INDICATOR_NONE",
+            "value": 0
+          },
+          {
+            "name": "EV_INDICATOR_CMD_0",
+            "value": 1
+          },
+          {
+            "name": "EV_INDICATOR_CMD_1",
+            "value": 2
+          },
+          {
+            "name": "EV_INDICATOR_ACK_RCV",
+            "value": 3
+          },
+          {
+            "name": "EV_INDICATOR_ACK_NRCV",
+            "value": 4
+          },
+          {
+            "name": "EV_INDICATOR_TMR_EQ_1",
+            "value": 5
+          },
+          {
+            "name": "EV_INDICATOR_ERROR",
+            "value": 6
+          },
+          {
+            "name": "EV_INDICATOR_TERM",
+            "value": 127
+          }
+        ]
+      },
       "domain": "",
       "comment": "Describe the possible events of indicators and warnings"
     },
@@ -570,10 +578,10 @@
         "values": [
           {
             "name": "ST_WS_WP_ANY",
-          "value": -1
-        },
-        {
-          "name": "ST_WS_WP_INIT",
+            "value": -1
+          },
+          {
+            "name": "ST_WS_WP_INIT",
             "value": 0
           },
           {
@@ -588,213 +596,227 @@
             "name": "ST_WS_WP_ON",
             "value": 3
           },
-        {
-          "name": "ST_TMR_WP_WS_OFF",
-          "value": 4
-        },
-        {
-          "name": "ST_WS_WP_TERM",
-          "value": 255
-        }
-      ]},
+          {
+            "name": "ST_TMR_WP_WS_OFF",
+            "value": 4
+          },
+          {
+            "name": "ST_WS_WP_TERM",
+            "value": 127
+          }
+        ]
+      },
       "domain": "",
       "comment": "Describe the possible states of the wipers and the windscreen washer"
     },
     {
       "name": "windscreen_wipers_event_t",
       "kind": "enum",
-      "declaration": [
-        {
-          "name": "EV_WS_WP_ANY",
-          "value": -1
-        },
-        {
-          "name": "EV_WS_WP_NONE",
-          "value": 0
-        },
-        {
-          "name": "EV_WS_WP_CMD_EG_0_CMD_LG_0",
-          "value": 1
-        },
-        {
-          "name": "EV_WS_WP_CMD_EG_0",
-          "value": 2
-        },
-        {
-          "name": "EV_WS_WP_CMD_EG_1",
-          "value": 3
-        },
-        {
-          "name": "EV_WS_WP_CMD_LG_0",
-          "value": 4
-        },
-        {
-          "name": "EV_WS_WP_CMD_LG_1",
-          "value": 5
-        },
-        {
-          "name": "EV_WS_WP_TMR_GT2",
-          "value": 6
-        },
-        {
-          "name": "EV_WS_WP_TMR_LT2",
-          "value": 7
-        },
-        {
-          "name": "EV_WS_WP_ERROR",
-          "value": 8
-        }
-      ],
+      "declaration": {
+        "value_type": "uint8_t",
+        "values": [
+          {
+            "name": "EV_WS_WP_ANY",
+            "value": -1
+          },
+          {
+            "name": "EV_WS_WP_NONE",
+            "value": 0
+          },
+          {
+            "name": "EV_WS_WP_CMD_EG_0_CMD_LG_0",
+            "value": 1
+          },
+          {
+            "name": "EV_WS_WP_CMD_EG_0",
+            "value": 2
+          },
+          {
+            "name": "EV_WS_WP_CMD_EG_1",
+            "value": 3
+          },
+          {
+            "name": "EV_WS_WP_CMD_LG_0",
+            "value": 4
+          },
+          {
+            "name": "EV_WS_WP_CMD_LG_1",
+            "value": 5
+          },
+          {
+            "name": "EV_WS_WP_TMR_GT2",
+            "value": 6
+          },
+          {
+            "name": "EV_WS_WP_TMR_LT2",
+            "value": 7
+          },
+          {
+            "name": "EV_WS_WP_ERROR",
+            "value": 8
+          }
+        ]
+      },
       "domain": "",
       "comment": "Describe the possible events of the wipers and the windscreen washer"
     }
   ],
   "data": [
     {
-      "id":1,
-      "name":"dashboard_state",
-      "kind":"init",
-      "type":"bcgv_frame_t",
-      "dimension":1,
-      "initialization_value":[
+      "id": 1,
+      "name": "dashboard_state",
+      "kind": "init",
+      "type": "bcgv_frame_t",
+      "dimension": 1,
+      "initialization_value": [
         {
-          "name":"kilometer",
-          "value":0
+          "name": "kilometer",
+          "value": 0
         },
         {
-          "name":"rpm",
-          "value":0
+          "name": "rpm",
+          "value": 0
         },
         {
-          "name":"speed",
-          "value":0
+          "name": "speed",
+          "value": 0
         },
         {
-          "name":"fuel_percent_level",
-          "value":0
+          "name": "fuel_percent_level",
+          "value": 0
         },
         {
-          "name":"dashboard_light",
-          "value":0
+          "name": "dashboard_light",
+          "value": 0
         }
       ],
-      "comment":"Defines the status of the instrument panel. It is used to find out the current status of the car at any given moment, and to determine the changes to be made according to the previous status"
+      "comment": "Defines the status of the instrument panel. It is used to find out the current status of the car at any given moment, and to determine the changes to be made according to the previous status"
     },
     {
-      "id":2,
-      "name":"MIN_RPM",
-      "kind":"define",
-      "type":"",
+      "id": 2,
+      "name": "MIN_RPM",
+      "kind": "define",
+      "type": "",
       "dimension": 1,
       "initialization_value": 0,
-      "comment":""
+      "comment": ""
     },
     {
-      "id":3,
-      "name":"MAX_RPM",
-      "kind":"define",
-      "type":"",      "dimension": 1,
+      "id": 3,
+      "name": "MAX_RPM",
+      "kind": "define",
+      "type": "",
+      "dimension": 1,
       "initialization_value": 10000,
-      "comment":""
+      "comment": ""
     },
     {
-      "id":4,
-      "name":"MIN_RPM_DASHBOARD",
-      "kind":"define",
-      "type":"",      "dimension": 1,
+      "id": 4,
+      "name": "MIN_RPM_DASHBOARD",
+      "kind": "define",
+      "type": "",
+      "dimension": 1,
       "initialization_value": 0,
-      "comment":""
+      "comment": ""
     },
     {
-      "id":5,
-      "name":"MAX_RPM_DASHBOARD",
-      "kind":"define",
-      "type":"",      "dimension": 1,
+      "id": 5,
+      "name": "MAX_RPM_DASHBOARD",
+      "kind": "define",
+      "type": "",
+      "dimension": 1,
       "initialization_value": 1000,
-      "comment":""
+      "comment": ""
     },
     {
-      "id":6,
-      "name":"MIN_FUEL",
-      "kind":"define",
-      "type":"",      "dimension": 1,
+      "id": 6,
+      "name": "MIN_FUEL",
+      "kind": "define",
+      "type": "",
+      "dimension": 1,
       "initialization_value": 0,
-      "comment":""
+      "comment": ""
     },
     {
-      "id":7,
-      "name":"MAX_FUEL",
-      "kind":"define",
-      "type":"",      "dimension": 1,
+      "id": 7,
+      "name": "MAX_FUEL",
+      "kind": "define",
+      "type": "",
+      "dimension": 1,
       "initialization_value": 40,
-      "comment":""
+      "comment": ""
     },
     {
-      "id":8,
-      "name":"MIN_FUEL_PERCENT",
-      "kind":"define",
-      "type":"",      "dimension": 1,
+      "id": 8,
+      "name": "MIN_FUEL_PERCENT",
+      "kind": "define",
+      "type": "",
+      "dimension": 1,
       "initialization_value": 0,
-      "comment":""
+      "comment": ""
     },
     {
-      "id":9,
-      "name":"MAX_FUEL_PERCENT",
-      "kind":"define",
-      "type":"",      "dimension": 1,
-      "initialization_value": 100,
-      "comment":""
-    },
-    {
-      "id":10,
-      "name":"MIN_MUX_FRAME_NUMBER",
-      "kind":"define",
-      "type":"",      "dimension": 1,
-      "initialization_value": 1,
-      "comment":""
-    },
-    {
-      "id":11,
-      "name":"MAX_MUX_FRAME_NUMBER",
-      "kind":"define",
-      "type":"",
+      "id": 9,
+      "name": "MAX_FUEL_PERCENT",
+      "kind": "define",
+      "type": "",
       "dimension": 1,
       "initialization_value": 100,
-      "comment":""
+      "comment": ""
     },
     {
-      "id":12,
-      "name":"MIN_SPEED",
-      "kind":"define",
-      "type":"",      "dimension": 1,
+      "id": 10,
+      "name": "MIN_MUX_FRAME_NUMBER",
+      "kind": "define",
+      "type": "",
+      "dimension": 1,
+      "initialization_value": 1,
+      "comment": ""
+    },
+    {
+      "id": 11,
+      "name": "MAX_MUX_FRAME_NUMBER",
+      "kind": "define",
+      "type": "",
+      "dimension": 1,
+      "initialization_value": 100,
+      "comment": ""
+    },
+    {
+      "id": 12,
+      "name": "MIN_SPEED",
+      "kind": "define",
+      "type": "",
+      "dimension": 1,
       "initialization_value": 0,
-      "comment":""
+      "comment": ""
     },
     {
-      "id":13,
-      "name":"MAX_SPEED",
-      "kind":"define",
-      "type":"",      "dimension": 1,
+      "id": 13,
+      "name": "MAX_SPEED",
+      "kind": "define",
+      "type": "",
+      "dimension": 1,
       "initialization_value": 255,
-      "comment":""
+      "comment": ""
     },
     {
-      "id":14,
-      "name":"SERIAL_BGF",
-      "kind":"define",
-      "type":"",
+      "id": 14,
+      "name": "SERIAL_BGF",
+      "kind": "define",
+      "type": "",
       "dimension": 1,
       "initialization_value": 11,
-      "comment":""
+      "comment": ""
     },
     {
-      "id":15,
-      "name":"SERIAL_COM",
-      "kind":"define",
-      "type":"",
+      "id": 15,
+      "name": "SERIAL_COM",
+      "kind": "define",
+      "type": "",
       "dimension": 1,
       "initialization_value": 12,
-      "comment":""
+      "comment": ""
     }
   ]
 }

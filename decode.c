@@ -80,9 +80,9 @@ void decode_mux_frame(mux_frame_t* mux_frame, uint8_t udpFrame[DRV_UDP_100MS_FRA
 
 void decode_comodo_frame(serial_frame_t serial_frame[DRV_MAX_FRAMES], uint32_t data_len, comodo_frame_t comodo_frame[DRV_MAX_FRAMES]){
   for (size_t j = 0; j < data_len; j++) {
-    if(serial_frame[j].serNum == SERIAL_COM)
-    for(size_t k = 0 ; k < serial_frame[j].frameSize ; k++) {
-      if(set_comodo_frame_t(&comodo_frame[j], serial_frame[j].frame[k]) == false){
+    if (serial_frame[j].serNum == SERIAL_COM)
+    for (size_t k = 0 ; k < serial_frame[j].frameSize ; k++) {
+      if (set_comodo_frame_t(&comodo_frame[j], serial_frame[j].frame[k]) == false) {
         printf("Set mux frame failed : %s\n", strerror(errno));
       }
     }
