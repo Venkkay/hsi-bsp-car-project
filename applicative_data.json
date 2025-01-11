@@ -402,31 +402,31 @@
         "values": [
           {
             "name": "ST_LIGHT_ANY",
-            "value": -1
-          },
-          {
-            "name": "ST_LIGHT_INIT",
             "value": 0
           },
           {
-            "name": "ST_LIGHT_OFF",
+            "name": "ST_LIGHT_INIT",
             "value": 1
           },
           {
-            "name": "ST_LIGHT_ON",
+            "name": "ST_LIGHT_OFF",
             "value": 2
           },
           {
-            "name": "ST_LIGHT_ERROR",
+            "name": "ST_LIGHT_ON",
             "value": 3
           },
           {
-            "name": "ST_LIGHT_ACQUITTED",
+            "name": "ST_LIGHT_ERROR",
             "value": 4
           },
           {
+            "name": "ST_LIGHT_ACQUITTED",
+            "value": 5
+          },
+          {
             "name": "ST_LIGHT_TERM",
-            "value": 127
+            "value": 255
           }
         ]
       },
@@ -441,35 +441,35 @@
         "values": [
           {
             "name": "EV_LIGHT_ANY",
-            "value": -1
-          },
-          {
-            "name": "EV_LIGHT_NONE",
             "value": 0
           },
           {
-            "name": "EV_LIGHT_CMD_0",
+            "name": "EV_LIGHT_NONE",
             "value": 1
           },
           {
-            "name": "EV_LIGHT_CMD_1",
+            "name": "EV_LIGHT_CMD_0",
             "value": 2
           },
           {
-            "name": "EV_LIGHT_ACK_RCV",
+            "name": "EV_LIGHT_CMD_1",
             "value": 3
           },
           {
-            "name": "EV_LIGHT_ACK_NRCV",
+            "name": "EV_LIGHT_ACK_RCV",
             "value": 4
           },
           {
-            "name": "EV_LIGHT_ERROR",
+            "name": "EV_LIGHT_ACK_NRCV",
             "value": 5
           },
           {
+            "name": "EV_LIGHT_ERROR",
+            "value": 6
+          },
+          {
             "name": "EV_LIGHT_TERM",
-            "value": 127
+            "value": 255
           }
         ]
       },
@@ -484,39 +484,39 @@
         "values": [
           {
             "name": "ST_INDICATOR_ANY",
-            "value": -1
-          },
-          {
-            "name": "ST_INDICATOR_INIT",
             "value": 0
           },
           {
-            "name": "ST_INDICATOR_OFF",
+            "name": "ST_INDICATOR_INIT",
             "value": 1
           },
           {
-            "name": "ST_INDICATOR_ACTIVATED_OFF",
+            "name": "ST_INDICATOR_OFF",
             "value": 2
           },
           {
-            "name": "ST_INDICATOR_ACTIVATED_ON",
+            "name": "ST_INDICATOR_ACTIVATED_OFF",
             "value": 3
           },
           {
-            "name": "ST_INDICATOR_ERROR",
+            "name": "ST_INDICATOR_ACTIVATED_ON",
             "value": 4
           },
           {
-            "name": "ST_INDICATOR_ACQUITTED_OFF",
+            "name": "ST_INDICATOR_ERROR",
             "value": 5
           },
           {
-            "name": "ST_INDICATOR_ACQUITTED_ON",
+            "name": "ST_INDICATOR_ACQUITTED_OFF",
             "value": 6
           },
           {
+            "name": "ST_INDICATOR_ACQUITTED_ON",
+            "value": 7
+          },
+          {
             "name": "ST_INDICATOR_TERM",
-            "value": 127
+            "value": 255
           }
         ]
       },
@@ -531,39 +531,39 @@
         "values": [
           {
             "name": "EV_INDICATOR_ANY",
-            "value": -1
-          },
-          {
-            "name": "EV_INDICATOR_NONE",
             "value": 0
           },
           {
-            "name": "EV_INDICATOR_CMD_0",
+            "name": "EV_INDICATOR_NONE",
             "value": 1
           },
           {
-            "name": "EV_INDICATOR_CMD_1",
+            "name": "EV_INDICATOR_CMD_0",
             "value": 2
           },
           {
-            "name": "EV_INDICATOR_ACK_RCV",
+            "name": "EV_INDICATOR_CMD_1",
             "value": 3
           },
           {
-            "name": "EV_INDICATOR_ACK_NRCV",
+            "name": "EV_INDICATOR_ACK_RCV",
             "value": 4
           },
           {
-            "name": "EV_INDICATOR_TMR_EQ_1",
+            "name": "EV_INDICATOR_ACK_NRCV",
             "value": 5
           },
           {
-            "name": "EV_INDICATOR_ERROR",
+            "name": "EV_INDICATOR_TMR_EQ_1",
             "value": 6
           },
           {
+            "name": "EV_INDICATOR_ERROR",
+            "value": 7
+          },
+          {
             "name": "EV_INDICATOR_TERM",
-            "value": 127
+            "value": 255
           }
         ]
       },
@@ -578,31 +578,31 @@
         "values": [
           {
             "name": "ST_WS_WP_ANY",
-            "value": -1
-          },
-          {
-            "name": "ST_WS_WP_INIT",
             "value": 0
           },
           {
-            "name": "ST_WS_WP_ALL_OFF",
+            "name": "ST_WS_WP_INIT",
             "value": 1
           },
           {
-            "name": "ST_WP_ACTIVATED",
+            "name": "ST_WS_WP_ALL_OFF",
             "value": 2
           },
           {
-            "name": "ST_WS_WP_ON",
+            "name": "ST_WP_ACTIVATED",
             "value": 3
           },
           {
-            "name": "ST_TMR_WP_WS_OFF",
+            "name": "ST_WS_WP_ON",
             "value": 4
           },
           {
+            "name": "ST_TMR_WP_WS_OFF",
+            "value": 5
+          },
+          {
             "name": "ST_WS_WP_TERM",
-            "value": 127
+            "value": 255
           }
         ]
       },
@@ -617,43 +617,43 @@
         "values": [
           {
             "name": "EV_WS_WP_ANY",
-            "value": -1
-          },
-          {
-            "name": "EV_WS_WP_NONE",
             "value": 0
           },
           {
-            "name": "EV_WS_WP_CMD_EG_0_CMD_LG_0",
+            "name": "EV_WS_WP_NONE",
             "value": 1
           },
           {
-            "name": "EV_WS_WP_CMD_EG_0",
+            "name": "EV_WS_WP_CMD_EG_0_CMD_LG_0",
             "value": 2
           },
           {
-            "name": "EV_WS_WP_CMD_EG_1",
+            "name": "EV_WS_WP_CMD_EG_0",
             "value": 3
           },
           {
-            "name": "EV_WS_WP_CMD_LG_0",
+            "name": "EV_WS_WP_CMD_EG_1",
             "value": 4
           },
           {
-            "name": "EV_WS_WP_CMD_LG_1",
+            "name": "EV_WS_WP_CMD_LG_0",
             "value": 5
           },
           {
-            "name": "EV_WS_WP_TMR_GT2",
+            "name": "EV_WS_WP_CMD_LG_1",
             "value": 6
           },
           {
-            "name": "EV_WS_WP_TMR_LT2",
+            "name": "EV_WS_WP_TMR_GT2",
             "value": 7
           },
           {
-            "name": "EV_WS_WP_ERROR",
+            "name": "EV_WS_WP_TMR_LT2",
             "value": 8
+          },
+          {
+            "name": "EV_WS_WP_ERROR",
+            "value": 9
           }
         ]
       },
