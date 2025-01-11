@@ -1,3 +1,9 @@
+/**
+ * \file	data_management.c
+ * \brief	Source file of the data management lib with the managements functions.
+ * \author	data_lib_generator tool
+ */
+
 #include "data_management.h"
 #include <stdint.h>
 #include <stdbool.h>
@@ -246,19 +252,9 @@ bool set_all_flag_comodo_frame_t(comodo_frame_t* instance, const uint8_t cmd_war
     return true;
 }
 
-bool check_comodo_frame_t(const uint8_t value){
-    if(value) {
-        return true;
-    }
-    return false;
-}
-  
 bool set_comodo_frame_t(comodo_frame_t* instance, const comodo_frame_t value) {
-    if (check_comodo_frame_t(value)) {
-        *instance = value;
-        return true;
-    }
-    return false;
+    *instance = value;
+    return true;
 }
 
 
@@ -554,19 +550,9 @@ bool set_all_flag_dashboard_light_t(dashboard_light_t* instance, const uint16_t 
     return true;
 }
 
-bool check_dashboard_light_t(const uint16_t value){
-    if(value) {
-        return true;
-    }
-    return false;
-}
-  
 bool set_dashboard_light_t(dashboard_light_t* instance, const dashboard_light_t value) {
-    if (check_dashboard_light_t(value)) {
-        *instance = value;
-        return true;
-    }
-    return false;
+    *instance = value;
+    return true;
 }
 
 
@@ -899,5 +885,20 @@ bcgv_frame_t init_dashboard_state(){
         .dashboard_light = 0
     };
     return dashboard_state;
+}
+
+light_state_t init_light_state_current(){
+
+    light_state_t light_state_current = {
+        . = 1,
+        . = 1,
+        . = 1,
+        . = 1,
+        . = 1,
+        . = 1,
+        . = 1,
+        . = 1
+    };
+    return light_state_current;
 }
 
