@@ -13,7 +13,6 @@ pub fn generate_header(mut header: File, data_lib: &DataLib, file_name: &str) {
     write_flags(&mut header, &data_lib.types);
     write_enums(&mut header, &data_lib.types);
     write_structs(&mut header, &data_lib.types);
-    //write_header_bottom_guard(&mut header, file_name);
 }
 
 // Write the top guard of the header file

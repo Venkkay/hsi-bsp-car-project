@@ -91,29 +91,35 @@ fn write_flags_functions(source: &mut File, header: &mut File, data_types: &Vec<
                 writeln!(source, "// Flags for {}.\n", data_type.name).unwrap();
                 for flag in &declaration.flags {
                     shift -= flag.bit_size;
-                    writeln!(header, "/**\n * Get {} flag from {}.\n *\n * @param[in] instance An instance of {}.\n * @return {} : Return the value of the got flag.\n */", flag.name, data_type.name, data_type.name, declaration.field_type).unwrap();
-                    writeln!(header, "{} get_{}_from_{}(const {} instance);", declaration.field_type, flag.name, data_type.name, data_type.name).unwrap();
-                    writeln!(source, "{} get_{}_from_{}(const {} instance) {{\n    return (instance & 0x{:0fill$x}) >> {};\n}}", declaration.field_type, flag.name, data_type.name, data_type.name, flag.bit_size << shift, shift, fill=(total_size/4 )as usize).unwrap();
+                    if flag.name != "unused" {
+                        writeln!(header, "/**\n * Get {} flag from {}.\n *\n * @param[in] instance An instance of {}.\n * @return {} : Return the value of the got flag.\n */", flag.name, data_type.name, data_type.name, declaration.field_type).unwrap();
+                        writeln!(header, "{} get_{}_from_{}(const {} instance);", declaration.field_type, flag.name, data_type.name, data_type.name).unwrap();
+                        writeln!(source, "{} get_{}_from_{}(const {} instance) {{\n    return (instance & 0x{:0fill$x}) >> {};\n}}", declaration.field_type, flag.name, data_type.name, data_type.name, flag.bit_size << shift, shift, fill=(total_size/4 )as usize).unwrap();
 
-                    writeln!(header, "/**\n * Check the value of {}.\n *\n * \\param[in] value : The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", flag.name).unwrap();
-                    writeln!(header, "bool check_{}_in_{}(const {} value);", flag.name, data_type.name, declaration.field_type).unwrap();
-                    writeln!(source, "bool check_{}_in_{}(const {} value){{\n    if(value >> {} != 0) {{\n        return false;\n    }}\n    return true;\n}}", flag.name, data_type.name, declaration.field_type, flag.bit_size).unwrap();
+                        writeln!(header, "/**\n * Check the value of {}.\n *\n * \\param[in] value : The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", flag.name).unwrap();
+                        writeln!(header, "bool check_{}_in_{}(const {} value);", flag.name, data_type.name, declaration.field_type).unwrap();
+                        writeln!(source, "bool check_{}_in_{}(const {} value){{\n    if(value >> {} != 0) {{\n        return false;\n    }}\n    return true;\n}}", flag.name, data_type.name, declaration.field_type, flag.bit_size).unwrap();
 
-                    writeln!(header, "/**\n * Set {} flag in {}.\n *\n * @param[out] instance An instance of {}.\n * \\param[in] value : The value to set.\n * @return Return True if the value is valid, False otherwise.\n */", flag.name, data_type.name, data_type.name).unwrap();
-                    writeln!(header, "bool set_{}_in_{}({}* instance, const {} value);", flag.name, data_type.name, data_type.name, declaration.field_type).unwrap();
-                    writeln!(source, "bool set_{}_in_{}({}* instance, const {} value) {{\n    if(check_{}_in_{}(value)) {{\n        *instance &= ~0x{:0fill$x};\n        *instance |= value << {};\n        return true;\n    }}\n    return false;\n}}\n", flag.name, data_type.name, data_type.name, declaration.field_type, flag.name, data_type.name, flag.bit_size << shift, shift,  fill=(total_size/4 )as usize).unwrap();
+                        writeln!(header, "/**\n * Set {} flag in {}.\n *\n * @param[out] instance An instance of {}.\n * \\param[in] value : The value to set.\n * @return Return True if the value is valid, False otherwise.\n */", flag.name, data_type.name, data_type.name).unwrap();
+                        writeln!(header, "bool set_{}_in_{}({}* instance, const {} value);", flag.name, data_type.name, data_type.name, declaration.field_type).unwrap();
+                        writeln!(source, "bool set_{}_in_{}({}* instance, const {} value) {{\n    if(check_{}_in_{}(value)) {{\n        *instance &= ~0x{:0fill$x};\n        *instance |= value << {};\n        return true;\n    }}\n    return false;\n}}\n", flag.name, data_type.name, data_type.name, declaration.field_type, flag.name, data_type.name, flag.bit_size << shift, shift,  fill=(total_size/4 )as usize).unwrap();
+                    }
                 }
                 writeln!(header, "/**\n * Set all flag in {}.\n *\n * @param[out] instance An instance of {}.\n * @return Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
                 write!(header, "bool set_all_flag_{}({}* instance", data_type.name, data_type.name).unwrap();
                 write!(source, "bool set_all_flag_{}({}* instance", data_type.name, data_type.name).unwrap();
                 for flag in &declaration.flags {
-                    write!(header, ", const {} {}", declaration.field_type, flag.name).unwrap();
-                    write!(source, ", const {} {}", declaration.field_type, flag.name).unwrap();
+                    if flag.name != "unused" {
+                        write!(header, ", const {} {}", declaration.field_type, flag.name).unwrap();
+                        write!(source, ", const {} {}", declaration.field_type, flag.name).unwrap();
+                    }
                 }
                 writeln!(header, ");").unwrap();
                 writeln!(source, ") {{").unwrap();
                 for flag in &declaration.flags {
-                    writeln!(source, "    set_{}_in_{}(instance, {});", flag.name, data_type.name, flag.name).unwrap();
+                    if flag.name != "unused" {
+                        writeln!(source, "    set_{}_in_{}(instance, {});", flag.name, data_type.name, flag.name).unwrap();
+                    }
                 }
                 writeln!(source, "    return true;\n}}\n").unwrap();
 

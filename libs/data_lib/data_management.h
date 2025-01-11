@@ -737,28 +737,6 @@ bool check_pressure_issue_in_dashboard_light_t(const uint16_t value);
  */
 bool set_pressure_issue_in_dashboard_light_t(dashboard_light_t* instance, const uint16_t value);
 /**
- * Get unused flag from dashboard_light_t.
- *
- * @param[in] instance An instance of dashboard_light_t.
- * @return uint16_t : Return the value of the got flag.
- */
-uint16_t get_unused_from_dashboard_light_t(const dashboard_light_t instance);
-/**
- * Check the value of unused.
- *
- * \param[in] value : The value to check.
- * \return bool : Return True if the value is valid, False otherwise.
- */
-bool check_unused_in_dashboard_light_t(const uint16_t value);
-/**
- * Set unused flag in dashboard_light_t.
- *
- * @param[out] instance An instance of dashboard_light_t.
- * \param[in] value : The value to set.
- * @return Return True if the value is valid, False otherwise.
- */
-bool set_unused_in_dashboard_light_t(dashboard_light_t* instance, const uint16_t value);
-/**
  * Get discharged_battery flag from dashboard_light_t.
  *
  * @param[in] instance An instance of dashboard_light_t.
@@ -962,7 +940,7 @@ bool set_washer_active_in_dashboard_light_t(dashboard_light_t* instance, const u
  * @param[out] instance An instance of dashboard_light_t.
  * @return Return True if the value is valid, False otherwise.
  */
-bool set_all_flag_dashboard_light_t(dashboard_light_t* instance, const uint16_t position_light, const uint16_t low_beam, const uint16_t high_beam, const uint16_t fuel, const uint16_t motor_issue, const uint16_t pressure_issue, const uint16_t unused, const uint16_t discharged_battery, const uint16_t warning, const uint16_t battery_issue, const uint16_t coolant_temperature, const uint16_t motor_pressure, const uint16_t oil_overheat, const uint16_t brake_issue, const uint16_t wiper_active, const uint16_t washer_active);
+bool set_all_flag_dashboard_light_t(dashboard_light_t* instance, const uint16_t position_light, const uint16_t low_beam, const uint16_t high_beam, const uint16_t fuel, const uint16_t motor_issue, const uint16_t pressure_issue, const uint16_t discharged_battery, const uint16_t warning, const uint16_t battery_issue, const uint16_t coolant_temperature, const uint16_t motor_pressure, const uint16_t oil_overheat, const uint16_t brake_issue, const uint16_t wiper_active, const uint16_t washer_active);
 /**
  * Set dashboard_light_t.
  *
