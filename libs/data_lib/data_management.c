@@ -94,6 +94,21 @@ bool set_crc8_t(crc8_t* instance, const uint8_t value) {
     return true;
 }
 
+bool set_bgf_sent_message_t(bgf_sent_message_t* instance, const uint16_t value) {
+    *instance = value;
+    return true;
+}
+
+bool set_bgf_sent_timestamp_t(bgf_sent_timestamp_t* instance, const uint32_t value) {
+    *instance = value;
+    return true;
+}
+
+bool set_wait_ack_bool_t(wait_ack_bool_t* instance, const bool value) {
+    *instance = value;
+    return true;
+}
+
 // Flags for comodo_frame_t.
 
 uint8_t get_cmd_warning_from_comodo_frame_t(const comodo_frame_t instance) {
@@ -369,24 +384,6 @@ bool set_pressure_issue_in_dashboard_light_t(dashboard_light_t* instance, const 
     return false;
 }
 
-uint16_t get_unused_from_dashboard_light_t(const dashboard_light_t instance) {
-    return (instance & 0x0200) >> 9;
-}
-bool check_unused_in_dashboard_light_t(const uint16_t value){
-    if(value >> 1 != 0) {
-        return false;
-    }
-    return true;
-}
-bool set_unused_in_dashboard_light_t(dashboard_light_t* instance, const uint16_t value) {
-    if(check_unused_in_dashboard_light_t(value)) {
-        *instance &= ~0x0200;
-        *instance |= value << 9;
-        return true;
-    }
-    return false;
-}
-
 uint16_t get_discharged_battery_from_dashboard_light_t(const dashboard_light_t instance) {
     return (instance & 0x0100) >> 8;
 }
@@ -549,14 +546,13 @@ bool set_washer_active_in_dashboard_light_t(dashboard_light_t* instance, const u
     return false;
 }
 
-bool set_all_flag_dashboard_light_t(dashboard_light_t* instance, const uint16_t position_light, const uint16_t low_beam, const uint16_t high_beam, const uint16_t fuel, const uint16_t motor_issue, const uint16_t pressure_issue, const uint16_t unused, const uint16_t discharged_battery, const uint16_t warning, const uint16_t battery_issue, const uint16_t coolant_temperature, const uint16_t motor_pressure, const uint16_t oil_overheat, const uint16_t brake_issue, const uint16_t wiper_active, const uint16_t washer_active) {
+bool set_all_flag_dashboard_light_t(dashboard_light_t* instance, const uint16_t position_light, const uint16_t low_beam, const uint16_t high_beam, const uint16_t fuel, const uint16_t motor_issue, const uint16_t pressure_issue, const uint16_t discharged_battery, const uint16_t warning, const uint16_t battery_issue, const uint16_t coolant_temperature, const uint16_t motor_pressure, const uint16_t oil_overheat, const uint16_t brake_issue, const uint16_t wiper_active, const uint16_t washer_active) {
     set_position_light_in_dashboard_light_t(instance, position_light);
     set_low_beam_in_dashboard_light_t(instance, low_beam);
     set_high_beam_in_dashboard_light_t(instance, high_beam);
     set_fuel_in_dashboard_light_t(instance, fuel);
     set_motor_issue_in_dashboard_light_t(instance, motor_issue);
     set_pressure_issue_in_dashboard_light_t(instance, pressure_issue);
-    set_unused_in_dashboard_light_t(instance, unused);
     set_discharged_battery_in_dashboard_light_t(instance, discharged_battery);
     set_warning_in_dashboard_light_t(instance, warning);
     set_battery_issue_in_dashboard_light_t(instance, battery_issue);
@@ -892,6 +888,45 @@ bool set_bcgv_frame_t(bcgv_frame_t* instance, kilometer_t kilometer, rpm_dashboa
 
 
 
+bgf_sent_message_t get_bgf_message_from_wait_ack_bgf_t(const wait_ack_bgf_t instance) {
+    return instance.bgf_message;
+}
+bool set_bgf_message_in_wait_ack_bgf_t(wait_ack_bgf_t* instance, const uint16_t value) {
+    return set_bgf_sent_message_t(&instance->bgf_message, value);
+}
+
+bgf_sent_timestamp_t get_timestamp_from_wait_ack_bgf_t(const wait_ack_bgf_t instance) {
+    return instance.timestamp;
+}
+bool set_timestamp_in_wait_ack_bgf_t(wait_ack_bgf_t* instance, const uint32_t value) {
+    return set_bgf_sent_timestamp_t(&instance->timestamp, value);
+}
+
+wait_ack_bool_t get_is_valid_from_wait_ack_bgf_t(const wait_ack_bgf_t instance) {
+    return instance.is_valid;
+}
+bool set_is_valid_in_wait_ack_bgf_t(wait_ack_bgf_t* instance, const bool value) {
+    return set_wait_ack_bool_t(&instance->is_valid, value);
+}
+
+wait_ack_bool_t get_is_sent_to_bgf_from_wait_ack_bgf_t(const wait_ack_bgf_t instance) {
+    return instance.is_sent_to_bgf;
+}
+bool set_is_sent_to_bgf_in_wait_ack_bgf_t(wait_ack_bgf_t* instance, const bool value) {
+    return set_wait_ack_bool_t(&instance->is_sent_to_bgf, value);
+}
+
+bool set_wait_ack_bgf_t(wait_ack_bgf_t* instance, bgf_sent_message_t bgf_message, bgf_sent_timestamp_t timestamp, wait_ack_bool_t is_valid, wait_ack_bool_t is_sent_to_bgf) {
+    set_bgf_message_in_wait_ack_bgf_t(instance, bgf_message);
+    set_timestamp_in_wait_ack_bgf_t(instance, timestamp);
+    set_is_valid_in_wait_ack_bgf_t(instance, is_valid);
+    set_is_sent_to_bgf_in_wait_ack_bgf_t(instance, is_sent_to_bgf);
+    return true;
+}
+
+
+
+
 // Init functions
 
 bcgv_frame_t init_dashboard_state(){
@@ -906,18 +941,14 @@ bcgv_frame_t init_dashboard_state(){
     return dashboard_state;
 }
 
-light_state_t init_light_state_current(){
+wait_ack_bgf_t init_wait_ack_bgf(){
 
-    light_state_t light_state_current = {
-        . = 1,
-        . = 1,
-        . = 1,
-        . = 1,
-        . = 1,
-        . = 1,
-        . = 1,
-        . = 1
+    wait_ack_bgf_t wait_ack_bgf = {
+        .bgf_message = 0,
+        .timestamp = 0,
+        .is_valid = 0,
+        .is_sent_to_bgf = 0
     };
-    return light_state_current;
+    return wait_ack_bgf;
 }
 

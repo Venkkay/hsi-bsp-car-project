@@ -24,6 +24,12 @@
 #define MAX_SPEED 255
 #define SERIAL_BGF 11
 #define SERIAL_COM 12
+#define BGF_POSITION 1
+#define BGF_LOW_BEAM 2
+#define BGF_HIGH_BEAM 3
+#define BGF_RIGHT_INDICATOR 4
+#define BGF_LEFT_INDICATOR 5
+#define WAIT_ACK_BGF_BUFFER_SIZE 10
 
 
 /**
@@ -80,6 +86,24 @@ typedef uint8_t speed_t;
  * \details CRC8 
 */
 typedef uint8_t crc8_t;
+/**
+ * Atomic type bgf_sent_message_t.
+ *
+ * \details Message sent to the BGF 
+*/
+typedef uint16_t bgf_sent_message_t;
+/**
+ * Atomic type bgf_sent_timestamp_t.
+ *
+ * \details Timestamp of the message sent to the BGF 
+*/
+typedef uint32_t bgf_sent_timestamp_t;
+/**
+ * Atomic type wait_ack_bool_t.
+ *
+ * \details Boolean to wait for the acknowledgment of a message sent to the BGF 
+*/
+typedef bool wait_ack_bool_t;
 
 
 /**
@@ -284,6 +308,18 @@ typedef struct {
     dashboard_light_t dashboard_light;
 } bcgv_frame_t;
 
+/**
+ * Struct type wait_ack_bgf_t.
+ *
+ * \details Structure to wait for the acknowledgment of a message sent to the BGF 
+*/
+typedef struct {
+    bgf_sent_message_t bgf_message;
+    bgf_sent_timestamp_t timestamp;
+    wait_ack_bool_t is_valid;
+    wait_ack_bool_t is_sent_to_bgf;
+} wait_ack_bgf_t;
+
 // Function signatures
 // Atomic types setter
 /**
@@ -393,6 +429,30 @@ bool set_speed_t(speed_t* instance, const uint8_t value);
  * \return bool : Return True if the value is set, False otherwise.
  */
 bool set_crc8_t(crc8_t* instance, const uint8_t value);
+/**
+ * Set the value of bgf_sent_message_t.
+ *
+ * \param[out] instance : An instance of bgf_sent_message_t.
+ * \param[in] value : The value to set.
+ * \return bool : Return True if the value is set, False otherwise.
+ */
+bool set_bgf_sent_message_t(bgf_sent_message_t* instance, const uint16_t value);
+/**
+ * Set the value of bgf_sent_timestamp_t.
+ *
+ * \param[out] instance : An instance of bgf_sent_timestamp_t.
+ * \param[in] value : The value to set.
+ * \return bool : Return True if the value is set, False otherwise.
+ */
+bool set_bgf_sent_timestamp_t(bgf_sent_timestamp_t* instance, const uint32_t value);
+/**
+ * Set the value of wait_ack_bool_t.
+ *
+ * \param[out] instance : An instance of wait_ack_bool_t.
+ * \param[in] value : The value to set.
+ * \return bool : Return True if the value is set, False otherwise.
+ */
+bool set_wait_ack_bool_t(wait_ack_bool_t* instance, const bool value);
 
 // Flags getter and setter
 /**
@@ -719,28 +779,6 @@ bool check_pressure_issue_in_dashboard_light_t(const uint16_t value);
  */
 bool set_pressure_issue_in_dashboard_light_t(dashboard_light_t* instance, const uint16_t value);
 /**
- * Get unused flag from dashboard_light_t.
- *
- * @param[in] instance An instance of dashboard_light_t.
- * @return uint16_t : Return the value of the got flag.
- */
-uint16_t get_unused_from_dashboard_light_t(const dashboard_light_t instance);
-/**
- * Check the value of unused.
- *
- * \param[in] value : The value to check.
- * \return bool : Return True if the value is valid, False otherwise.
- */
-bool check_unused_in_dashboard_light_t(const uint16_t value);
-/**
- * Set unused flag in dashboard_light_t.
- *
- * @param[out] instance An instance of dashboard_light_t.
- * \param[in] value : The value to set.
- * @return Return True if the value is valid, False otherwise.
- */
-bool set_unused_in_dashboard_light_t(dashboard_light_t* instance, const uint16_t value);
-/**
  * Get discharged_battery flag from dashboard_light_t.
  *
  * @param[in] instance An instance of dashboard_light_t.
@@ -944,7 +982,7 @@ bool set_washer_active_in_dashboard_light_t(dashboard_light_t* instance, const u
  * @param[out] instance An instance of dashboard_light_t.
  * @return Return True if the value is valid, False otherwise.
  */
-bool set_all_flag_dashboard_light_t(dashboard_light_t* instance, const uint16_t position_light, const uint16_t low_beam, const uint16_t high_beam, const uint16_t fuel, const uint16_t motor_issue, const uint16_t pressure_issue, const uint16_t unused, const uint16_t discharged_battery, const uint16_t warning, const uint16_t battery_issue, const uint16_t coolant_temperature, const uint16_t motor_pressure, const uint16_t oil_overheat, const uint16_t brake_issue, const uint16_t wiper_active, const uint16_t washer_active);
+bool set_all_flag_dashboard_light_t(dashboard_light_t* instance, const uint16_t position_light, const uint16_t low_beam, const uint16_t high_beam, const uint16_t fuel, const uint16_t motor_issue, const uint16_t pressure_issue, const uint16_t discharged_battery, const uint16_t warning, const uint16_t battery_issue, const uint16_t coolant_temperature, const uint16_t motor_pressure, const uint16_t oil_overheat, const uint16_t brake_issue, const uint16_t wiper_active, const uint16_t washer_active);
 /**
  * Set dashboard_light_t.
  *
@@ -1361,11 +1399,80 @@ bool check_bcgv_frame_t(const rpm_dashboard_t rpm, const fuel_percent_t fuel_per
  */
 bool set_bcgv_frame_t(bcgv_frame_t* instance, kilometer_t kilometer, rpm_dashboard_t rpm, speed_t speed, fuel_percent_t fuel_percent_level, dashboard_light_t dashboard_light);
 /**
+ * Get bgf_message field from wait_ack_bgf_t.
+ *
+ * \param[in] instance An instance of wait_ack_bgf_t.
+ * \return bgf_sent_message_t : Return the value of the got field.
+ */
+bgf_sent_message_t get_bgf_message_from_wait_ack_bgf_t(const wait_ack_bgf_t instance);
+/**
+ * Set bgf_message field in wait_ack_bgf_t.
+ *
+ * \param[out] instance : An instance of wait_ack_bgf_t.
+ * \param[in] value : The value to set.
+ * \return bool :  Return True if the value is valid, False otherwise.
+ */
+bool set_bgf_message_in_wait_ack_bgf_t(wait_ack_bgf_t* instance, const uint16_t value);
+/**
+ * Get timestamp field from wait_ack_bgf_t.
+ *
+ * \param[in] instance An instance of wait_ack_bgf_t.
+ * \return bgf_sent_timestamp_t : Return the value of the got field.
+ */
+bgf_sent_timestamp_t get_timestamp_from_wait_ack_bgf_t(const wait_ack_bgf_t instance);
+/**
+ * Set timestamp field in wait_ack_bgf_t.
+ *
+ * \param[out] instance : An instance of wait_ack_bgf_t.
+ * \param[in] value : The value to set.
+ * \return bool :  Return True if the value is valid, False otherwise.
+ */
+bool set_timestamp_in_wait_ack_bgf_t(wait_ack_bgf_t* instance, const uint32_t value);
+/**
+ * Get is_valid field from wait_ack_bgf_t.
+ *
+ * \param[in] instance An instance of wait_ack_bgf_t.
+ * \return wait_ack_bool_t : Return the value of the got field.
+ */
+wait_ack_bool_t get_is_valid_from_wait_ack_bgf_t(const wait_ack_bgf_t instance);
+/**
+ * Set is_valid field in wait_ack_bgf_t.
+ *
+ * \param[out] instance : An instance of wait_ack_bgf_t.
+ * \param[in] value : The value to set.
+ * \return bool :  Return True if the value is valid, False otherwise.
+ */
+bool set_is_valid_in_wait_ack_bgf_t(wait_ack_bgf_t* instance, const bool value);
+/**
+ * Get is_sent_to_bgf field from wait_ack_bgf_t.
+ *
+ * \param[in] instance An instance of wait_ack_bgf_t.
+ * \return wait_ack_bool_t : Return the value of the got field.
+ */
+wait_ack_bool_t get_is_sent_to_bgf_from_wait_ack_bgf_t(const wait_ack_bgf_t instance);
+/**
+ * Set is_sent_to_bgf field in wait_ack_bgf_t.
+ *
+ * \param[out] instance : An instance of wait_ack_bgf_t.
+ * \param[in] value : The value to set.
+ * \return bool :  Return True if the value is valid, False otherwise.
+ */
+bool set_is_sent_to_bgf_in_wait_ack_bgf_t(wait_ack_bgf_t* instance, const bool value);
+/**
+ * Set all field in wait_ack_bgf_t.
+ *
+ * \param[out] instance : An instance of wait_ack_bgf_t.
+ * \return bool : Return True if the value is valid, False otherwise.
+ */
+bool set_wait_ack_bgf_t(wait_ack_bgf_t* instance, bgf_sent_message_t bgf_message, bgf_sent_timestamp_t timestamp, wait_ack_bool_t is_valid, wait_ack_bool_t is_sent_to_bgf);
+/**
  * \brief	Init dashboard_state
  * \return	bcgv_frame_t : the initialized struct.
  */
+bcgv_frame_t init_dashboard_state();
 /**
- * \brief	Init light_state_current
- * \return	light_state_t : the initialized struct.
+ * \brief	Init wait_ack_bgf
+ * \return	wait_ack_bgf_t : the initialized struct.
  */
+wait_ack_bgf_t init_wait_ack_bgf();
 #endif // DATA_MANAGEMENT_H
