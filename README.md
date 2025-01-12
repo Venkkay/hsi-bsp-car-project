@@ -139,3 +139,27 @@ How to use the tool:
 ```
 
 ## Question 3
+We initialise the file descriptor for the driver at the start of the program.
+Then we use it to retrieve information via the UDP channel.
+
+## Question 4
+We decided to create three files to represent the different state machines.
+The states and events are types that we created in the JSON file with all the data.
+Each of the state machines returns the next state according to the previous state in order to assign it to a variable and continue the process.
+
+## Question 5
+We have a Makefile (Makefile.app) that compiles the application and another Makefile to compile the library.
+These two Makefiles are combined in a single main Makefile.
+The bash file (launch.sh) launches the driver and then the application.
+
+## Question 6
+The ‘decode.c’ file contains all our functions for decoding the raw information from the UDP and Serial outputs.
+We transform the comodo frame into a specific type and the MUX frame into a type suitable for the BGCV.
+
+## Question 7
+The ‘encode.c’ file contains all our functions for encoding the transformed information to the UDP and Serial inputs.
+We transform the custom frames into the original frames so that they match the data format expected by the driver.
+
+## Question 8
+We have structured our ‘main’ function in the ‘app.c’ file according to the tree structure expected by the specifications.
+We also check the UDP frame number abd print to the terminal if there is an error.
