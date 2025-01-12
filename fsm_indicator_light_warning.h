@@ -35,7 +35,7 @@ indicator_state_t fsm_indicator_light_warning(indicator_state_t current_state, u
  * \param   cmd_value : Value sent by the comodo for the right indicator light
  * \param   timer : Time from which the FSM is requested
  */
-void right_indicator_comodo(indicator_state_t current_right_indicator_state, uint8_t cmd_value, clock_t timer);
+indicator_state_t right_indicator_comodo(indicator_state_t current_right_indicator_state, uint8_t cmd_value, clock_t timer);
 
 /**
  * \brief   Initializes the launch of FSM for the left indicator light
@@ -43,7 +43,7 @@ void right_indicator_comodo(indicator_state_t current_right_indicator_state, uin
  * \param   cmd_value : Value sent by the comodo for the left indicator light
  * \param   timer : Time from which the FSM is requested
  */
-void left_indicator_comodo(indicator_state_t current_left_indicator_state, uint8_t cmd_value, clock_t timer);
+indicator_state_t left_indicator_comodo(indicator_state_t current_left_indicator_state, uint8_t cmd_value, clock_t timer);
 
 /**
  * \brief   Initializes the launch of FSM for warnings
@@ -51,6 +51,6 @@ void left_indicator_comodo(indicator_state_t current_left_indicator_state, uint8
  * \param   cmd_value : Value sent by the comodo for warnings
  * \param   timer : Time from which the FSM is requested
  */
-void warning_comodo(indicator_state_t current_warning_state, uint8_t cmd_value, clock_t timer);
+indicator_state_t warning_comodo(indicator_state_t current_warning_state, uint8_t cmd_value, clock_t timer);
 
 #endif

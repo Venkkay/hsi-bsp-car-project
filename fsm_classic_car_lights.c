@@ -10,7 +10,7 @@
 
 #include "fsm_classic_car_lights.h"
 
-#define TRANS_COUNT (sizeof(trans)/sizeof(*trans))
+#define TRANS_COUNT (sizeof(trans_lights)/sizeof(*trans_lights))
 
 typedef struct {
     light_state_t state;
@@ -18,7 +18,7 @@ typedef struct {
     uint8_t next_state;
 } tTransition;
 
-tTransition trans[] = {
+tTransition trans_lights[] = {
     { ST_LIGHT_OFF, EV_LIGHT_CMD_0, ST_LIGHT_OFF },
     { ST_LIGHT_OFF, EV_LIGHT_CMD_1, ST_LIGHT_ON },
     { ST_LIGHT_ON, EV_LIGHT_CMD_0, ST_LIGHT_OFF },
@@ -30,7 +30,7 @@ tTransition trans[] = {
 };
 
 uint8_t get_next_event_classic_car_lights(light_state_t current_state, uint8_t cmd_value) {
-    uint8_t event = 0;
+    light_event_t event = EV_LIGHT_CMD_0;
 
     switch (current_state) {
         case ST_LIGHT_OFF:
@@ -67,12 +67,12 @@ uint8_t get_next_event_classic_car_lights(light_state_t current_state, uint8_t c
 
 light_state_t fsm_classic_car_lights(light_state_t current_state, uint8_t cmd_value) {
     while (current_state != ST_LIGHT_ERROR) {
-        uint8_t event = get_next_event_classic_car_lights(current_state, cmd_value);
+        light_event_t event = get_next_event_classic_car_lights(current_state, cmd_value);
 
         for (size_t i = 0; i < TRANS_COUNT; i++) {
-            if (current_state == trans[i].state) {
-                if (event == trans[i].event) {
-                    current_state = trans[i].next_state;
+            if (current_state == trans_lights[i].state) {
+                if (event == trans_lights[i].event) {
+                    current_state = trans_lights[i].next_state;
                     break;
                 }
             }

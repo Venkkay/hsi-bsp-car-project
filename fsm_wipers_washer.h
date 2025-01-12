@@ -37,7 +37,8 @@ wipers_washer_state_t fsm_wipers_washer(wipers_washer_state_t current_state, uin
  * \param   cmd_wipers_value : Value sent by the comodo for windscreen wipers
  * \param   cmd_washer_value : Value sent by the comodo for washer
  * \param   timer : Time from which the FSM is requested
+ * \return	wipers_washer_state_t : Returns the state of a FSM element after being timer checked
  */
-void wipers_washer_comodo(wipers_washer_state_t current_wipers_washer_state, uint8_t cmd_wipers_value, uint8_t cmd_washer_value, clock_t timer);
+wipers_washer_state_t wipers_washer_comodo(wipers_washer_state_t current_wipers_washer_state, uint8_t cmd_wipers_value, uint8_t cmd_washer_value, clock_t timer);
 
 #endif
