@@ -44,7 +44,7 @@ void decode_bgf_frame(serial_frame_t serial_frame[DRV_MAX_FRAMES], uint32_t data
  * \param length Length of the frame
  * \param polynomial CRC8 polynomial
  * \param initial_value Initial CRC value
- * \return
+ * \return CRC8 obtained after the operations
  */
 uint8_t check_crc8(uint8_t *data, size_t length, uint8_t polynomial, uint8_t initial_value);
 
