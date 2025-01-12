@@ -9,6 +9,8 @@
 #include "fsm_classic_car_lights.h"
 #include "fsm_indicator_light_warning.h"
 
+#include "state_manager.h"
+
 int main() {
 
     /* ==== Start of Initialization ====*/
@@ -27,6 +29,9 @@ int main() {
 
     uint8_t frame_number = 1;
     light_state_t current_position_light_state = ST_LIGHT_OFF;
+    light_state_t new_position_light_state = current_position_light_state;
+    uint8_t position_light_state_timer = 0;
+
     light_state_t current_low_beam_state = ST_LIGHT_OFF;
     light_state_t current_high_beam_state = ST_LIGHT_OFF;
 
@@ -98,7 +103,6 @@ int main() {
         decode_bgf_frame(serial_frame, data_len, bgf_frame);
         /* ==== End of Decoding Serial frame ====*/
 
-        bcgv_to_mux(&bcgv_frame, dashboard_light, get_speed_from_mux_frame_t(mux_frame), get_kilometer_from_mux_frame_t(mux_frame), get_fuel_level_from_mux_frame_t(mux_frame), get_rpm_from_mux_frame_t(mux_frame));
 
         /* ==== Start of Algorithms ====*/
 
@@ -116,9 +120,47 @@ int main() {
             //washer_comodo(current_washer_state, get_cmd_washer_from_comodo_frame_t(comodo_frame[i]), /* timer */);
         }
 
+
+        if (current_position_light_state == ST_LIGHT_ACQUITTED) {
+            set_position_light_in_dashboard_light_t(&dashboard_light, 1);
+        }else {
+            set_position_light_in_dashboard_light_t(&dashboard_light, 0);
+        }
+        if (current_low_beam_state == ST_LIGHT_ACQUITTED) {
+            set_low_beam_in_dashboard_light_t(&dashboard_light, 1);
+        }else {
+            set_low_beam_in_dashboard_light_t(&dashboard_light, 0);
+        }
+        if (current_high_beam_state == ST_LIGHT_ACQUITTED) {
+            set_high_beam_in_dashboard_light_t(&dashboard_light, 1);
+        }else {
+            set_high_beam_in_dashboard_light_t(&dashboard_light, 0);
+        }
+
+        if (current_warning_state == ST_INDICATOR_ACQUITTED_ON) {
+            set_warning_in_dashboard_light_t(&dashboard_light, 1);
+        }else if (current_warning_state == ST_INDICATOR_ACQUITTED_OFF) {
+            set_warning_in_dashboard_light_t(&dashboard_light, 0);
+        }else {
+            set_warning_in_dashboard_light_t(&dashboard_light, 0);
+        }
+
+        if (current_wipers_state == ST_WP_ACTIVATED || current_wipers_state == ST_WP_WS_ON) {
+            set_wiper_active_in_dashboard_light_t(&dashboard_light, 1);
+        }else {
+            set_wiper_active_in_dashboard_light_t(&dashboard_light, 0);
+        }
+
+        if (current_washer_state == ST_WP_WS_ON) {
+            set_washer_active_in_dashboard_light_t(&dashboard_light, 1);
+        }else {
+            set_washer_active_in_dashboard_light_t(&dashboard_light, 0);
+        }
+
         /* ==== End of Algorithms ====*/
 
         /* ==== Start of Encoding and Writing to UDP ====*/
+        bcgv_to_mux(&bcgv_frame, dashboard_light, get_speed_from_mux_frame_t(mux_frame), get_kilometer_from_mux_frame_t(mux_frame), get_fuel_level_from_mux_frame_t(mux_frame), get_rpm_from_mux_frame_t(mux_frame));
         create_bcgv_to_mux_frame(&bcgv_frame, udp_frame_bcgv);
 
         drv_frame = drv_write_udp_200ms(drv_fd, udp_frame_bcgv);
@@ -135,7 +177,7 @@ int main() {
         if (drv_frame != DRV_SUCCESS) {
             printf("Serial frame write failed : %s...\n", strerror(errno));
             break;
-        }/*
+        }*/
         /* ==== End of Encoding and Writing to Serial ====*/
     }
 
