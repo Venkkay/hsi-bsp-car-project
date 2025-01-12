@@ -74,6 +74,7 @@ int main() {
     uint8_t wipers_state_timer = 0;
 
     int32_t drv_fd = drv_open();
+    
     if (drv_fd == DRV_ERROR) {
         printf("Open connection with driver failed : %s...\n", strerror(errno));
         return DRV_ERROR;
@@ -96,6 +97,7 @@ int main() {
         }
 
         /* ==== End of Reading UDP frame ====*/
+        
         /* ==== Start of Checking frame number====*/
         if (frame_number > MAX_MUX_FRAME_NUMBER) {
             frame_number = 1;
@@ -111,6 +113,7 @@ int main() {
             frame_number = frame_number + 1;
         }
         /* ==== End of Checking frame number====*/
+        
         /* ==== Start of Decoding UDP frame ====*/
         decode_mux_frame(&mux_frame, udp_frame);
         dashboard_light = decode_lights(&mux_frame);
@@ -133,7 +136,6 @@ int main() {
 
 
         /* ==== Start of Algorithms ====*/
-
         for (size_t k = 0; k < data_len; k++) {
             for (size_t l = 0; l < 5; l++) {
                 if (bgf_frame_recv[k] == bgf_frame_send[l]) {
@@ -150,14 +152,14 @@ int main() {
                         case 0x04:
                             if ((bgf_frame_send[l] & 0x00FF) == 0) {
                                 current_right_indicator_state = ST_INDICATOR_ACQUITTED_OFF;
-                            }else {
+                            } else {
                                 current_right_indicator_state = ST_INDICATOR_ACQUITTED_ON;
                             }
                             break;
                         case 0x05:
                             if ((bgf_frame_send[l] & 0x00FF) == 0) {
                                 current_left_indicator_state = ST_INDICATOR_ACQUITTED_OFF;
-                            }else {
+                            } else {
                                 current_left_indicator_state = ST_INDICATOR_ACQUITTED_ON;
                             }
                             break;
@@ -170,59 +172,59 @@ int main() {
 
         if (current_position_light_state == ST_LIGHT_ON && position_light_state_timer == 0) {
             position_light_state_timer = clock();
-        }else {
+        } else {
             position_light_state_timer = 0;
         }
         if (current_low_beam_state == ST_LIGHT_ON && low_beam_state_timer == 0) {
             low_beam_state_timer = clock();
-        }else {
+        } else {
             low_beam_state_timer = 0;
         }
         if (current_high_beam_state == ST_LIGHT_ON && high_beam_state_timer == 0) {
             high_beam_state_timer = clock();
-        }else {
+        } else {
             high_beam_state_timer = 0;
         }
 
         if (current_left_indicator_state == ST_INDICATOR_ACTIVATED_ON && left_indicator_state_timer == 0) {
             left_indicator_state_timer = clock();
-        }else if (current_left_indicator_state == ST_INDICATOR_ACQUITTED_ON && left_indicator_state_timer == 0) {
+        } else if (current_left_indicator_state == ST_INDICATOR_ACQUITTED_ON && left_indicator_state_timer == 0) {
             left_indicator_state_timer = clock();
-        }else if (current_left_indicator_state == ST_INDICATOR_ACTIVATED_OFF && left_indicator_state_timer == 0) {
+        } else if (current_left_indicator_state == ST_INDICATOR_ACTIVATED_OFF && left_indicator_state_timer == 0) {
             left_indicator_state_timer = clock();
-        }else if (current_left_indicator_state == ST_INDICATOR_ACQUITTED_OFF && left_indicator_state_timer == 0) {
+        } else if (current_left_indicator_state == ST_INDICATOR_ACQUITTED_OFF && left_indicator_state_timer == 0) {
             left_indicator_state_timer = clock();
-        }else {
+        } else {
             left_indicator_state_timer = 0;
         }
 
         if (current_right_indicator_state == ST_INDICATOR_ACTIVATED_ON && right_indicator_state_timer == 0) {
             right_indicator_state_timer = clock();
-        }else if (current_right_indicator_state == ST_INDICATOR_ACQUITTED_ON && right_indicator_state_timer == 0) {
+        } else if (current_right_indicator_state == ST_INDICATOR_ACQUITTED_ON && right_indicator_state_timer == 0) {
             right_indicator_state_timer = clock();
-        }else if (current_right_indicator_state == ST_INDICATOR_ACTIVATED_OFF && right_indicator_state_timer == 0) {
+        } else if (current_right_indicator_state == ST_INDICATOR_ACTIVATED_OFF && right_indicator_state_timer == 0) {
             right_indicator_state_timer = clock();
-        }else if (current_right_indicator_state == ST_INDICATOR_ACQUITTED_OFF && right_indicator_state_timer == 0) {
+        } else if (current_right_indicator_state == ST_INDICATOR_ACQUITTED_OFF && right_indicator_state_timer == 0) {
             right_indicator_state_timer = clock();
-        }else {
+        } else {
             right_indicator_state_timer = 0;
         }
 
         if (current_warning_state == ST_INDICATOR_ACTIVATED_ON && warning_state_timer == 0) {
             warning_state_timer = clock();
-        }else if (current_warning_state == ST_INDICATOR_ACQUITTED_ON && warning_state_timer == 0) {
+        } else if (current_warning_state == ST_INDICATOR_ACQUITTED_ON && warning_state_timer == 0) {
             warning_state_timer = clock();
-        }else if (current_warning_state == ST_INDICATOR_ACTIVATED_OFF && warning_state_timer == 0) {
+        } else if (current_warning_state == ST_INDICATOR_ACTIVATED_OFF && warning_state_timer == 0) {
             warning_state_timer = clock();
-        }else if (current_warning_state == ST_INDICATOR_ACQUITTED_OFF && warning_state_timer == 0) {
+        } else if (current_warning_state == ST_INDICATOR_ACQUITTED_OFF && warning_state_timer == 0) {
             warning_state_timer = clock();
-        }else {
+        } else {
             warning_state_timer = 0;
         }
 
         if (current_wipers_washer_state == ST_TMR_WP_WS_OFF && wipers_state_timer == 0) {
             wipers_state_timer = clock();
-        }else {
+        } else {
             wipers_state_timer = 0;
         }
 
@@ -245,35 +247,33 @@ int main() {
         // === Lights on the dashboard ===
         if (current_position_light_state == ST_LIGHT_ACQUITTED) {
             set_position_light_in_dashboard_light_t(&dashboard_light, 1);
-        }else {
+        } else {
             set_position_light_in_dashboard_light_t(&dashboard_light, 0);
         }
         if (current_low_beam_state == ST_LIGHT_ACQUITTED) {
             set_low_beam_in_dashboard_light_t(&dashboard_light, 1);
-        }else {
+        } else {
             set_low_beam_in_dashboard_light_t(&dashboard_light, 0);
         }
         if (current_high_beam_state == ST_LIGHT_ACQUITTED) {
             set_high_beam_in_dashboard_light_t(&dashboard_light, 1);
-        }else {
+        } else {
             set_high_beam_in_dashboard_light_t(&dashboard_light, 0);
         }
 
         if (current_warning_state == ST_INDICATOR_ACQUITTED_ON) {
             set_warning_in_dashboard_light_t(&dashboard_light, 1);
-        }else if (current_warning_state == ST_INDICATOR_ACQUITTED_OFF) {
+        } else if (current_warning_state == ST_INDICATOR_ACQUITTED_OFF) {
             set_warning_in_dashboard_light_t(&dashboard_light, 0);
-        }else {
+        } else {
             set_warning_in_dashboard_light_t(&dashboard_light, 0);
         }
 
         if (current_wipers_washer_state == ST_WP_ON || current_wipers_washer_state == ST_WP_WS_ON) {
             set_wiper_active_in_dashboard_light_t(&dashboard_light, 1);
-        }else {
+        } else {
             set_wiper_active_in_dashboard_light_t(&dashboard_light, 0);
         }
-
-
         /* ==== End of Algorithms ====*/
 
         /* ==== Start of Encoding and Writing to UDP ====*/
@@ -293,19 +293,20 @@ int main() {
         bgf_encode_frame(&previous_bgf_frame_send[2], BGF_HIGH_BEAM, bgf_frame_send[2] & 0x00FF);
         bgf_encode_frame(&previous_bgf_frame_send[3], BGF_RIGHT_INDICATOR, bgf_frame_send[3] & 0x00FF);
         bgf_encode_frame(&previous_bgf_frame_send[4], BGF_LEFT_INDICATOR, bgf_frame_send[4] & 0x00FF);
+
         if (current_position_light_state == ST_LIGHT_ON && current_position_light_state != previous_position_light_state) {
             bgf_encode_frame(&bgf_frame_send[0], BGF_POSITION, 1);
-        }else if (current_position_light_state == ST_LIGHT_OFF && current_position_light_state != previous_position_light_state) {
+        } else if (current_position_light_state == ST_LIGHT_OFF && current_position_light_state != previous_position_light_state) {
             bgf_encode_frame(&bgf_frame_send[0], BGF_POSITION, 0);
         }
         if (current_low_beam_state == ST_LIGHT_ON && current_low_beam_state != previous_low_beam_state) {
             bgf_encode_frame(&bgf_frame_send[1], BGF_LOW_BEAM, 1);
-        }else if (current_low_beam_state == ST_LIGHT_OFF && current_low_beam_state != previous_low_beam_state) {
+        } else if (current_low_beam_state == ST_LIGHT_OFF && current_low_beam_state != previous_low_beam_state) {
             bgf_encode_frame(&bgf_frame_send[1], BGF_LOW_BEAM, 0);
         }
         if (current_high_beam_state == ST_LIGHT_ON && current_high_beam_state != previous_high_beam_state) {
             bgf_encode_frame(&bgf_frame_send[2], BGF_HIGH_BEAM, 1);
-        }else if (current_high_beam_state == ST_LIGHT_OFF && current_high_beam_state != previous_high_beam_state) {
+        } else if (current_high_beam_state == ST_LIGHT_OFF && current_high_beam_state != previous_high_beam_state) {
             bgf_encode_frame(&bgf_frame_send[2], BGF_HIGH_BEAM, 0);
         }
 
@@ -333,7 +334,6 @@ int main() {
                 break;
             }
         }
-
         /* ==== End of Encoding and Writing to Serial ====*/
     }
 
