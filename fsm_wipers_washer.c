@@ -11,7 +11,7 @@
 
 #include "fsm_wipers_washer.h"
 
-#define TRANS_COUNT (sizeof(trans)/sizeof(*trans))
+#define TRANS_COUNT (sizeof(trans_wipers_washers)/sizeof(*trans_wipers_washers))
 
 typedef struct {
     wipers_washer_state_t state;
@@ -19,7 +19,7 @@ typedef struct {
     uint8_t next_state;
 } tTransition;
 
-tTransition trans[] = {
+tTransition trans_wipers_washers[] = {
     { ST_WP_WS_ALL_OFF, EV_WP_WS_CMD_WP_0_CMD_WS_0, ST_WP_WS_ALL_OFF},
     { ST_WP_WS_ALL_OFF, EV_WP_WS_CMD_WP_1, ST_WP_ON},
     { ST_WP_WS_ALL_OFF, EV_WP_WS_CMD_WS_1, ST_WP_WS_ON},
@@ -34,7 +34,7 @@ tTransition trans[] = {
 };
 
 uint8_t get_next_event_wipers_washer(wipers_washer_state_t current_state, uint8_t cmd_wipers_value, uint8_t cmd_washer_value, clock_t timer) {
-    uint8_t event;
+    wipers_washer_event_t event = EV_WP_WS_CMD_WP_0_CMD_WS_0;
 
     switch (current_state) {
         case ST_WP_WS_ALL_OFF:
@@ -68,9 +68,9 @@ uint8_t get_next_event_wipers_washer(wipers_washer_state_t current_state, uint8_
         case ST_TMR_WP_WS_OFF:
             if (cmd_washer_value == 1) {
                 event = EV_WP_WS_CMD_WS_1;
-            } else if (/* timer < 2 sec*/) {
+            } else if (timer > 0 && timer < 2) {
                 event = EV_WP_WS_TMR_LT2;
-            } else if (/* timer > 2 sec*/) {
+            } else if (timer >= 2) {
                 event = EV_WP_WS_TMR_GT2;
             }
         break;
@@ -84,12 +84,12 @@ uint8_t get_next_event_wipers_washer(wipers_washer_state_t current_state, uint8_
 }
 
 wipers_washer_state_t fsm_wipers_washer(wipers_washer_state_t current_state, uint8_t cmd_wipers_value, uint8_t cmd_washer_value, clock_t timer) {
-    uint8_t event = get_next_event(current_state, cmd_wipers_value, cmd_washer_value, timer);
+    wipers_washer_event_t event = get_next_event_wipers_washer(current_state, cmd_wipers_value, cmd_washer_value, timer);
 
     for (size_t i = 0; i < TRANS_COUNT; i++) {
-        if (current_state == trans[i].state) {
-            if (event == trans[i].event) {
-                current_state = trans[i].next_state;
+        if (current_state == trans_wipers_washers[i].state) {
+            if (event == trans_wipers_washers[i].event) {
+                current_state = trans_wipers_washers[i].next_state;
                 break;
             }
         }
@@ -98,21 +98,26 @@ wipers_washer_state_t fsm_wipers_washer(wipers_washer_state_t current_state, uin
     return current_state;
 }
 
-void wipers_washer_comodo(wipers_washer_state_t current_wipers_washer_state, uint8_t cmd_wipers_value, uint8_t cmd_washer_value, clock_t timer) {
-    wipers_washer_state_t new_state = fsm_wipers_washer(current_wipers_washer_state, cmd_wipers_value, cmd_washer_value, timer);
+wipers_washer_state_t wipers_washer_comodo(wipers_washer_state_t current_wipers_washer_state, uint8_t cmd_wipers_value, uint8_t cmd_washer_value, clock_t timer) {
+	int64_t elapsed_seconds = 0;
+	if(timer != 0){
+		clock_t current_time = clock();
+		elapsed_seconds = (uint64_t)((double)(current_time - timer) / CLOCKS_PER_SEC);
+	}
+	wipers_washer_state_t new_state = fsm_wipers_washer(current_wipers_washer_state, cmd_wipers_value, cmd_washer_value, timer);
 
-    if (new_state != current_wipers_washer_state) {
-        // communication with BGF
-
-        if (new_state == ST_TMR_WP_WS_OFF) {
-            // wait 2 sec max
-            if (/* timer > 2 */) {
-                current_wipers_washer_state = ST_WP_WS_ALL_OFF;
-            } else if (/* timer < 2 */) {
-                wipers_washer_state_t new_state_tmr = fsm_wipers_washer(new_state, cmd_wipers_value, cmd_washer_value, timer);
-                // communication with BGF
-                current_wipers_washer_state = new_state_tmr;
+	if (new_state != current_wipers_washer_state) {
+		if (new_state == ST_TMR_WP_WS_OFF) {
+			if (elapsed_seconds >= 2) {
+				current_wipers_washer_state = ST_WP_WS_ALL_OFF;
+			} else if (elapsed_seconds > 0 && elapsed_seconds < 2) {
+				wipers_washer_state_t new_state_tmr = fsm_wipers_washer(new_state, cmd_wipers_value, cmd_washer_value, timer);
+				return new_state_tmr;
+			}else {
+				return new_state;
             }
-        }
-    }
+		}
+        return current_wipers_washer_state;
+	}
+    return current_wipers_washer_state;
 }
