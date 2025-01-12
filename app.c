@@ -3,6 +3,7 @@
  * \brief Main application
  * \authors Romain Barré, Lucas Velay, Yann Etrillard
 */
+
 #include "drv_api.h"
 #include "fifo.h"
 #include <errno.h>
@@ -15,6 +16,7 @@
 #include "encode.h"
 #include "fsm_classic_car_lights.h"
 #include "fsm_indicator_light_warning.h"
+#include "fsm_wipers_washer.h"
 
 
 int main() {
@@ -254,7 +256,7 @@ int main() {
             set_warning_in_dashboard_light_t(&dashboard_light, 0);
         }
 
-        if (current_wipers_state == ST_WP_ACTIVATED || current_wipers_state == ST_WP_WS_ON) {
+        if (current_wipers_state == ST_WP_ON || current_wipers_state == ST_WP_WS_ON) {
             set_wiper_active_in_dashboard_light_t(&dashboard_light, 1);
         }else {
             set_wiper_active_in_dashboard_light_t(&dashboard_light, 0);

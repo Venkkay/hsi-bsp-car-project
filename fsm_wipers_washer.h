@@ -19,7 +19,7 @@
  * \param   timer : Time from which the FSM is requested
  * \return  uint8_t : The value of the next event
  */
-uint8_t get_next_event(wipers_washer_state_t current_state, uint8_t cmd_wipers_value, uint8_t cmd_washer_value, clock_t timer);
+uint8_t get_next_event_wipers_washer(wipers_washer_state_t current_state, uint8_t cmd_wipers_value, uint8_t cmd_washer_value, clock_t timer);
 
 /**
  * \brief   Performs the FSM with parameters sent by the system
