@@ -42,5 +42,5 @@ void create_bcgv_to_mux_frame(bcgv_frame_t* bcgv_frame, uint8_t udpFrame[DRV_UDP
  * \param        frame : Table with the data to be process for the serial table
  * \param data_length : Length of the table frame
 */
-void encode_serial_frame_bgf(serial_frame_t* serial_frame, bgf_frame_t* frame, uint32_t data_length);
+uint8_t encode_serial_frame_bgf(serial_frame_t* serial_frame, bgf_frame_t* frame, bgf_frame_t* previous_frame, uint32_t data_length);
 #endif //ENCODE_H

@@ -14,13 +14,20 @@ void bgf_encode_frame(bgf_frame_t* fr, uint8_t id_message, uint8_t message) {
 }
 
 
-void encode_serial_frame_bgf(serial_frame_t* serial_frame, bgf_frame_t* frame, uint32_t data_length) {
-  for(uint8_t i = 0; i < data_length; i++) {
-    serial_frame[i].frameSize = 2;
-    serial_frame[i].serNum = SERIAL_BGF;
-    serial_frame[i].frame[0] = ((frame[i] & 0xff00) >> 8);
-    serial_frame[i].frame[1] = frame[i] & 0x00ff;
-  }
+uint8_t encode_serial_frame_bgf(serial_frame_t* serial_frame, bgf_frame_t* frame, bgf_frame_t* previous_frame, uint32_t data_length) {
+	uint8_t j = 0;
+	for(uint8_t i = 0; i < data_length; i++) {
+		//printf("frame[%d] = %02X\n", i, frame[i]);
+		//printf("previous_frame[%d] = %02X\n", i, previous_frame[i]);
+		if (frame[i] != previous_frame[i]) {
+  			serial_frame[j].frameSize = 2;
+  			serial_frame[j].serNum = SERIAL_BGF;
+  			serial_frame[j].frame[0] = ((frame[i] & 0xff00) >> 8);
+  			serial_frame[j].frame[1] = frame[i] & 0x00ff;
+			j++;
+		}
+	}
+	return j+1;
 }
 
 void bcgv_to_mux(bcgv_frame_t* bcgv_frame ,dashboard_light_t dashboard_light, speed_t speed, kilometer_t kilometer, fuel_t fuel, rpm_t rpm) {

@@ -710,7 +710,7 @@ bool set_indicator_event_t(indicator_event_t* instance, const uint8_t value) {
 }
 
 bool check_wipers_washer_state_t(const uint8_t value){
-    if(!(value == ST_WP_WS_ALL_OFF || value == ST_WP_ACTIVATED || value == ST_WP_WS_ON || value == ST_TMR_WP_WS_OFF)) {
+    if(!(value == ST_WP_WS_ALL_OFF || value == ST_WP_ON || value == ST_WP_WS_ON || value == ST_TMR_WP_WS_OFF)) {
         return false;
     }
     return true;

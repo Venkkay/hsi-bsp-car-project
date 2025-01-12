@@ -32,14 +32,20 @@ int main() {
 
     comodo_frame_t comodo_frame[DRV_MAX_FRAMES];
     bgf_frame_t bgf_frame_recv[DRV_MAX_FRAMES] = {0};
-    bgf_frame_t bgf_frame_send[5] = {0};
+    bgf_frame_t bgf_frame_send[5];
+    bgf_encode_frame(&bgf_frame_send[0], BGF_POSITION, 0);
+    bgf_encode_frame(&bgf_frame_send[1], BGF_LOW_BEAM, 0);
+    bgf_encode_frame(&bgf_frame_send[2], BGF_HIGH_BEAM, 0);
+    bgf_encode_frame(&bgf_frame_send[3], BGF_RIGHT_INDICATOR, 0);
+    bgf_encode_frame(&bgf_frame_send[4], BGF_LEFT_INDICATOR, 0);
+
+    bgf_frame_t previous_bgf_frame_send[5] = {0};
 
     bcgv_frame_t bcgv_frame;
     uint8_t udp_frame_bcgv[DRV_UDP_200MS_FRAME_SIZE];
 
     uint8_t frame_number = 1;
     light_state_t current_position_light_state = ST_LIGHT_OFF;
-
     light_state_t current_low_beam_state = ST_LIGHT_OFF;
     light_state_t current_high_beam_state = ST_LIGHT_OFF;
 
@@ -48,6 +54,16 @@ int main() {
     indicator_state_t current_warning_state = ST_INDICATOR_OFF;
 
     wipers_washer_state_t current_wipers_washer_state = ST_WP_WS_ALL_OFF;
+
+    light_state_t previous_position_light_state = ST_LIGHT_OFF;
+    light_state_t previous_low_beam_state = ST_LIGHT_OFF;
+    light_state_t previous_high_beam_state = ST_LIGHT_OFF;
+
+    indicator_state_t previous_right_indicator_state = ST_INDICATOR_OFF;
+    indicator_state_t previous_left_indicator_state = ST_INDICATOR_OFF;
+    //indicator_state_t previous_warning_state = ST_INDICATOR_OFF;
+
+    //wipers_washer_state_t previous_wipers_washer_state = ST_WP_WS_ALL_OFF;
 
     dashboard_light_t dashboard_light;
 
@@ -129,44 +145,45 @@ int main() {
         /* ==== Start of Algorithms ====*/
 
         for (size_t k = 0; k < data_len; k++) {
-            printf("FOR 1\n");
+            //mprintf("FOR 1\n");
             for (size_t l = 0; l < 5; l++) {
-                printf("FOR 2\n");
-                if ((bgf_frame_recv[k] & 0xFF00) == (bgf_frame_send[l] & 0xFF00)) {
-                    printf("IF 1\n");
-                    if ((bgf_frame_recv[k] & 0x00FF) == (bgf_frame_send[l] & 0x00FF)) {
-                        printf("IF 2\n");
-                        switch (bgf_frame_recv[k] & 0xFF00) {
-                            case 0x01:
-                                current_position_light_state = ST_LIGHT_ACQUITTED;
-                                printf("current_position_light_state = ST_LIGHT_ACQUITTED\n");
-                                break;
-                            case 0x02:
-                                current_low_beam_state = ST_LIGHT_ACQUITTED;
-                                printf("current_low_beam_state = ST_LIGHT_ACQUITTED;\n");
-                                break;
-                            case 0x03:
-                                current_high_beam_state = ST_LIGHT_ACQUITTED;
-                                printf("current_high_beam_state = ST_LIGHT_ACQUITTED;\n");
-                                break;
-                            case 0x04:
-                                if ((bgf_frame_send[l] & 0x00FF) == 0) {
-                                    current_right_indicator_state = ST_INDICATOR_ACQUITTED_OFF;
-                                }else {
-                                    current_right_indicator_state = ST_INDICATOR_ACQUITTED_ON;
-                                }
-                                break;
-                            case 0x05:
-                                if ((bgf_frame_send[l] & 0x00FF) == 0) {
-                                    current_left_indicator_state = ST_INDICATOR_ACQUITTED_OFF;
-                                }else {
-                                    current_left_indicator_state = ST_INDICATOR_ACQUITTED_ON;
-                                }
-                                break;
-                            default:
-                                break;
-                        }
+                //printf("FOR 2\n");
+                if (bgf_frame_recv[k] == bgf_frame_send[l]) {
+                    printf("IF 1 :Received frame is equal to the sent frame\n");
+                    printf("ACK => Receive : %02X; Send : %02X\n", bgf_frame_recv[k], bgf_frame_send[l]);
+                    switch (bgf_frame_recv[k] & 0xFF00) {
+                        case 0x01:
+                            current_position_light_state = ST_LIGHT_ACQUITTED;
+                            printf("current_position_light_state = ST_LIGHT_ACQUITTED\n");
+                            break;
+                        case 0x02:
+                            current_low_beam_state = ST_LIGHT_ACQUITTED;
+                            printf("current_low_beam_state = ST_LIGHT_ACQUITTED;\n");
+                            break;
+                        case 0x03:
+                            current_high_beam_state = ST_LIGHT_ACQUITTED;
+                            printf("current_high_beam_state = ST_LIGHT_ACQUITTED;\n");
+                            break;
+                        case 0x04:
+                            if ((bgf_frame_send[l] & 0x00FF) == 0) {
+                                current_right_indicator_state = ST_INDICATOR_ACQUITTED_OFF;
+                            }else {
+                                current_right_indicator_state = ST_INDICATOR_ACQUITTED_ON;
+                            }
+                            break;
+                        case 0x05:
+                            if ((bgf_frame_send[l] & 0x00FF) == 0) {
+                                current_left_indicator_state = ST_INDICATOR_ACQUITTED_OFF;
+                            }else {
+                                current_left_indicator_state = ST_INDICATOR_ACQUITTED_ON;
+                            }
+                            break;
+                        default:
+                            break;
                     }
+                }
+                else {
+                    printf("DIFFERENT => Receive : %02X; Send : %02X\n", bgf_frame_recv[k], bgf_frame_send[l]);
                 }
             }
         }
@@ -176,54 +193,54 @@ int main() {
         }else {
             position_light_state_timer = 0;
         }
-        if (low_beam_state_timer == ST_LIGHT_ON && low_beam_state_timer == 0) {
+        if (current_low_beam_state == ST_LIGHT_ON && low_beam_state_timer == 0) {
             low_beam_state_timer = clock();
         }else {
             low_beam_state_timer = 0;
         }
-        if (high_beam_state_timer == ST_LIGHT_ON && high_beam_state_timer == 0) {
+        if (current_high_beam_state == ST_LIGHT_ON && high_beam_state_timer == 0) {
             high_beam_state_timer = clock();
         }else {
             high_beam_state_timer = 0;
         }
 
-        if (left_indicator_state_timer == ST_INDICATOR_ACTIVATED_ON && left_indicator_state_timer == 0) {
+        if (current_left_indicator_state == ST_INDICATOR_ACTIVATED_ON && left_indicator_state_timer == 0) {
             left_indicator_state_timer = clock();
-        }else if (left_indicator_state_timer == ST_INDICATOR_ACQUITTED_ON && left_indicator_state_timer == 0) {
+        }else if (current_left_indicator_state == ST_INDICATOR_ACQUITTED_ON && left_indicator_state_timer == 0) {
             left_indicator_state_timer = clock();
-        }else if (left_indicator_state_timer == ST_INDICATOR_ACTIVATED_OFF && left_indicator_state_timer == 0) {
+        }else if (current_left_indicator_state == ST_INDICATOR_ACTIVATED_OFF && left_indicator_state_timer == 0) {
             left_indicator_state_timer = clock();
-        }else if (left_indicator_state_timer == ST_INDICATOR_ACQUITTED_OFF && left_indicator_state_timer == 0) {
+        }else if (current_left_indicator_state == ST_INDICATOR_ACQUITTED_OFF && left_indicator_state_timer == 0) {
             left_indicator_state_timer = clock();
         }else {
             left_indicator_state_timer = 0;
         }
 
-        if (right_indicator_state_timer == ST_INDICATOR_ACTIVATED_ON && right_indicator_state_timer == 0) {
+        if (current_right_indicator_state == ST_INDICATOR_ACTIVATED_ON && right_indicator_state_timer == 0) {
             right_indicator_state_timer = clock();
-        }else if (right_indicator_state_timer == ST_INDICATOR_ACQUITTED_ON && right_indicator_state_timer == 0) {
+        }else if (current_right_indicator_state == ST_INDICATOR_ACQUITTED_ON && right_indicator_state_timer == 0) {
             right_indicator_state_timer = clock();
-        }else if (right_indicator_state_timer == ST_INDICATOR_ACTIVATED_OFF && right_indicator_state_timer == 0) {
+        }else if (current_right_indicator_state == ST_INDICATOR_ACTIVATED_OFF && right_indicator_state_timer == 0) {
             right_indicator_state_timer = clock();
-        }else if (right_indicator_state_timer == ST_INDICATOR_ACQUITTED_OFF && right_indicator_state_timer == 0) {
+        }else if (current_right_indicator_state == ST_INDICATOR_ACQUITTED_OFF && right_indicator_state_timer == 0) {
             right_indicator_state_timer = clock();
         }else {
             right_indicator_state_timer = 0;
         }
 
-        if (warning_state_timer == ST_INDICATOR_ACTIVATED_ON && warning_state_timer == 0) {
+        if (current_warning_state == ST_INDICATOR_ACTIVATED_ON && warning_state_timer == 0) {
             warning_state_timer = clock();
-        }else if (warning_state_timer == ST_INDICATOR_ACQUITTED_ON && warning_state_timer == 0) {
+        }else if (current_warning_state == ST_INDICATOR_ACQUITTED_ON && warning_state_timer == 0) {
             warning_state_timer = clock();
-        }else if (warning_state_timer == ST_INDICATOR_ACTIVATED_OFF && warning_state_timer == 0) {
+        }else if (current_warning_state == ST_INDICATOR_ACTIVATED_OFF && warning_state_timer == 0) {
             warning_state_timer = clock();
-        }else if (warning_state_timer == ST_INDICATOR_ACQUITTED_OFF && warning_state_timer == 0) {
+        }else if (current_warning_state == ST_INDICATOR_ACQUITTED_OFF && warning_state_timer == 0) {
             warning_state_timer = clock();
         }else {
             warning_state_timer = 0;
         }
 
-        if (wipers_state_timer == ST_TMR_WP_WS_OFF && wipers_state_timer == 0) {
+        if (current_wipers_washer_state == ST_TMR_WP_WS_OFF && wipers_state_timer == 0) {
             wipers_state_timer = clock();
         }else {
             wipers_state_timer = 0;
@@ -237,16 +254,23 @@ int main() {
         printf("current_right_indicator_state:%d\n", current_right_indicator_state);
         printf("current_left_indicator_state:%d\n", current_left_indicator_state);
         printf("current_wipers_washer_state:%d\n", current_wipers_washer_state);
-        //for (size_t i = 0; i < data_len; i++) {
-            current_position_light_state = position_light_comodo(current_position_light_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[0]), position_light_state_timer);
-            current_low_beam_state = low_beam_comodo(current_low_beam_state, get_cmd_low_beam_from_comodo_frame_t(comodo_frame[0]), low_beam_state_timer);
-            current_high_beam_state = high_beam_comodo(current_high_beam_state, get_cmd_high_beam_from_comodo_frame_t(comodo_frame[0]), high_beam_state_timer);
+        for (size_t i = 0; i < data_len; i++) {
+            previous_position_light_state = current_position_light_state;
+            current_position_light_state = position_light_comodo(current_position_light_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), position_light_state_timer);
+            previous_low_beam_state = current_low_beam_state;
+            current_low_beam_state = low_beam_comodo(current_low_beam_state, get_cmd_low_beam_from_comodo_frame_t(comodo_frame[i]), low_beam_state_timer);
+            previous_high_beam_state = current_high_beam_state;
+            current_high_beam_state = high_beam_comodo(current_high_beam_state, get_cmd_high_beam_from_comodo_frame_t(comodo_frame[i]), high_beam_state_timer);
 
-            current_warning_state = warning_comodo(current_warning_state, get_cmd_warning_from_comodo_frame_t(comodo_frame[0]), warning_state_timer);
-            current_right_indicator_state = right_indicator_comodo(current_right_indicator_state, get_cmd_right_indicator_from_comodo_frame_t(comodo_frame[0]), right_indicator_state_timer);
-            current_left_indicator_state = left_indicator_comodo(current_left_indicator_state, get_cmd_left_indicator_from_comodo_frame_t(comodo_frame[0]), left_indicator_state_timer);
-            current_wipers_washer_state = wipers_washer_comodo(current_wipers_washer_state, get_cmd_wipers_from_comodo_frame_t(comodo_frame[0]), get_cmd_washer_from_comodo_frame_t(comodo_frame[0]), wipers_state_timer);
-        //}
+            //previous_warning_state = current_warning_state;
+            current_warning_state = warning_comodo(current_warning_state, get_cmd_warning_from_comodo_frame_t(comodo_frame[i]), warning_state_timer);
+            previous_right_indicator_state = current_right_indicator_state;
+            current_right_indicator_state = right_indicator_comodo(current_right_indicator_state, get_cmd_right_indicator_from_comodo_frame_t(comodo_frame[i]), right_indicator_state_timer);
+            previous_left_indicator_state = current_left_indicator_state;
+            current_left_indicator_state = left_indicator_comodo(current_left_indicator_state, get_cmd_left_indicator_from_comodo_frame_t(comodo_frame[i]), left_indicator_state_timer);
+            //previous_wipers_washer_state = current_wipers_washer_state;
+            current_wipers_washer_state = wipers_washer_comodo(current_wipers_washer_state, get_cmd_wipers_from_comodo_frame_t(comodo_frame[i]), get_cmd_washer_from_comodo_frame_t(comodo_frame[i]), wipers_state_timer);
+        }
         printf("After FSM:");
         printf("current_position_light_state:%d\n", current_position_light_state);
         printf("current_low_beam_state:%d\n", current_low_beam_state);
@@ -286,11 +310,7 @@ int main() {
             set_wiper_active_in_dashboard_light_t(&dashboard_light, 0);
         }
 
-        if (current_wipers_washer_state == ST_WP_WS_ON) {
-            set_washer_active_in_dashboard_light_t(&dashboard_light, 1);
-        }else {
-            set_washer_active_in_dashboard_light_t(&dashboard_light, 0);
-        }
+
         printf("End lights\n");
         /* ==== End of Algorithms ====*/
 
@@ -306,44 +326,54 @@ int main() {
         /* ==== End of Encoding and Writing to UDP ====*/
 
         /* ==== Start of Encoding and Writing to Serial ====*/
-
-        if (current_position_light_state == ST_LIGHT_ON) {
+        bgf_encode_frame(&previous_bgf_frame_send[0], BGF_POSITION, bgf_frame_send[0] & 0x00FF);
+        bgf_encode_frame(&previous_bgf_frame_send[1], BGF_LOW_BEAM, bgf_frame_send[1] & 0x00FF);
+        bgf_encode_frame(&previous_bgf_frame_send[2], BGF_HIGH_BEAM, bgf_frame_send[2] & 0x00FF);
+        bgf_encode_frame(&previous_bgf_frame_send[3], BGF_RIGHT_INDICATOR, bgf_frame_send[3] & 0x00FF);
+        bgf_encode_frame(&previous_bgf_frame_send[4], BGF_LEFT_INDICATOR, bgf_frame_send[4] & 0x00FF);
+        if (current_position_light_state == ST_LIGHT_ON && current_position_light_state != previous_position_light_state) {
             bgf_encode_frame(&bgf_frame_send[0], BGF_POSITION, 1);
-        }else if (current_position_light_state == ST_LIGHT_OFF) {
+        }else if (current_position_light_state == ST_LIGHT_OFF && current_position_light_state != previous_position_light_state) {
             bgf_encode_frame(&bgf_frame_send[0], BGF_POSITION, 0);
         }
-        if (current_low_beam_state == ST_LIGHT_ON) {
+        if (current_low_beam_state == ST_LIGHT_ON && current_low_beam_state != previous_low_beam_state) {
             bgf_encode_frame(&bgf_frame_send[1], BGF_LOW_BEAM, 1);
-        }else if (current_low_beam_state == ST_LIGHT_OFF) {
+        }else if (current_low_beam_state == ST_LIGHT_OFF && current_low_beam_state != previous_low_beam_state) {
             bgf_encode_frame(&bgf_frame_send[1], BGF_LOW_BEAM, 0);
         }
-        if (current_high_beam_state == ST_LIGHT_ON) {
+        if (current_high_beam_state == ST_LIGHT_ON && current_high_beam_state != previous_high_beam_state) {
             bgf_encode_frame(&bgf_frame_send[2], BGF_HIGH_BEAM, 1);
-        }else if (current_high_beam_state == ST_LIGHT_OFF) {
+        }else if (current_high_beam_state == ST_LIGHT_OFF && current_high_beam_state != previous_high_beam_state) {
             bgf_encode_frame(&bgf_frame_send[2], BGF_HIGH_BEAM, 0);
         }
-        if (current_right_indicator_state == ST_INDICATOR_ACQUITTED_ON) {
-            bgf_encode_frame(&bgf_frame_send[3], BGF_RIGHT_INDICATOR, 1);
-        } else if (current_right_indicator_state == ST_INDICATOR_ACQUITTED_OFF) {
-            bgf_encode_frame(&bgf_frame_send[3], BGF_RIGHT_INDICATOR, 0);
-        } else if (current_right_indicator_state == ST_INDICATOR_OFF) {
-            bgf_encode_frame(&bgf_frame_send[3], BGF_RIGHT_INDICATOR, 0);
-        }
-        if (current_left_indicator_state == ST_INDICATOR_ACQUITTED_ON) {
-            bgf_encode_frame(&bgf_frame_send[4], BGF_LEFT_INDICATOR, 1);
-        } else if (current_left_indicator_state == ST_INDICATOR_ACQUITTED_OFF) {
-            bgf_encode_frame(&bgf_frame_send[4], BGF_LEFT_INDICATOR, 0);
-        } else if (current_left_indicator_state == ST_INDICATOR_OFF) {
-            bgf_encode_frame(&bgf_frame_send[4], BGF_LEFT_INDICATOR, 0);
-        }
-        encode_serial_frame_bgf(serial_frame_bgf, bgf_frame_send, sizeof(bgf_frame_send));
 
-        drv_frame = drv_write_ser(drv_fd, serial_frame_bgf, sizeof(bgf_frame_send));
-        if (drv_frame != DRV_SUCCESS) {
-            printf("Serial frame write failed : %s...\n", strerror(errno));
-            break;
+        if (current_right_indicator_state == ST_INDICATOR_ACQUITTED_ON && current_right_indicator_state != previous_right_indicator_state) {
+            bgf_encode_frame(&bgf_frame_send[3], BGF_RIGHT_INDICATOR, 1);
+        } else if (current_right_indicator_state == ST_INDICATOR_ACQUITTED_OFF && current_right_indicator_state != previous_right_indicator_state) {
+            bgf_encode_frame(&bgf_frame_send[3], BGF_RIGHT_INDICATOR, 0);
+        } else if (current_right_indicator_state == ST_INDICATOR_OFF && current_right_indicator_state != previous_right_indicator_state) {
+            bgf_encode_frame(&bgf_frame_send[3], BGF_RIGHT_INDICATOR, 0);
         }
-        printf("End Writing Serial\n");
+        if (current_left_indicator_state == ST_INDICATOR_ACQUITTED_ON && current_left_indicator_state != previous_left_indicator_state) {
+            bgf_encode_frame(&bgf_frame_send[4], BGF_LEFT_INDICATOR, 1);
+        } else if (current_left_indicator_state == ST_INDICATOR_ACQUITTED_OFF && current_left_indicator_state != previous_left_indicator_state) {
+            bgf_encode_frame(&bgf_frame_send[4], BGF_LEFT_INDICATOR, 0);
+        } else if (current_left_indicator_state == ST_INDICATOR_OFF && current_left_indicator_state != previous_left_indicator_state) {
+            bgf_encode_frame(&bgf_frame_send[4], BGF_LEFT_INDICATOR, 0);
+        }
+
+        data_len = encode_serial_frame_bgf(serial_frame_bgf, bgf_frame_send, previous_bgf_frame_send,sizeof(bgf_frame_send));
+
+        if (data_len > 0) {
+            drv_frame = drv_write_ser(drv_fd, serial_frame_bgf, data_len);
+            printf("Data len:%d\n", data_len);
+            if (drv_frame != DRV_SUCCESS) {
+                printf("Serial frame write failed : %s...\n", strerror(errno));
+                break;
+            }
+            printf("End Writing Serial\n");
+        }
+
         /* ==== End of Encoding and Writing to Serial ====*/
     }
 
