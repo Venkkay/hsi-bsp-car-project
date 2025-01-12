@@ -1,7 +1,14 @@
+/**
+ * \file app.c
+ * \brief Main application
+ * \authors Romain Barré, Lucas Velay, Yann Etrillard
+*/
 #include "drv_api.h"
 #include "fifo.h"
 #include <errno.h>
 #include <string.h>
+
+#include <time.h>
 
 #include "libs/data_lib/data_management.h"
 #include "decode.h"
@@ -9,7 +16,6 @@
 #include "fsm_classic_car_lights.h"
 #include "fsm_indicator_light_warning.h"
 
-#include "state_manager.h"
 
 int main() {
 
@@ -30,7 +36,6 @@ int main() {
     uint8_t frame_number = 1;
     light_state_t current_position_light_state = ST_LIGHT_OFF;
     light_state_t new_position_light_state = current_position_light_state;
-    uint8_t position_light_state_timer = 0;
 
     light_state_t current_low_beam_state = ST_LIGHT_OFF;
     light_state_t current_high_beam_state = ST_LIGHT_OFF;
@@ -43,6 +48,16 @@ int main() {
     wipers_washer_state_t current_washer_state = ST_WP_WS_ALL_OFF;
 
     dashboard_light_t dashboard_light;
+
+    uint8_t position_light_state_timer = 0;
+    uint8_t low_beam_state_timer = 0;
+    uint8_t high_beam_state_timer = 0;
+
+    uint8_t left_indicator_state_timer = 0;
+    uint8_t right_indicator_state_timer = 0;
+    uint8_t warning_state_timer = 0;
+
+    uint8_t wipers_state_timer = 0;
 
     int32_t drv_fd = drv_open();
     if (drv_fd == DRV_ERROR) {
@@ -106,21 +121,80 @@ int main() {
 
         /* ==== Start of Algorithms ====*/
 
-        for (size_t i = 0; i < data_len; i++) {
-            position_light_comodo(current_position_light_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), /* timer */);
-            low_beam_comodo(current_low_beam_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), /* timer */);
-            high_beam_comodo(current_high_beam_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), /* timer */);
+        if (current_position_light_state == ST_LIGHT_ON && position_light_state_timer == 0) {
+            position_light_state_timer = clock();
+        }else {
+            position_light_state_timer = 0;
+        }
+        if (low_beam_state_timer == ST_LIGHT_ON && low_beam_state_timer == 0) {
+            low_beam_state_timer = clock();
+        }else {
+            low_beam_state_timer = 0;
+        }
+        if (high_beam_state_timer == ST_LIGHT_ON && high_beam_state_timer == 0) {
+            high_beam_state_timer = clock();
+        }else {
+            high_beam_state_timer = 0;
+        }
 
-            warning_comodo(current_warning_state, get_cmd_warning_from_comodo_frame_t(comodo_frame[i]), /* timer */);
-            right_indicator_comodo(current_right_indicator_state, get_cmd_right_indicator_from_comodo_frame_t(comodo_frame[i]), /* timer */);
-            left_indicator_comodo(current_left_indicator_state, get_cmd_left_indicator_from_comodo_frame_t(comodo_frame[i]), /* timer */);
+        if (left_indicator_state_timer == ST_INDICATOR_ACTIVATED_ON && left_indicator_state_timer == 0) {
+            left_indicator_state_timer = clock();
+        }else if (left_indicator_state_timer == ST_INDICATOR_ACQUITTED_ON && left_indicator_state_timer == 0) {
+            left_indicator_state_timer = clock();
+        }else if (left_indicator_state_timer == ST_INDICATOR_ACTIVATED_OFF && left_indicator_state_timer == 0) {
+            left_indicator_state_timer = clock();
+        }else if (left_indicator_state_timer == ST_INDICATOR_ACQUITTED_OFF && left_indicator_state_timer == 0) {
+            left_indicator_state_timer = clock();
+        }else {
+            left_indicator_state_timer = 0;
+        }
+
+        if (right_indicator_state_timer == ST_INDICATOR_ACTIVATED_ON && right_indicator_state_timer == 0) {
+            right_indicator_state_timer = clock();
+        }else if (right_indicator_state_timer == ST_INDICATOR_ACQUITTED_ON && right_indicator_state_timer == 0) {
+            right_indicator_state_timer = clock();
+        }else if (right_indicator_state_timer == ST_INDICATOR_ACTIVATED_OFF && right_indicator_state_timer == 0) {
+            right_indicator_state_timer = clock();
+        }else if (right_indicator_state_timer == ST_INDICATOR_ACQUITTED_OFF && right_indicator_state_timer == 0) {
+            right_indicator_state_timer = clock();
+        }else {
+            right_indicator_state_timer = 0;
+        }
+
+        if (warning_state_timer == ST_INDICATOR_ACTIVATED_ON && warning_state_timer == 0) {
+            warning_state_timer = clock();
+        }else if (warning_state_timer == ST_INDICATOR_ACQUITTED_ON && warning_state_timer == 0) {
+            warning_state_timer = clock();
+        }else if (warning_state_timer == ST_INDICATOR_ACTIVATED_OFF && warning_state_timer == 0) {
+            warning_state_timer = clock();
+        }else if (warning_state_timer == ST_INDICATOR_ACQUITTED_OFF && warning_state_timer == 0) {
+            warning_state_timer = clock();
+        }else {
+            warning_state_timer = 0;
+        }
+
+        if (wipers_state_timer == ST_TMR_WP_WS_OFF && wipers_state_timer == 0) {
+            wipers_state_timer = clock();
+        }else {
+            wipers_state_timer = 0;
+        }
+
+
+        for (size_t i = 0; i < data_len; i++) {
+            //position_light_comodo(current_position_light_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), /* timer */);
+            //low_beam_comodo(current_low_beam_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), /* timer */);
+            //high_beam_comodo(current_high_beam_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), /* timer */);
+
+            //warning_comodo(current_warning_state, get_cmd_warning_from_comodo_frame_t(comodo_frame[i]), /* timer */);
+            // right_indicator_comodo(current_right_indicator_state, get_cmd_right_indicator_from_comodo_frame_t(comodo_frame[i]), /* timer */);
+            //left_indicator_comodo(current_left_indicator_state, get_cmd_left_indicator_from_comodo_frame_t(comodo_frame[i]), /* timer */);
 
             /* Need to be commit */
             //wipers_comodo(current_wipers_state, get_cmd_wipers_from_comodo_frame_t(comodo_frame[i]), /* timer */);
             //washer_comodo(current_washer_state, get_cmd_washer_from_comodo_frame_t(comodo_frame[i]), /* timer */);
         }
 
-
+        // === Lights on the dashboard ===
         if (current_position_light_state == ST_LIGHT_ACQUITTED) {
             set_position_light_in_dashboard_light_t(&dashboard_light, 1);
         }else {
