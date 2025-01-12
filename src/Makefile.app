@@ -1,5 +1,5 @@
 # Name of the executable
-TARGET = app
+TARGET = ../app
 
 # Compiler
 CC = gcc
@@ -8,10 +8,10 @@ CC = gcc
 CFLAGS = -W -Wall -pedantic
 
 # Driver library
-LIBS = drv_api.a libs/data_lib/libdata.a
+LIBS = ../drv_api.a ../libs/data_lib/libdata.a
 
 # Source files
-SRC = app.c decode.c encode.c fsm_classic_car_lights.c fsm_indicator_light_warning.c fsm_wipers_washer.c
+SRC = app.c decode.c encode.c fsm/fsm_classic_car_lights.c fsm/fsm_indicator_light_warning.c fsm/fsm_wipers_washer.c
 
 # Default rules
 all: $(TARGET)

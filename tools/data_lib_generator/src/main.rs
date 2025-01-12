@@ -9,7 +9,6 @@ use crate::generators::main_generator::generate_data_lib;
 // Parse command line arguments
 fn parse_args() {
     let args: Vec<String> = env::args().collect();
-    //let j = 0;
     let mut parsed_args: Vec<Vec<String>> = Vec::new();
     for arg in args[1..].chunks(2) {
         parsed_args.push(arg.to_vec());

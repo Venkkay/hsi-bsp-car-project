@@ -34,8 +34,6 @@ fn write_atomic_types_functions(source: &mut File, header: &mut File, data_lib: 
     for data_type in &mut data_lib.types {
         if data_type.kind == "atomic" {
             if let Some(DeclarationType::String(declaration)) = &data_type.declaration {
-                //writeln!(source, "/**\n * Get the value of {}.\n *\n * @param[in] instance An instance of {}.\n * @return Return the value of the instance.\n */", data_type.name, data_type.name).unwrap();
-                //writeln!(source, "{} get_{}({} instance) {{\n    return instance;\n}}", declaration, data_type.name, data_type.name).unwrap();
                 let mut check_number = 0;
                 let mut tmp_atomic_check = String::new();
 

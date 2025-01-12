@@ -17,8 +17,6 @@ void bgf_encode_frame(bgf_frame_t* fr, uint8_t id_message, uint8_t message) {
 uint8_t encode_serial_frame_bgf(serial_frame_t* serial_frame, bgf_frame_t* frame, bgf_frame_t* previous_frame, uint32_t data_length) {
 	uint8_t j = 0;
 	for(uint8_t i = 0; i < data_length; i++) {
-		//printf("frame[%d] = %02X\n", i, frame[i]);
-		//printf("previous_frame[%d] = %02X\n", i, previous_frame[i]);
 		if (frame[i] != previous_frame[i]) {
   			serial_frame[j].frameSize = 2;
   			serial_frame[j].serNum = SERIAL_BGF;
@@ -76,14 +74,14 @@ void create_bcgv_to_mux_frame(bcgv_frame_t* bcgv_frame, uint8_t udpFrame[DRV_UDP
 
 
 
-	udpFrame[0] = lightdash1; // light 1
-	udpFrame[1] = lightdash2; // light 2
-	udpFrame[2] = kilometer & 0xFF000000; // kilometre 1
-	udpFrame[3] = kilometer & 0x00FF0000; // kilometre 2
-	udpFrame[4] = kilometer & 0x0000FF00; // kilometre 3
-    udpFrame[5] = kilometer & 0x000000FF; // kilometre 4
-    udpFrame[6] = speed; // vitesse
-    udpFrame[7] = fuel; // niveau fuel
-	udpFrame[8] = rpm & 0xFF00; // rpm1
-    udpFrame[9] = rpm & 0x00FF; // rpm2
+	udpFrame[0] = lightdash1;
+	udpFrame[1] = lightdash2;
+	udpFrame[2] = kilometer & 0xFF000000;
+	udpFrame[3] = kilometer & 0x00FF0000;
+	udpFrame[4] = kilometer & 0x0000FF00;
+    udpFrame[5] = kilometer & 0x000000FF;
+    udpFrame[6] = speed;
+    udpFrame[7] = fuel;
+	udpFrame[8] = rpm & 0xFF00;
+    udpFrame[9] = rpm & 0x00FF;
 }

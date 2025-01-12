@@ -9,7 +9,7 @@
 
 #include <time.h>
 
-#include "libs/data_lib/data_management.h"
+#include "../../libs/data_lib/data_management.h"
 
 /**
  * \brief   Determines the event that will occur using FSM parameters

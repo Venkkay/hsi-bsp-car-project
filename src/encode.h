@@ -7,8 +7,8 @@
 #ifndef ENCODE_H
 #define ENCODE_H
 
-#include "drv_api.h"
-#include "libs/data_lib/data_management.h"
+#include "../drv_api.h"
+#include "../libs/data_lib/data_management.h"
 
 /**
  * \brief Encode the data to create the BGF frame

@@ -11,8 +11,8 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-#include "drv_api.h"
-#include "libs/data_lib/data_management.h"
+#include "../drv_api.h"
+#include "../libs/data_lib/data_management.h"
 
 
 /**

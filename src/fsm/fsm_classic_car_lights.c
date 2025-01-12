@@ -88,12 +88,9 @@ light_state_t position_light_comodo(light_state_t current_position_light_state, 
     	}
 
       	light_state_t new_state = fsm_classic_car_lights(current_position_light_state, cmd_value);
-		printf("IN FSM:");
-        printf("new_state:%d\n", new_state);
     	if (new_state != current_position_light_state) {
 
         	if (elapsed_seconds >= 1) {
-              printf("\n========================================================================\n");
       		  current_position_light_state = ST_LIGHT_ERROR;
         	}else {
         	  return new_state;

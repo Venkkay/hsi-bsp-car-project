@@ -5,20 +5,6 @@
 */
 
 #include "decode.h"
-/*
-TODO
-
-Donnée reçu en sérial sont mélangé. A la fois la commodo et BGF => Prendre que COMMODO
-
-serial_frame_t
-uint32_t serNum;                    Physical ser number  == 11 pour commodo
-uint8_t frame[SER_MAX_FRAME_SIZE (2)];  Frame received/to write == frame a récupérer pour comodo_frame_t[]
-size_t frameSize;                   Size of received frame  == taille de la frame reçu
-
-Reception du MUX => drv
-uint8_t udpFrame[DRV_UDP_100MS_FRAME_SIZE (15)] == toutes les infos connus
-
-*/
 
 void decode_mux_frame(mux_frame_t* mux_frame, uint8_t udpFrame[DRV_UDP_100MS_FRAME_SIZE]){
 
