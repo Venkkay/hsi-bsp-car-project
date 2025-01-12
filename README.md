@@ -123,7 +123,7 @@ We create a tool in Rust that generates a static library that contains the types
 How to use the tool:
 
 ```bash
-    ./tools/data_lib_generator/target/debug/data_lib_generator [options]
+    ./tools/data_lib_generator/target/release/data_lib_generator [options]
 ```
 
 ### Options
