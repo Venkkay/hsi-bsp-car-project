@@ -125,9 +125,11 @@ void decode_comodo_frame(serial_frame_t serial_frame[DRV_MAX_FRAMES], uint32_t d
 
 void decode_bgf_frame(serial_frame_t serial_frame[DRV_MAX_FRAMES], uint32_t data_len, bgf_frame_t bgf_frame[DRV_MAX_FRAMES]){
   for (size_t j = 0; j < data_len; j++) {
-    if (serial_frame[j].serNum == SERIAL_BGF)
-    for (size_t k = 0 ; k < serial_frame[j].frameSize ; k++) {
-      if (set_bgf_frame_t(&bgf_frame[j], serial_frame[j].frame[k]) == false) {
+    if (serial_frame[j].serNum == SERIAL_BGF){
+      uint16_t bgf_frame_temp;
+      bgf_frame_temp = serial_frame[j].frame[0];
+      bgf_frame_temp = (bgf_frame_temp << 8) | serial_frame[j].frame[1];
+      if (set_bgf_frame_t(&bgf_frame[j], bgf_frame_temp) == false) {
         printf("Set bgf frame failed : %s\n", strerror(errno));
       }
     }
