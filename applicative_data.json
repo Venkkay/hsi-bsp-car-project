@@ -529,7 +529,7 @@
                         "value": 0
                     },
                     {
-                        "name": "ST_WP_ACTIVATED",
+                        "name": "ST_WP_ON",
                         "value": 1
                     },
                     {

@@ -46,8 +46,7 @@ int main() {
     indicator_state_t current_left_indicator_state = ST_INDICATOR_OFF;
     indicator_state_t current_warning_state = ST_INDICATOR_OFF;
 
-    wipers_washer_state_t current_wipers_state = ST_WP_WS_ALL_OFF;
-    wipers_washer_state_t current_washer_state = ST_WP_WS_ALL_OFF;
+    wipers_washer_state_t current_wipers_washer_state = ST_WP_WS_ALL_OFF;
 
     dashboard_light_t dashboard_light;
 
@@ -227,9 +226,7 @@ int main() {
             // right_indicator_comodo(current_right_indicator_state, get_cmd_right_indicator_from_comodo_frame_t(comodo_frame[i]), /* timer */);
             //left_indicator_comodo(current_left_indicator_state, get_cmd_left_indicator_from_comodo_frame_t(comodo_frame[i]), /* timer */);
 
-            /* Need to be commit */
-            //wipers_comodo(current_wipers_state, get_cmd_wipers_from_comodo_frame_t(comodo_frame[i]), /* timer */);
-            //washer_comodo(current_washer_state, get_cmd_washer_from_comodo_frame_t(comodo_frame[i]), /* timer */);
+            wipers_washer_comodo(current_wipers_washer_state, get_cmd_wipers_from_comodo_frame_t(comodo_frame[i]), get_cmd_washer_from_comodo_frame_t(comodo_frame[i]), /* timer */);
         }
 
         // === Lights on the dashboard ===
