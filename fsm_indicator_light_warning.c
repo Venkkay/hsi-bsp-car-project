@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <time.h>
 
-#include "fsm_flashing_light_warning.h"
+#include "fsm_indicator_light_warning.h"
 
 #define TRANS_COUNT (sizeof(trans)/sizeof(*trans))
 
