@@ -519,13 +519,13 @@
       "comment": "Describe the possible events of indicators and warnings"
     },
     {
-      "name": "windscreen_wipers_state_t",
+      "name": "wipers_washer_state_t",
       "kind": "enum",
       "declaration": {
         "value_type": "uint8_t",
         "values": [
           {
-            "name": "ST_WS_WP_ALL_OFF",
+            "name": "ST_WP_WS_ALL_OFF",
             "value": 0
           },
           {
@@ -533,7 +533,7 @@
             "value": 1
           },
           {
-            "name": "ST_WS_WP_ON",
+            "name": "ST_WP_WS_ON",
             "value": 2
           },
           {
@@ -543,50 +543,50 @@
         ]
       },
       "domain": "",
-      "comment": "Describe the possible states of the wipers and the windscreen washer"
+      "comment": "Describe the possible states of wipers and the windscreen washer"
     },
     {
-      "name": "windscreen_wipers_event_t",
+      "name": "wipers_washer_event_t",
       "kind": "enum",
       "declaration": {
         "value_type": "uint8_t",
         "values": [
           {
-            "name": "EV_WS_WP_CMD_EG_0_CMD_LG_0",
+            "name": "EV_WP_WS_CMD_WP_0_CMD_WS_0",
             "value": 0
           },
           {
-            "name": "EV_WS_WP_CMD_EG_0",
+            "name": "EV_WP_WS_CMD_WP_0",
             "value": 1
           },
           {
-            "name": "EV_WS_WP_CMD_EG_1",
+            "name": "EV_WP_WS_CMD_WP_1",
             "value": 2
           },
           {
-            "name": "EV_WS_WP_CMD_LG_0",
+            "name": "EV_WP_WS_CMD_WS_0",
             "value": 3
           },
           {
-            "name": "EV_WS_WP_CMD_LG_1",
+            "name": "EV_WP_WS_CMD_WS_1",
             "value": 4
           },
           {
-            "name": "EV_WS_WP_TMR_GT2",
+            "name": "EV_WP_WS_TMR_GT2",
             "value": 5
           },
           {
-            "name": "EV_WS_WP_TMR_LT2",
+            "name": "EV_WP_WS_TMR_LT2",
             "value": 6
           },
           {
-            "name": "EV_WS_WP_ERROR",
+            "name": "EV_WP_WS_ERROR",
             "value": 7
           }
         ]
       },
       "domain": "",
-      "comment": "Describe the possible events of the wipers and the windscreen washer"
+      "comment": "Describe the possible events of wipers and the windscreen washer"
     }
   ],
   "data": [

@@ -373,6 +373,24 @@ bool set_pressure_issue_in_dashboard_light_t(dashboard_light_t* instance, const 
     return false;
 }
 
+uint16_t get_unused_from_dashboard_light_t(const dashboard_light_t instance) {
+    return (instance & 0x0200) >> 9;
+}
+bool check_unused_in_dashboard_light_t(const uint16_t value){
+    if(value >> 1 != 0) {
+        return false;
+    }
+    return true;
+}
+bool set_unused_in_dashboard_light_t(dashboard_light_t* instance, const uint16_t value) {
+    if(check_unused_in_dashboard_light_t(value)) {
+        *instance &= ~0x0200;
+        *instance |= value << 9;
+        return true;
+    }
+    return false;
+}
+
 uint16_t get_discharged_battery_from_dashboard_light_t(const dashboard_light_t instance) {
     return (instance & 0x0100) >> 8;
 }
@@ -535,13 +553,14 @@ bool set_washer_active_in_dashboard_light_t(dashboard_light_t* instance, const u
     return false;
 }
 
-bool set_all_flag_dashboard_light_t(dashboard_light_t* instance, const uint16_t position_light, const uint16_t low_beam, const uint16_t high_beam, const uint16_t fuel, const uint16_t motor_issue, const uint16_t pressure_issue, const uint16_t discharged_battery, const uint16_t warning, const uint16_t battery_issue, const uint16_t coolant_temperature, const uint16_t motor_pressure, const uint16_t oil_overheat, const uint16_t brake_issue, const uint16_t wiper_active, const uint16_t washer_active) {
+bool set_all_flag_dashboard_light_t(dashboard_light_t* instance, const uint16_t position_light, const uint16_t low_beam, const uint16_t high_beam, const uint16_t fuel, const uint16_t motor_issue, const uint16_t pressure_issue, const uint16_t unused, const uint16_t discharged_battery, const uint16_t warning, const uint16_t battery_issue, const uint16_t coolant_temperature, const uint16_t motor_pressure, const uint16_t oil_overheat, const uint16_t brake_issue, const uint16_t wiper_active, const uint16_t washer_active) {
     set_position_light_in_dashboard_light_t(instance, position_light);
     set_low_beam_in_dashboard_light_t(instance, low_beam);
     set_high_beam_in_dashboard_light_t(instance, high_beam);
     set_fuel_in_dashboard_light_t(instance, fuel);
     set_motor_issue_in_dashboard_light_t(instance, motor_issue);
     set_pressure_issue_in_dashboard_light_t(instance, pressure_issue);
+    set_unused_in_dashboard_light_t(instance, unused);
     set_discharged_battery_in_dashboard_light_t(instance, discharged_battery);
     set_warning_in_dashboard_light_t(instance, warning);
     set_battery_issue_in_dashboard_light_t(instance, battery_issue);
@@ -708,30 +727,30 @@ bool set_indicator_event_t(indicator_event_t* instance, const uint8_t value) {
     return false;
 }
 
-bool check_windscreen_wipers_state_t(const uint8_t value){
-    if(!(value == ST_WS_WP_ALL_OFF || value == ST_WP_ACTIVATED || value == ST_WS_WP_ON || value == ST_TMR_WP_WS_OFF)) {
+bool check_wipers_washer_state_t(const uint8_t value){
+    if(!(value == ST_WP_WS_ALL_OFF || value == ST_WP_ACTIVATED || value == ST_WP_WS_ON || value == ST_TMR_WP_WS_OFF)) {
         return false;
     }
     return true;
 }
 
-bool set_windscreen_wipers_state_t(windscreen_wipers_state_t* instance, const uint8_t value) {
-    if (check_windscreen_wipers_state_t(value)) {
+bool set_wipers_washer_state_t(wipers_washer_state_t* instance, const uint8_t value) {
+    if (check_wipers_washer_state_t(value)) {
         *instance = value;
         return true;
     }
     return false;
 }
 
-bool check_windscreen_wipers_event_t(const uint8_t value){
-    if(!(value == EV_WS_WP_CMD_EG_0_CMD_LG_0 || value == EV_WS_WP_CMD_EG_0 || value == EV_WS_WP_CMD_EG_1 || value == EV_WS_WP_CMD_LG_0 || value == EV_WS_WP_CMD_LG_1 || value == EV_WS_WP_TMR_GT2 || value == EV_WS_WP_TMR_LT2 || value == EV_WS_WP_ERROR)) {
+bool check_wipers_washer_event_t(const uint8_t value){
+    if(!(value == EV_WP_WS_CMD_WP_0_CMD_WS_0 || value == EV_WP_WS_CMD_WP_0 || value == EV_WP_WS_CMD_WP_1 || value == EV_WP_WS_CMD_WS_0 || value == EV_WP_WS_CMD_WS_1 || value == EV_WP_WS_TMR_GT2 || value == EV_WP_WS_TMR_LT2 || value == EV_WP_WS_ERROR)) {
         return false;
     }
     return true;
 }
 
-bool set_windscreen_wipers_event_t(windscreen_wipers_event_t* instance, const uint8_t value) {
-    if (check_windscreen_wipers_event_t(value)) {
+bool set_wipers_washer_event_t(wipers_washer_event_t* instance, const uint8_t value) {
+    if (check_wipers_washer_event_t(value)) {
         *instance = value;
         return true;
     }

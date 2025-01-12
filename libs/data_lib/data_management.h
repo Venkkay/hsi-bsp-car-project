@@ -217,32 +217,32 @@ typedef enum indicator_event_t_struct {
 } indicator_event_t;
 
 /**
- * Enum windscreen_wipers_state_t.
+ * Enum wipers_washer_state_t.
  *
- * \details Describe the possible states of the wipers and the windscreen washer 
+ * \details Describe the possible states of wipers and the windscreen washer 
 */
-typedef enum windscreen_wipers_state_t_struct {
-    ST_WS_WP_ALL_OFF = 0,
+typedef enum wipers_washer_state_t_struct {
+    ST_WP_WS_ALL_OFF = 0,
     ST_WP_ACTIVATED = 1,
-    ST_WS_WP_ON = 2,
+    ST_WP_WS_ON = 2,
     ST_TMR_WP_WS_OFF = 3,
-} windscreen_wipers_state_t;
+} wipers_washer_state_t;
 
 /**
- * Enum windscreen_wipers_event_t.
+ * Enum wipers_washer_event_t.
  *
- * \details Describe the possible events of the wipers and the windscreen washer 
+ * \details Describe the possible events of wipers and the windscreen washer 
 */
-typedef enum windscreen_wipers_event_t_struct {
-    EV_WS_WP_CMD_EG_0_CMD_LG_0 = 0,
-    EV_WS_WP_CMD_EG_0 = 1,
-    EV_WS_WP_CMD_EG_1 = 2,
-    EV_WS_WP_CMD_LG_0 = 3,
-    EV_WS_WP_CMD_LG_1 = 4,
-    EV_WS_WP_TMR_GT2 = 5,
-    EV_WS_WP_TMR_LT2 = 6,
-    EV_WS_WP_ERROR = 7,
-} windscreen_wipers_event_t;
+typedef enum wipers_washer_event_t_struct {
+    EV_WP_WS_CMD_WP_0_CMD_WS_0 = 0,
+    EV_WP_WS_CMD_WP_0 = 1,
+    EV_WP_WS_CMD_WP_1 = 2,
+    EV_WP_WS_CMD_WS_0 = 3,
+    EV_WP_WS_CMD_WS_1 = 4,
+    EV_WP_WS_TMR_GT2 = 5,
+    EV_WP_WS_TMR_LT2 = 6,
+    EV_WP_WS_ERROR = 7,
+} wipers_washer_event_t;
 
 /**
  * Struct type mux_frame_t.
@@ -716,6 +716,28 @@ bool check_pressure_issue_in_dashboard_light_t(const uint16_t value);
  */
 bool set_pressure_issue_in_dashboard_light_t(dashboard_light_t* instance, const uint16_t value);
 /**
+ * Get unused flag from dashboard_light_t.
+ *
+ * @param[in] instance An instance of dashboard_light_t.
+ * @return uint16_t : Return the value of the got flag.
+ */
+uint16_t get_unused_from_dashboard_light_t(const dashboard_light_t instance);
+/**
+ * Check the value of unused.
+ *
+ * \param[in] value : The value to check.
+ * \return bool : Return True if the value is valid, False otherwise.
+ */
+bool check_unused_in_dashboard_light_t(const uint16_t value);
+/**
+ * Set unused flag in dashboard_light_t.
+ *
+ * @param[out] instance An instance of dashboard_light_t.
+ * \param[in] value : The value to set.
+ * @return Return True if the value is valid, False otherwise.
+ */
+bool set_unused_in_dashboard_light_t(dashboard_light_t* instance, const uint16_t value);
+/**
  * Get discharged_battery flag from dashboard_light_t.
  *
  * @param[in] instance An instance of dashboard_light_t.
@@ -919,7 +941,7 @@ bool set_washer_active_in_dashboard_light_t(dashboard_light_t* instance, const u
  * @param[out] instance An instance of dashboard_light_t.
  * @return Return True if the value is valid, False otherwise.
  */
-bool set_all_flag_dashboard_light_t(dashboard_light_t* instance, const uint16_t position_light, const uint16_t low_beam, const uint16_t high_beam, const uint16_t fuel, const uint16_t motor_issue, const uint16_t pressure_issue, const uint16_t discharged_battery, const uint16_t warning, const uint16_t battery_issue, const uint16_t coolant_temperature, const uint16_t motor_pressure, const uint16_t oil_overheat, const uint16_t brake_issue, const uint16_t wiper_active, const uint16_t washer_active);
+bool set_all_flag_dashboard_light_t(dashboard_light_t* instance, const uint16_t position_light, const uint16_t low_beam, const uint16_t high_beam, const uint16_t fuel, const uint16_t motor_issue, const uint16_t pressure_issue, const uint16_t unused, const uint16_t discharged_battery, const uint16_t warning, const uint16_t battery_issue, const uint16_t coolant_temperature, const uint16_t motor_pressure, const uint16_t oil_overheat, const uint16_t brake_issue, const uint16_t wiper_active, const uint16_t washer_active);
 /**
  * Check the value of dashboard_light_t.
  *
@@ -1073,35 +1095,35 @@ bool check_indicator_event_t(uint8_t value);
  */
 bool set_indicator_event_t(indicator_event_t* instance, uint8_t value);
 /**
- * Check the value of windscreen_wipers_state_t.
+ * Check the value of wipers_washer_state_t.
  *
  * \param[in] value The value to check.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool check_windscreen_wipers_state_t(uint8_t value);
+bool check_wipers_washer_state_t(uint8_t value);
 /**
- * Set the value of windscreen_wipers_state_t.
+ * Set the value of wipers_washer_state_t.
  *
- * \param[out] instance An instance of windscreen_wipers_state_t.
+ * \param[out] instance An instance of wipers_washer_state_t.
  * \param[in] value : The value to set.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool set_windscreen_wipers_state_t(windscreen_wipers_state_t* instance, uint8_t value);
+bool set_wipers_washer_state_t(wipers_washer_state_t* instance, uint8_t value);
 /**
- * Check the value of windscreen_wipers_event_t.
+ * Check the value of wipers_washer_event_t.
  *
  * \param[in] value The value to check.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool check_windscreen_wipers_event_t(uint8_t value);
+bool check_wipers_washer_event_t(uint8_t value);
 /**
- * Set the value of windscreen_wipers_event_t.
+ * Set the value of wipers_washer_event_t.
  *
- * \param[out] instance An instance of windscreen_wipers_event_t.
+ * \param[out] instance An instance of wipers_washer_event_t.
  * \param[in] value : The value to set.
  * \return bool : Return True if the value is valid, False otherwise.
  */
-bool set_windscreen_wipers_event_t(windscreen_wipers_event_t* instance, uint8_t value);
+bool set_wipers_washer_event_t(wipers_washer_event_t* instance, uint8_t value);
 
 // Struct getter and setter
 /**
