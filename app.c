@@ -31,15 +31,14 @@ int main() {
     uint32_t data_len = 0;
 
     comodo_frame_t comodo_frame[DRV_MAX_FRAMES];
-    bgf_frame_t bgf_frame_recv[DRV_MAX_FRAMES] = {};
-    bgf_frame_t bgf_frame_send[5] = {};
+    bgf_frame_t bgf_frame_recv[DRV_MAX_FRAMES] = {0};
+    bgf_frame_t bgf_frame_send[5] = {0};
 
     bcgv_frame_t bcgv_frame;
     uint8_t udp_frame_bcgv[DRV_UDP_200MS_FRAME_SIZE];
 
     uint8_t frame_number = 1;
     light_state_t current_position_light_state = ST_LIGHT_OFF;
-    light_state_t new_position_light_state = current_position_light_state;
 
     light_state_t current_low_beam_state = ST_LIGHT_OFF;
     light_state_t current_high_beam_state = ST_LIGHT_OFF;
@@ -220,15 +219,14 @@ int main() {
 
 
         for (size_t i = 0; i < data_len; i++) {
-            //position_light_comodo(current_position_light_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), /* timer */);
-            //low_beam_comodo(current_low_beam_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), /* timer */);
-            //high_beam_comodo(current_high_beam_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), /* timer */);
+            current_position_light_state = position_light_comodo(current_position_light_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), position_light_state_timer);
+            current_low_beam_state = low_beam_comodo(current_low_beam_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), low_beam_state_timer);
+            current_high_beam_state = high_beam_comodo(current_high_beam_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), high_beam_state_timer);
 
-            //warning_comodo(current_warning_state, get_cmd_warning_from_comodo_frame_t(comodo_frame[i]), /* timer */);
-            // right_indicator_comodo(current_right_indicator_state, get_cmd_right_indicator_from_comodo_frame_t(comodo_frame[i]), /* timer */);
-            //left_indicator_comodo(current_left_indicator_state, get_cmd_left_indicator_from_comodo_frame_t(comodo_frame[i]), /* timer */);
-
-            wipers_washer_comodo(current_wipers_washer_state, get_cmd_wipers_from_comodo_frame_t(comodo_frame[i]), get_cmd_washer_from_comodo_frame_t(comodo_frame[i]), /* timer */);
+            warning_comodo(current_warning_state, get_cmd_warning_from_comodo_frame_t(comodo_frame[i]), warning_state_timer);
+            right_indicator_comodo(current_right_indicator_state, get_cmd_right_indicator_from_comodo_frame_t(comodo_frame[i]), right_indicator_state_timer);
+            left_indicator_comodo(current_left_indicator_state, get_cmd_left_indicator_from_comodo_frame_t(comodo_frame[i]), left_indicator_state_timer);
+            wipers_washer_comodo(current_wipers_washer_state, get_cmd_wipers_from_comodo_frame_t(comodo_frame[i]), get_cmd_washer_from_comodo_frame_t(comodo_frame[i]), wipers_state_timer);
         }
 
         // === Lights on the dashboard ===
@@ -256,13 +254,13 @@ int main() {
             set_warning_in_dashboard_light_t(&dashboard_light, 0);
         }
 
-        if (current_wipers_state == ST_WP_ON || current_wipers_state == ST_WP_WS_ON) {
+        if (current_wipers_washer_state == ST_WP_ON || current_wipers_washer_state == ST_WP_WS_ON) {
             set_wiper_active_in_dashboard_light_t(&dashboard_light, 1);
         }else {
             set_wiper_active_in_dashboard_light_t(&dashboard_light, 0);
         }
 
-        if (current_washer_state == ST_WP_WS_ON) {
+        if (current_wipers_washer_state == ST_WP_WS_ON) {
             set_washer_active_in_dashboard_light_t(&dashboard_light, 1);
         }else {
             set_washer_active_in_dashboard_light_t(&dashboard_light, 0);

@@ -11,7 +11,7 @@ CFLAGS = -W -Wall -pedantic
 LIBS = drv_api.a libs/data_lib/libdata.a
 
 # Source files
-SRC = app.c decode.c encode.c
+SRC = app.c decode.c encode.c fsm_classic_car_lights.c fsm_indicator_light_warning.c fsm_wipers_washer.c
 
 # Default rules
 all: $(TARGET)

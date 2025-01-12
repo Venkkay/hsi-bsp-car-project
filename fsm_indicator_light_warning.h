@@ -18,7 +18,7 @@
  * \param   timer : Time from which the FSM is requested
  * \return  uint8_t : The value of the next event
  */
-uint8_t get_next_event(indicator_state_t current_state, uint8_t cmd_value, clock_t timer);
+uint8_t get_next_event_indicator_light_warning(indicator_state_t current_state, uint8_t cmd_value, clock_t timer);
 
 /**
  * \brief   Performs the FSM with parameters sent by the system

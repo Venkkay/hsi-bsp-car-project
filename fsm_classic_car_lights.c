@@ -30,7 +30,7 @@ tTransition trans[] = {
 };
 
 uint8_t get_next_event_classic_car_lights(light_state_t current_state, uint8_t cmd_value) {
-    uint8_t event;
+    uint8_t event = 0;
 
     switch (current_state) {
         case ST_LIGHT_OFF:
@@ -67,7 +67,7 @@ uint8_t get_next_event_classic_car_lights(light_state_t current_state, uint8_t c
 
 light_state_t fsm_classic_car_lights(light_state_t current_state, uint8_t cmd_value) {
     while (current_state != ST_LIGHT_ERROR) {
-        uint8_t event = get_next_event(current_state, cmd_value);
+        uint8_t event = get_next_event_classic_car_lights(current_state, cmd_value);
 
         for (size_t i = 0; i < TRANS_COUNT; i++) {
             if (current_state == trans[i].state) {
@@ -83,66 +83,74 @@ light_state_t fsm_classic_car_lights(light_state_t current_state, uint8_t cmd_va
 }
 
 light_state_t position_light_comodo(light_state_t current_position_light_state, uint8_t cmd_value, clock_t start_timer) {
-    clock_t current_time = clock();
-    uint64_t elapsed_seconds = (uint64_t)((double)(current_time - start_timer) / CLOCKS_PER_SEC);
-
+	uint64_t elapsed_seconds = 0;
     if (current_position_light_state != ST_LIGHT_ERROR) {
-      light_state_t new_state = fsm_classic_car_lights(current_position_light_state, cmd_value);
+      	if(start_timer != 0){
+    		clock_t current_time = clock();
+    		elapsed_seconds = (uint64_t)((double)(current_time - start_timer) / CLOCKS_PER_SEC);
+    	}
 
-    if (new_state != current_position_light_state) {
-        // communication with BGF
-        // wait 1 sec max
+      	light_state_t new_state = fsm_classic_car_lights(current_position_light_state, cmd_value);
 
-        if (elapsed_seconds > 1) {
-      	  current_position_light_state = ST_LIGHT_ERROR;
-        } else if (elapsed_seconds < 1) {
-      	  light_state_t new_state_ack = fsm_classic_car_lights(new_state, cmd_value, start_timer);
-      	  // communication with BGF
-      	  current_position_light_state = new_state_ack;
-      }
+    	if (new_state != current_position_light_state) {
+
+        	if (elapsed_seconds >= 1) {
+      		  current_position_light_state = ST_LIGHT_ERROR;
+        	} else if (elapsed_seconds > 0 && elapsed_seconds < 1) {
+      		  return new_state;
+      		}else {
+        	  return current_position_light_state;
+        	}
+      	}
+        return current_position_light_state;
     }
-  }
-  return current_position_light_state;
+    return current_position_light_state;
 }
 
 light_state_t low_beam_comodo(light_state_t current_low_beam_state, uint8_t cmd_value, clock_t start_timer) {
-    clock_t current_time = clock();
-    uint64_t elapsed_seconds = (uint64_t)((double)(current_time - start_timer) / CLOCKS_PER_SEC);
-
+  uint64_t elapsed_seconds = 0;
     if (current_low_beam_state != ST_LIGHT_ERROR) {
-    light_state_t new_state = fsm_classic_car_lights(current_low_beam_state, cmd_value);
+      	if(start_timer != 0){
+    		clock_t current_time = clock();
+    		elapsed_seconds = (uint64_t)((double)(current_time - start_timer) / CLOCKS_PER_SEC);
+    	}
+
+    	light_state_t new_state = fsm_classic_car_lights(current_low_beam_state, cmd_value);
 
         if (new_state != current_low_beam_state) {
-            // communication with BGF
-            // wait 1 sec max
 
-            if (elapsed_seconds > 1) {
+            if (elapsed_seconds >= 1) {
             current_low_beam_state = ST_LIGHT_ERROR;
-            } else if (elapsed_seconds < 1) {
-            light_state_t new_state_ack = fsm_classic_car_lights(new_state, cmd_value);
-            // communication with BGF
-            current_low_beam_state = new_state_ack;
-            }
+            } else if (elapsed_seconds > 0 && elapsed_seconds < 1) {
+      		  return new_state;
+      		}else {
+        	  return current_low_beam_state;
+        	}
         }
+        return current_low_beam_state;
     }
     return current_low_beam_state;
 }
 
 light_state_t high_beam_comodo(light_state_t current_high_beam_state, uint8_t cmd_value, clock_t start_timer) {
-    clock_t current_time = clock();
-    uint64_t elapsed_seconds = (uint64_t)((double)(current_time - start_timer) / CLOCKS_PER_SEC);
+	uint64_t elapsed_seconds = 0;
 
-  if (current_high_beam_state != ST_LIGHT_ERROR) {
-    light_state_t new_state = fsm_classic_car_lights(current_high_beam_state, cmd_value);
+	if (current_high_beam_state != ST_LIGHT_ERROR) {
+		if(start_timer != 0){
+			clock_t current_time = clock();
+			elapsed_seconds = (uint64_t)((double)(current_time - start_timer) / CLOCKS_PER_SEC);
+		}
+		light_state_t new_state = fsm_classic_car_lights(current_high_beam_state, cmd_value);
 
-    if (new_state != current_high_beam_state) {
-      if (elapsed_seconds > 1) {
-      	current_high_beam_state = ST_LIGHT_ERROR;
-      } else if (elapsed_seconds < 1) {
-      	light_state_t new_state_ack = fsm_classic_car_lights(new_state, cmd_value);
-      	current_high_beam_state = new_state_ack;
-      }
-    }
-  }
-  return current_high_beam_state;
+		if (new_state != current_high_beam_state) {
+			if (elapsed_seconds >= 1) {
+				current_high_beam_state = ST_LIGHT_ERROR;
+			}else if (elapsed_seconds > 0 && elapsed_seconds < 1) {
+				return new_state;
+			}else{
+				return current_high_beam_state;
+			}
+		}
+	}
+	return current_high_beam_state;
 }

@@ -105,7 +105,7 @@ uint8_t get_next_event_indicator_light_warning(indicator_state_t current_state, 
 indicator_state_t fsm_indicator_light_warning(indicator_state_t current_state, uint8_t cmd_value, clock_t timer) {
 
     while (current_state != ST_INDICATOR_ERROR) {
-        uint8_t event = get_next_event(current_state, cmd_value, timer);
+        uint8_t event = get_next_event_indicator_light_warning(current_state, cmd_value, timer);
 
         for (size_t i = 0; i < TRANS_COUNT; i++) {
             if (current_state == trans[i].state) {

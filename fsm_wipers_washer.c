@@ -107,7 +107,7 @@ void wipers_washer_comodo(wipers_washer_state_t current_wipers_washer_state, uin
         if (new_state == ST_TMR_WP_WS_OFF) {
             // wait 2 sec max
             if (/* timer > 2 */) {
-                current_wipers_washer_state = ST_WS_WP_ALL_OFF;
+                current_wipers_washer_state = ST_WP_WS_ALL_OFF;
             } else if (/* timer < 2 */) {
                 wipers_washer_state_t new_state_tmr = fsm_wipers_washer(new_state, cmd_wipers_value, cmd_washer_value, timer);
                 // communication with BGF
