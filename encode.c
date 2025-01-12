@@ -1,3 +1,9 @@
+/**
+ * \file encode.c
+ * \brief Encoding functions for the main application
+ * \authors Romain Barré, Lucas Velay, Yann Etrillard
+*/
+
 #include "encode.h"
 
 void bgf_encode_frame(bgf_frame_t* fr, uint8_t id_message, uint8_t message) {
@@ -5,6 +11,16 @@ void bgf_encode_frame(bgf_frame_t* fr, uint8_t id_message, uint8_t message) {
     bgf_frame = id_message;
     bgf_frame = (bgf_frame << 8) | message;
 	set_bgf_frame_t(fr, bgf_frame);
+}
+
+
+void encode_serial_frame_bgf(serial_frame_t* serial_frame, bgf_frame_t* frame, uint32_t data_length) {
+  for(uint8_t i = 0; i < data_length; i++) {
+    serial_frame[i].frameSize = 2;
+    serial_frame[i].serNum = SERIAL_BGF;
+    serial_frame[i].frame[0] = ((frame[i] & 0xff00) >> 8);
+    serial_frame[i].frame[1] = frame[i] & 0x00ff;
+  }
 }
 
 void bcgv_to_mux(bcgv_frame_t* bcgv_frame ,dashboard_light_t dashboard_light, speed_t speed, kilometer_t kilometer, fuel_t fuel, rpm_t rpm) {

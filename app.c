@@ -25,10 +25,12 @@ int main() {
     mux_frame_t mux_frame;
 
     serial_frame_t serial_frame[DRV_MAX_FRAMES];
+    serial_frame_t serial_frame_bgf[DRV_MAX_FRAMES];
     uint32_t data_len = 0;
 
     comodo_frame_t comodo_frame[DRV_MAX_FRAMES];
-    bgf_frame_t bgf_frame[DRV_MAX_FRAMES];
+    bgf_frame_t bgf_frame_recv[DRV_MAX_FRAMES] = {};
+    bgf_frame_t bgf_frame_send[5] = {};
 
     bcgv_frame_t bcgv_frame;
     uint8_t udp_frame_bcgv[DRV_UDP_200MS_FRAME_SIZE];
@@ -115,11 +117,47 @@ int main() {
         // The result is in comodo_frame.
         // You need to data_len to retrieve the data from the table.
         decode_comodo_frame(serial_frame, data_len, comodo_frame);
-        decode_bgf_frame(serial_frame, data_len, bgf_frame);
+        decode_bgf_frame(serial_frame, data_len, bgf_frame_recv);
         /* ==== End of Decoding Serial frame ====*/
 
 
         /* ==== Start of Algorithms ====*/
+
+        for (size_t k = 0; k < data_len; k++) {
+            for (size_t l = 0; l < 5; l++) {
+                if ((bgf_frame_recv[k] & 0xFF00) == (bgf_frame_send[l] & 0xFF00)) {
+                    if ((bgf_frame_recv[k] & 0x00FF) == (bgf_frame_send[l] & 0x00FF)) {
+                        switch (bgf_frame_recv[k] & 0xFF00) {
+                            case 0x01:
+                                current_position_light_state = ST_LIGHT_ACQUITTED;
+                                break;
+                            case 0x02:
+                                current_low_beam_state = ST_LIGHT_ACQUITTED;
+                                break;
+                            case 0x03:
+                                current_high_beam_state = ST_LIGHT_ACQUITTED;
+                                break;
+                            case 0x04:
+                                if ((bgf_frame_send[l] & 0x00FF) == 0) {
+                                    current_right_indicator_state = ST_INDICATOR_ACQUITTED_OFF;
+                                }else {
+                                    current_right_indicator_state = ST_INDICATOR_ACQUITTED_ON;
+                                }
+                                break;
+                            case 0x05:
+                                if ((bgf_frame_send[l] & 0x00FF) == 0) {
+                                    current_left_indicator_state = ST_INDICATOR_ACQUITTED_OFF;
+                                }else {
+                                    current_left_indicator_state = ST_INDICATOR_ACQUITTED_ON;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+        }
 
         if (current_position_light_state == ST_LIGHT_ON && position_light_state_timer == 0) {
             position_light_state_timer = clock();
@@ -245,13 +283,44 @@ int main() {
         /* ==== End of Encoding and Writing to UDP ====*/
 
         /* ==== Start of Encoding and Writing to Serial ====*/
-        /*encode_serial_frame_bgf(serial_frame_bgf, bgf_frame, data_len_bgf);
 
-        drv_frame = drv_write_ser(drv_fd, serial_frame_bgf, data_len_bgf);
+        if (current_position_light_state == ST_LIGHT_ON) {
+            bgf_encode_frame(&bgf_frame_send[0], BGF_POSITION, 1);
+        }else if (current_position_light_state == ST_LIGHT_OFF) {
+            bgf_encode_frame(&bgf_frame_send[0], BGF_POSITION, 0);
+        }
+        if (current_low_beam_state == ST_LIGHT_ON) {
+            bgf_encode_frame(&bgf_frame_send[1], BGF_LOW_BEAM, 1);
+        }else if (current_low_beam_state == ST_LIGHT_OFF) {
+            bgf_encode_frame(&bgf_frame_send[1], BGF_LOW_BEAM, 0);
+        }
+        if (current_high_beam_state == ST_LIGHT_ON) {
+            bgf_encode_frame(&bgf_frame_send[2], BGF_HIGH_BEAM, 1);
+        }else if (current_high_beam_state == ST_LIGHT_OFF) {
+            bgf_encode_frame(&bgf_frame_send[2], BGF_HIGH_BEAM, 0);
+        }
+        if (current_right_indicator_state == ST_INDICATOR_ACQUITTED_ON) {
+            bgf_encode_frame(&bgf_frame_send[3], BGF_RIGHT_INDICATOR, 1);
+        } else if (current_right_indicator_state == ST_INDICATOR_ACQUITTED_OFF) {
+            bgf_encode_frame(&bgf_frame_send[3], BGF_RIGHT_INDICATOR, 0);
+        } else if (current_right_indicator_state == ST_INDICATOR_OFF) {
+            bgf_encode_frame(&bgf_frame_send[3], BGF_RIGHT_INDICATOR, 0);
+        }
+        if (current_left_indicator_state == ST_INDICATOR_ACQUITTED_ON) {
+            bgf_encode_frame(&bgf_frame_send[4], BGF_LEFT_INDICATOR, 1);
+        } else if (current_left_indicator_state == ST_INDICATOR_ACQUITTED_OFF) {
+            bgf_encode_frame(&bgf_frame_send[4], BGF_LEFT_INDICATOR, 0);
+        } else if (current_left_indicator_state == ST_INDICATOR_OFF) {
+            bgf_encode_frame(&bgf_frame_send[4], BGF_LEFT_INDICATOR, 0);
+        }
+
+        encode_serial_frame_bgf(serial_frame_bgf, bgf_frame_send, sizeof(bgf_frame_send));
+
+        drv_frame = drv_write_ser(drv_fd, serial_frame_bgf, sizeof(bgf_frame_send));
         if (drv_frame != DRV_SUCCESS) {
             printf("Serial frame write failed : %s...\n", strerror(errno));
             break;
-        }*/
+        }
         /* ==== End of Encoding and Writing to Serial ====*/
     }
 
