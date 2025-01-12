@@ -6,6 +6,7 @@ use std::env;
 use crate::file_managers::json_operations::read_json;
 use crate::generators::main_generator::generate_data_lib;
 
+// Parse command line arguments
 fn parse_args() {
     let args: Vec<String> = env::args().collect();
     //let j = 0;

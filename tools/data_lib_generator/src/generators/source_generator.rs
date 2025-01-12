@@ -58,7 +58,7 @@ fn write_atomic_types_functions(source: &mut File, header: &mut File, data_lib: 
                 }
 
                 if check_number > 0 {
-                    writeln!(header, "/**\n * Check the value of {}.\n *\n * \\param[in] value : The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
+                    writeln!(header, "\n/**\n * Check the value of {}.\n *\n * \\param[in] value : The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
                     writeln!(header, "bool check_{}(const {} value);", data_type.name, declaration).unwrap();
                     writeln!(source, "bool check_{}(const {} value){{", data_type.name, declaration).unwrap();
                     writeln!(source, "{}", tmp_atomic_check).unwrap();
@@ -66,7 +66,7 @@ fn write_atomic_types_functions(source: &mut File, header: &mut File, data_lib: 
                     data_type.is_checked = true;
                 }
 
-                writeln!(header, "/**\n * Set the value of {}.\n *\n * \\param[out] instance : An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool : Return True if the value is set, False otherwise.\n */", data_type.name, data_type.name).unwrap();
+                writeln!(header, "\n/**\n * Set the value of {}.\n *\n * \\param[out] instance : An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool : Return True if the value is set, False otherwise.\n */", data_type.name, data_type.name).unwrap();
                 writeln!(header, "bool set_{}({}* instance, const {} value);", data_type.name, data_type.name, declaration).unwrap();
                 if data_type.is_checked {
                     writeln!(source, "bool set_{}({}* instance, const {} value) {{\n    if (check_{}(value)) {{\n        *instance = value;\n        return true;\n    }}\n    return false;\n}}\n", data_type.name, data_type.name, declaration, data_type.name).unwrap();
@@ -92,20 +92,26 @@ fn write_flags_functions(source: &mut File, header: &mut File, data_types: &Vec<
                 for flag in &declaration.flags {
                     shift -= flag.bit_size;
                     if flag.name != "unused" {
-                        writeln!(header, "/**\n * Get {} flag from {}.\n *\n * @param[in] instance An instance of {}.\n * @return {} : Return the value of the got flag.\n */", flag.name, data_type.name, data_type.name, declaration.field_type).unwrap();
+                        writeln!(header, "\n/**\n * Get {} flag from {}.\n *\n * @param[in] instance An instance of {}.\n * @return {} : Return the value of the got flag.\n */", flag.name, data_type.name, data_type.name, declaration.field_type).unwrap();
                         writeln!(header, "{} get_{}_from_{}(const {} instance);", declaration.field_type, flag.name, data_type.name, data_type.name).unwrap();
                         writeln!(source, "{} get_{}_from_{}(const {} instance) {{\n    return (instance & 0x{:0fill$x}) >> {};\n}}", declaration.field_type, flag.name, data_type.name, data_type.name, flag.bit_size << shift, shift, fill=(total_size/4 )as usize).unwrap();
 
-                        writeln!(header, "/**\n * Check the value of {}.\n *\n * \\param[in] value : The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", flag.name).unwrap();
+                        writeln!(header, "\n/**\n * Check the value of {}.\n *\n * \\param[in] value : The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", flag.name).unwrap();
                         writeln!(header, "bool check_{}_in_{}(const {} value);", flag.name, data_type.name, declaration.field_type).unwrap();
                         writeln!(source, "bool check_{}_in_{}(const {} value){{\n    if(value >> {} != 0) {{\n        return false;\n    }}\n    return true;\n}}", flag.name, data_type.name, declaration.field_type, flag.bit_size).unwrap();
 
-                        writeln!(header, "/**\n * Set {} flag in {}.\n *\n * @param[out] instance An instance of {}.\n * \\param[in] value : The value to set.\n * @return Return True if the value is valid, False otherwise.\n */", flag.name, data_type.name, data_type.name).unwrap();
+                        writeln!(header, "\n/**\n * Set {} flag in {}.\n *\n * @param[out] instance An instance of {}.\n * \\param[in] value : The value to set.\n * @return Return True if the value is valid, False otherwise.\n */", flag.name, data_type.name, data_type.name).unwrap();
                         writeln!(header, "bool set_{}_in_{}({}* instance, const {} value);", flag.name, data_type.name, data_type.name, declaration.field_type).unwrap();
                         writeln!(source, "bool set_{}_in_{}({}* instance, const {} value) {{\n    if(check_{}_in_{}(value)) {{\n        *instance &= ~0x{:0fill$x};\n        *instance |= value << {};\n        return true;\n    }}\n    return false;\n}}\n", flag.name, data_type.name, data_type.name, declaration.field_type, flag.name, data_type.name, flag.bit_size << shift, shift,  fill=(total_size/4 )as usize).unwrap();
                     }
                 }
-                writeln!(header, "/**\n * Set all flag in {}.\n *\n * @param[out] instance An instance of {}.\n * @return Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
+                writeln!(header, "\n/**\n * Set all flag in {}.\n *\n * \\param[out] instance An instance of {}.", data_type.name, data_type.name).unwrap();
+                for flag in &declaration.flags {
+                    if flag.name != "unused" {
+                        writeln!(header, " * \\param[in] {} : a flag to set.", flag.name).unwrap();
+                    }
+                }
+                writeln!(header, " * \\return bool : Return True if the value is valid, False otherwise.\n */").unwrap();
                 write!(header, "bool set_all_flag_{}({}* instance", data_type.name, data_type.name).unwrap();
                 write!(source, "bool set_all_flag_{}({}* instance", data_type.name, data_type.name).unwrap();
                 for flag in &declaration.flags {
@@ -123,7 +129,7 @@ fn write_flags_functions(source: &mut File, header: &mut File, data_types: &Vec<
                 }
                 writeln!(source, "    return true;\n}}\n").unwrap();
 
-                writeln!(header, "/**\n * Set {}.\n *\n * \\param[out] instance An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
+                writeln!(header, "\n/**\n * Set {}.\n *\n * \\param[out] instance An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
                 writeln!(header, "bool set_{}({}* instance, const {} value);", data_type.name, data_type.name, declaration.field_type).unwrap();
                 writeln!(source, "bool set_{}({}* instance, const {} value) {{\n    *instance = value;\n    return true;\n}}\n", data_type.name, data_type.name, data_type.name).unwrap();
 
@@ -142,7 +148,7 @@ fn write_enums_functions(source: &mut File, header: &mut File, data_types: &Vec<
     for data_type in data_types {
         if data_type.kind == "enum" {
             if let Some(DeclarationType::FieldEnumDeclarations(declaration)) = &data_type.declaration {
-                writeln!(header, "/**\n * Check the value of {}.\n *\n * \\param[in] value The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
+                writeln!(header, "\n/**\n * Check the value of {}.\n *\n * \\param[in] value The value to check.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name).unwrap();
                 writeln!(header, "bool check_{}({} value);", data_type.name, declaration.value_type).unwrap();
 
                 write!(source, "bool check_{}(const {} value){{\n    if(!(", data_type.name, declaration.value_type).unwrap();
@@ -157,7 +163,7 @@ fn write_enums_functions(source: &mut File, header: &mut File, data_types: &Vec<
                 writeln!(source, ")) {{\n        return false;\n    }}\n    return true;\n}}\n").unwrap();
 
 
-                writeln!(header, "/**\n * Set the value of {}.\n *\n * \\param[out] instance An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
+                writeln!(header, "\n/**\n * Set the value of {}.\n *\n * \\param[out] instance An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
                 writeln!(header, "bool set_{}({}* instance, {} value);", data_type.name, data_type.name, declaration.value_type).unwrap();
                 writeln!(source, "bool set_{}({}* instance, const {} value) {{\n    if (check_{}(value)) {{\n        *instance = value;\n        return true;\n    }}\n    return false;\n}}\n", data_type.name, data_type.name, declaration.value_type, data_type.name).unwrap();
 
@@ -188,11 +194,11 @@ fn write_structs_functions(source: &mut File, header: &mut File, data_lib: &Data
                         current_type_declaration = declaration.value_type.clone();
                     }
 
-                    writeln!(header, "/**\n * Get {} field from {}.\n *\n * \\param[in] instance An instance of {}.\n * \\return {} : Return the value of the got field.\n */", field_struct_declaration.name, data_type.name, data_type.name, field_struct_declaration.field_type).unwrap();
+                    writeln!(header, "\n/**\n * Get {} field from {}.\n *\n * \\param[in] instance An instance of {}.\n * \\return {} : Return the value of the got field.\n */", field_struct_declaration.name, data_type.name, data_type.name, field_struct_declaration.field_type).unwrap();
                     writeln!(header, "{} get_{}_from_{}(const {} instance);", field_struct_declaration.field_type, field_struct_declaration.name, data_type.name, data_type.name).unwrap();
                     writeln!(source, "{} get_{}_from_{}(const {} instance) {{\n    return instance.{};\n}}", field_struct_declaration.field_type, field_struct_declaration.name, data_type.name, data_type.name, field_struct_declaration.name).unwrap();
 
-                    writeln!(header, "/**\n * Set {} field in {}.\n *\n * \\param[out] instance : An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool :  Return True if the value is valid, False otherwise.\n */", field_struct_declaration.name, data_type.name, data_type.name).unwrap();
+                    writeln!(header, "\n/**\n * Set {} field in {}.\n *\n * \\param[out] instance : An instance of {}.\n * \\param[in] value : The value to set.\n * \\return bool :  Return True if the value is valid, False otherwise.\n */", field_struct_declaration.name, data_type.name, data_type.name).unwrap();
                     writeln!(header, "bool set_{}_in_{}({}* instance, const {} value);", field_struct_declaration.name, data_type.name, data_type.name, current_type_declaration).unwrap();
                     writeln!(source, "bool set_{}_in_{}({}* instance, const {} value) {{\n    return set_{}(&instance->{}, value);\n}}\n", field_struct_declaration.name, data_type.name, data_type.name, current_type_declaration, field_struct_declaration.field_type, field_struct_declaration.name).unwrap();
                 }
@@ -214,11 +220,17 @@ fn write_structs_functions(source: &mut File, header: &mut File, data_lib: &Data
                     }
                 }
                 if tmp_signature_body.len() > 0 {
-                    writeln!(header, "/**\n * Check all values to set in {}.\n *\n * \\param[out] instance : An instance of {}.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
+                    writeln!(header, "\n/**\n * Check all values to set in {}.", data_type.name).unwrap();
                     if tmp_signature_body.ends_with(", "){
                         tmp_signature_body.pop();
                         tmp_signature_body.pop();
                     }
+                    for field in tmp_signature_body.clone().split(", ") {
+                        if let Some(name_field) = field.split(" ").nth(2) {
+                            writeln!(header, " * \\param[in] {} : The value to set.", name_field).unwrap();
+                        }
+                    }
+                    writeln!(header, " * \\return bool : Return True if the value is valid, False otherwise.\n */").unwrap();
                     write!(header, "bool check_{}(", data_type.name).unwrap();
                     write!(source, "bool check_{}(", data_type.name).unwrap();
                     write!(header, "{}", tmp_signature_body).unwrap();
@@ -230,7 +242,11 @@ fn write_structs_functions(source: &mut File, header: &mut File, data_lib: &Data
                     is_checked = true;
                 }
 
-                writeln!(header, "/**\n * Set all field in {}.\n *\n * \\param[out] instance : An instance of {}.\n * \\return bool : Return True if the value is valid, False otherwise.\n */", data_type.name, data_type.name).unwrap();
+                writeln!(header, "\n/**\n * Set all field in {}.\n *\n * \\param[out] instance : An instance of {}.", data_type.name, data_type.name).unwrap();
+                for field in declaration {
+                    writeln!(header, " * \\param[in] {} : The value to set.", field.name).unwrap();
+                }
+                writeln!(header, " * \\return bool : Return True if the value is valid, False otherwise.\n */").unwrap();
                 write!(header, "bool set_{}({}* instance", data_type.name, data_type.name).unwrap();
                 write!(source, "bool set_{}({}* instance", data_type.name, data_type.name).unwrap();
                 for field in declaration {
