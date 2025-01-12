@@ -104,8 +104,6 @@ typedef uint32_t bgf_sent_timestamp_t;
  * \details Boolean to wait for the acknowledgment of a message sent to the BGF 
 */
 typedef bool wait_ack_bool_t;
-
-
 /**
  * Flag comodo_frame_t.
  *
@@ -255,7 +253,7 @@ typedef enum indicator_event_t_struct {
 */
 typedef enum wipers_washer_state_t_struct {
     ST_WP_WS_ALL_OFF = 0,
-    ST_WP_ACTIVATED = 1,
+    ST_WP_ON = 1,
     ST_WP_WS_ON = 2,
     ST_TMR_WP_WS_OFF = 3,
 } wipers_washer_state_t;
@@ -275,8 +273,6 @@ typedef enum wipers_washer_event_t_struct {
     EV_WP_WS_TMR_LT2 = 6,
     EV_WP_WS_ERROR = 7,
 } wipers_washer_event_t;
-
-
 
 /**
  * Struct type mux_frame_t.
