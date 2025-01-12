@@ -1,3 +1,10 @@
+/**
+ * \file decode.h
+ * \brief Declaration of decoding functions for the main application
+ * \authors Romain Barré, Lucas Velay, Yann Etrillard
+*/
+
+
 #ifndef DECODE_C_H
 #define DECODE_C_H
 

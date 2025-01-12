@@ -1,3 +1,9 @@
+/**
+ * \file encode.h
+ * \brief Declaration of encoding functions for the main application
+ * \authors Romain Barré, Lucas Velay, Yann Etrillard
+*/
+
 #ifndef ENCODE_H
 #define ENCODE_H
 

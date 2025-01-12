@@ -1,3 +1,9 @@
+/**
+ * \file decode.c
+ * \brief Decoding functions for the main application
+ * \authors Romain Barré, Lucas Velay, Yann Etrillard
+*/
+
 #include "decode.h"
 /*
 TODO
@@ -22,46 +28,10 @@ void decode_mux_frame(mux_frame_t* mux_frame, uint8_t udpFrame[DRV_UDP_100MS_FRA
   temp_kilometer = (temp_kilometer << 8) | udpFrame[3];
   temp_kilometer = (temp_kilometer << 8) | udpFrame[4];
 
-  /*if(mux_frame.chassis_issue != NOTHING_CHASSIS){
-    if((mux_frame.chassis_issue & 0x1) == TIRES_PRESSURE){
-      printf("\nCHASSIS : TIRE PRESSURE\n");
-    }
-    if((mux_frame.chassis_issue & 0x2) == BRAKE_FAILURE){
-      printf("\nCHASSIS : BRAKE ISSUE\n");
-    }
-  }else {
-    printf("\nCHASSIS : NO ISSUE\n");
-  }*/
-
-  /*if(mux_frame.engine_issue != NOTHING_ENGINE){
-    if((mux_frame.engine_issue & 0x1) == PRESSURE_FAULT){
-      printf("\nENGINE : PRESSURE ISSUE\n");
-    }
-    if((mux_frame.engine_issue & 0x2) == COOLANT_TEMPERATURE){
-      printf("\nENGINE : COOLING LIQUID ISSUE\n");
-    }
-    if((mux_frame.engine_issue & 0x4) == OIL_OVERHEATING){
-      printf("\nENGINE : OIL OVERHEATING ISSUE\n");
-    }
-  }else{
-    printf("\nENGINE : NO ISSUE\n");
-  }*/
-
   rpm_t temp_rpm = udpFrame[9];
   temp_rpm = (temp_rpm << 8) | udpFrame[10];
   temp_rpm = (temp_rpm << 8) | udpFrame[11];
   temp_rpm = (temp_rpm << 8) | udpFrame[12];
-
-  /*if(mux_frame.battery_issue != NOTHING_BATTERY){
-    if((mux_frame.battery_issue & 0x1) == UNLOADED){
-      printf("\nBATTERY : EMPTY BATTERY\n");
-    }
-    if((mux_frame.battery_issue & 0x2) == OUTAGE){
-      printf("\nBATTERY : BATTERY ISSUE\n");
-    }
-  }else {
-    printf("\nBATTERY : NO ISSUE\n");
-  }*/
 
   uint8_t crc8 = udpFrame[14];
   uint8_t polynomial = 0x31; // CRC8 polynomial
