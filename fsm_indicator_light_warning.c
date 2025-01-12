@@ -104,15 +104,13 @@ uint8_t get_next_event_indicator_light_warning(indicator_state_t current_state, 
 
 indicator_state_t fsm_indicator_light_warning(indicator_state_t current_state, uint8_t cmd_value, clock_t timer) {
 
-    while (current_state != ST_INDICATOR_ERROR) {
-        indicator_event_t event = get_next_event_indicator_light_warning(current_state, cmd_value, timer);
+    indicator_event_t event = get_next_event_indicator_light_warning(current_state, cmd_value, timer);
 
-        for (size_t i = 0; i < TRANS_COUNT; i++) {
-            if (current_state == trans_indicator[i].state) {
-                if (event == trans_indicator[i].event) {
-                    current_state = trans_indicator[i].next_state;
-                    break;
-                }
+    for (size_t i = 0; i < TRANS_COUNT; i++) {
+        if (current_state == trans_indicator[i].state) {
+            if (event == trans_indicator[i].event) {
+                current_state = trans_indicator[i].next_state;
+                break;
             }
         }
     }
@@ -132,10 +130,8 @@ indicator_state_t right_indicator_comodo(indicator_state_t current_right_indicat
 		if (new_state != current_right_indicator_state) {
 			if (elapsed_seconds >= 1) {
 				current_right_indicator_state = ST_INDICATOR_ERROR;
-			} else if (elapsed_seconds > 0 && elapsed_seconds < 1) {
-				return new_state;
 			}else {
-				return current_right_indicator_state;
+				return new_state;
 			}
 		}
 		return current_right_indicator_state;
@@ -155,10 +151,8 @@ indicator_state_t left_indicator_comodo(indicator_state_t current_left_indicator
 		if (new_state != current_left_indicator_state) {
 			if (elapsed_seconds >= 1) {
 				current_left_indicator_state = ST_INDICATOR_ERROR;
-			} else if (elapsed_seconds > 0 && elapsed_seconds < 1) {
-				return new_state;
 			}else {
-				return current_left_indicator_state;
+				return new_state;
 			}
 		}
 		return current_left_indicator_state;
@@ -178,10 +172,8 @@ indicator_state_t warning_comodo(indicator_state_t current_warning_state, uint8_
 		if (new_state != current_warning_state) {
 			if (elapsed_seconds >= 1) {
 				current_warning_state = ST_INDICATOR_ERROR;
-			} else if (elapsed_seconds > 0 && elapsed_seconds < 1) {
-				return new_state;
 			}else {
-				return current_warning_state;
+				return new_state;
 			}
 		}
 		return current_warning_state;

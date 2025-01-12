@@ -99,7 +99,7 @@ int main() {
             frame_number = frame_number + 1;
         }
         /* ==== End of Checking frame number====*/
-
+        printf("%d\n", frame_number);
         /* ==== Start of Decoding UDP frame ====*/
         decode_mux_frame(&mux_frame, udp_frame);
         dashboard_light = decode_lights(&mux_frame);
@@ -118,24 +118,36 @@ int main() {
         // You need to data_len to retrieve the data from the table.
         decode_comodo_frame(serial_frame, data_len, comodo_frame);
         decode_bgf_frame(serial_frame, data_len, bgf_frame_recv);
+        printf("data_len:%d\n", data_len);
+        for (size_t g = 0; g < data_len; g++) {
+            printf("=====bgf_frame_recv:");
+            printf("%02X\n", bgf_frame_recv[g]);
+        }
         /* ==== End of Decoding Serial frame ====*/
 
 
         /* ==== Start of Algorithms ====*/
 
         for (size_t k = 0; k < data_len; k++) {
+            printf("FOR 1\n");
             for (size_t l = 0; l < 5; l++) {
+                printf("FOR 2\n");
                 if ((bgf_frame_recv[k] & 0xFF00) == (bgf_frame_send[l] & 0xFF00)) {
+                    printf("IF 1\n");
                     if ((bgf_frame_recv[k] & 0x00FF) == (bgf_frame_send[l] & 0x00FF)) {
+                        printf("IF 2\n");
                         switch (bgf_frame_recv[k] & 0xFF00) {
                             case 0x01:
                                 current_position_light_state = ST_LIGHT_ACQUITTED;
+                                printf("current_position_light_state = ST_LIGHT_ACQUITTED\n");
                                 break;
                             case 0x02:
                                 current_low_beam_state = ST_LIGHT_ACQUITTED;
+                                printf("current_low_beam_state = ST_LIGHT_ACQUITTED;\n");
                                 break;
                             case 0x03:
                                 current_high_beam_state = ST_LIGHT_ACQUITTED;
+                                printf("current_high_beam_state = ST_LIGHT_ACQUITTED;\n");
                                 break;
                             case 0x04:
                                 if ((bgf_frame_send[l] & 0x00FF) == 0) {
@@ -217,18 +229,32 @@ int main() {
             wipers_state_timer = 0;
         }
 
+        printf("Before FSM:");
+        printf("current_position_light_state:%d\n", current_position_light_state);
+        printf("current_low_beam_state:%d\n", current_low_beam_state);
+        printf("current_high_beam_state:%d\n", current_high_beam_state);
+        printf("current_warning_state:%d\n", current_warning_state);
+        printf("current_right_indicator_state:%d\n", current_right_indicator_state);
+        printf("current_left_indicator_state:%d\n", current_left_indicator_state);
+        printf("current_wipers_washer_state:%d\n", current_wipers_washer_state);
+        //for (size_t i = 0; i < data_len; i++) {
+            current_position_light_state = position_light_comodo(current_position_light_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[0]), position_light_state_timer);
+            current_low_beam_state = low_beam_comodo(current_low_beam_state, get_cmd_low_beam_from_comodo_frame_t(comodo_frame[0]), low_beam_state_timer);
+            current_high_beam_state = high_beam_comodo(current_high_beam_state, get_cmd_high_beam_from_comodo_frame_t(comodo_frame[0]), high_beam_state_timer);
 
-        for (size_t i = 0; i < data_len; i++) {
-            current_position_light_state = position_light_comodo(current_position_light_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), position_light_state_timer);
-            current_low_beam_state = low_beam_comodo(current_low_beam_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), low_beam_state_timer);
-            current_high_beam_state = high_beam_comodo(current_high_beam_state, get_cmd_position_light_from_comodo_frame_t(comodo_frame[i]), high_beam_state_timer);
-
-            warning_comodo(current_warning_state, get_cmd_warning_from_comodo_frame_t(comodo_frame[i]), warning_state_timer);
-            right_indicator_comodo(current_right_indicator_state, get_cmd_right_indicator_from_comodo_frame_t(comodo_frame[i]), right_indicator_state_timer);
-            left_indicator_comodo(current_left_indicator_state, get_cmd_left_indicator_from_comodo_frame_t(comodo_frame[i]), left_indicator_state_timer);
-            wipers_washer_comodo(current_wipers_washer_state, get_cmd_wipers_from_comodo_frame_t(comodo_frame[i]), get_cmd_washer_from_comodo_frame_t(comodo_frame[i]), wipers_state_timer);
-        }
-
+            current_warning_state = warning_comodo(current_warning_state, get_cmd_warning_from_comodo_frame_t(comodo_frame[0]), warning_state_timer);
+            current_right_indicator_state = right_indicator_comodo(current_right_indicator_state, get_cmd_right_indicator_from_comodo_frame_t(comodo_frame[0]), right_indicator_state_timer);
+            current_left_indicator_state = left_indicator_comodo(current_left_indicator_state, get_cmd_left_indicator_from_comodo_frame_t(comodo_frame[0]), left_indicator_state_timer);
+            current_wipers_washer_state = wipers_washer_comodo(current_wipers_washer_state, get_cmd_wipers_from_comodo_frame_t(comodo_frame[0]), get_cmd_washer_from_comodo_frame_t(comodo_frame[0]), wipers_state_timer);
+        //}
+        printf("After FSM:");
+        printf("current_position_light_state:%d\n", current_position_light_state);
+        printf("current_low_beam_state:%d\n", current_low_beam_state);
+        printf("current_high_beam_state:%d\n", current_high_beam_state);
+        printf("current_warning_state:%d\n", current_warning_state);
+        printf("current_right_indicator_state:%d\n", current_right_indicator_state);
+        printf("current_left_indicator_state:%d\n", current_left_indicator_state);
+        printf("current_wipers_washer_state:%d\n", current_wipers_washer_state);
         // === Lights on the dashboard ===
         if (current_position_light_state == ST_LIGHT_ACQUITTED) {
             set_position_light_in_dashboard_light_t(&dashboard_light, 1);
@@ -265,7 +291,7 @@ int main() {
         }else {
             set_washer_active_in_dashboard_light_t(&dashboard_light, 0);
         }
-
+        printf("End lights\n");
         /* ==== End of Algorithms ====*/
 
         /* ==== Start of Encoding and Writing to UDP ====*/
@@ -310,7 +336,6 @@ int main() {
         } else if (current_left_indicator_state == ST_INDICATOR_OFF) {
             bgf_encode_frame(&bgf_frame_send[4], BGF_LEFT_INDICATOR, 0);
         }
-
         encode_serial_frame_bgf(serial_frame_bgf, bgf_frame_send, sizeof(bgf_frame_send));
 
         drv_frame = drv_write_ser(drv_fd, serial_frame_bgf, sizeof(bgf_frame_send));
@@ -318,6 +343,7 @@ int main() {
             printf("Serial frame write failed : %s...\n", strerror(errno));
             break;
         }
+        printf("End Writing Serial\n");
         /* ==== End of Encoding and Writing to Serial ====*/
     }
 

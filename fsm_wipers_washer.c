@@ -110,12 +110,10 @@ wipers_washer_state_t wipers_washer_comodo(wipers_washer_state_t current_wipers_
 		if (new_state == ST_TMR_WP_WS_OFF) {
 			if (elapsed_seconds >= 2) {
 				current_wipers_washer_state = ST_WP_WS_ALL_OFF;
-			} else if (elapsed_seconds > 0 && elapsed_seconds < 2) {
+			} else {
 				wipers_washer_state_t new_state_tmr = fsm_wipers_washer(new_state, cmd_wipers_value, cmd_washer_value, timer);
 				return new_state_tmr;
-			}else {
-				return new_state;
-            }
+			}
 		}
         return current_wipers_washer_state;
 	}

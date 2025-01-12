@@ -1,5 +1,5 @@
 /**
- * \file fsm_classic_car_lights.h
+ * \file fsm_classic_car_lights.c
  * \brief Declaration of FSM functions for classic car lights
  * \authors Romain Barré, Lucas Velay, Yann Etrillard
  */
@@ -66,19 +66,16 @@ uint8_t get_next_event_classic_car_lights(light_state_t current_state, uint8_t c
 }
 
 light_state_t fsm_classic_car_lights(light_state_t current_state, uint8_t cmd_value) {
-    while (current_state != ST_LIGHT_ERROR) {
-        light_event_t event = get_next_event_classic_car_lights(current_state, cmd_value);
+    light_event_t event = get_next_event_classic_car_lights(current_state, cmd_value);
 
-        for (size_t i = 0; i < TRANS_COUNT; i++) {
-            if (current_state == trans_lights[i].state) {
-                if (event == trans_lights[i].event) {
-                    current_state = trans_lights[i].next_state;
-                    break;
-                }
+    for (size_t i = 0; i < TRANS_COUNT; i++) {
+        if (current_state == trans_lights[i].state) {
+            if (event == trans_lights[i].event) {
+                current_state = trans_lights[i].next_state;
+                break;
             }
         }
     }
-
     return current_state;
 }
 
@@ -91,15 +88,15 @@ light_state_t position_light_comodo(light_state_t current_position_light_state, 
     	}
 
       	light_state_t new_state = fsm_classic_car_lights(current_position_light_state, cmd_value);
-
+		printf("IN FSM:");
+        printf("new_state:%d\n", new_state);
     	if (new_state != current_position_light_state) {
 
         	if (elapsed_seconds >= 1) {
+              printf("\n========================================================================\n");
       		  current_position_light_state = ST_LIGHT_ERROR;
-        	} else if (elapsed_seconds > 0 && elapsed_seconds < 1) {
-      		  return new_state;
-      		}else {
-        	  return current_position_light_state;
+        	}else {
+        	  return new_state;
         	}
       	}
         return current_position_light_state;
@@ -121,10 +118,8 @@ light_state_t low_beam_comodo(light_state_t current_low_beam_state, uint8_t cmd_
 
             if (elapsed_seconds >= 1) {
             current_low_beam_state = ST_LIGHT_ERROR;
-            } else if (elapsed_seconds > 0 && elapsed_seconds < 1) {
-      		  return new_state;
-      		}else {
-        	  return current_low_beam_state;
+            }else {
+        	  return new_state;
         	}
         }
         return current_low_beam_state;
@@ -145,10 +140,8 @@ light_state_t high_beam_comodo(light_state_t current_high_beam_state, uint8_t cm
 		if (new_state != current_high_beam_state) {
 			if (elapsed_seconds >= 1) {
 				current_high_beam_state = ST_LIGHT_ERROR;
-			}else if (elapsed_seconds > 0 && elapsed_seconds < 1) {
-				return new_state;
 			}else{
-				return current_high_beam_state;
+				return new_state;
 			}
 		}
 	}
