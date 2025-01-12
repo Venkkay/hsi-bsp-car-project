@@ -159,6 +159,7 @@ We transform the comodo frame into a specific type and the MUX frame into a type
 ## Question 7
 The ‘encode.c’ file contains all our functions for encoding the transformed information to the UDP and Serial inputs.
 We transform the custom frames into the original frames so that they match the data format expected by the driver.
+We have encountered difficulties in synchronizing the data sent to the bgf with the data received for the acknowledgment.
 
 ## Question 8
 We have structured our ‘main’ function in the ‘app.c’ file according to the tree structure expected by the specifications.
