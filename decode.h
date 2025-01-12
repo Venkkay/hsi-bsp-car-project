@@ -10,6 +10,7 @@
 
 void decode_mux_frame(mux_frame_t* mux_frame, uint8_t udpFrame[DRV_UDP_100MS_FRAME_SIZE]);
 void decode_comodo_frame(serial_frame_t serial_frame[DRV_MAX_FRAMES], uint32_t data_len, comodo_frame_t comodo_frame[DRV_MAX_FRAMES]);
+void decode_bgf_frame(serial_frame_t serial_frame[DRV_MAX_FRAMES], uint32_t data_len, bgf_frame_t bgf_frame[DRV_MAX_FRAMES]);
 
 uint8_t check_crc8(uint8_t *data, size_t length, uint8_t polynomial, uint8_t initial_value);
 dashboard_light_t decode_lights(mux_frame_t* mux_frame);

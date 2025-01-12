@@ -82,11 +82,8 @@ dashboard_light_t decode_lights(mux_frame_t* mux_frame){
   	dashboard_light_t temp_light = 0;
 
 	chassis_issues_t chassis_issues = get_chassis_issue_from_mux_frame_t(*mux_frame);
-    printf("chassis_issues = %d\n", chassis_issues);
     engine_issues_t engine_issues = get_engine_issue_from_mux_frame_t(*mux_frame);
-    printf("engine_issues = %d\n", engine_issues);
     battery_issues_t battery_issues = get_battery_issue_from_mux_frame_t(*mux_frame);
-    printf("battery_issues = %d\n", battery_issues);
 
   if((chassis_issues) != 0){
     if((chassis_issues & BRAKE_FAILURE) != 0){
