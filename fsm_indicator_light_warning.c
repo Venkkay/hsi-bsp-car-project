@@ -1,3 +1,9 @@
+/**
+ * \file fsm_indicator_light_warning.c
+ * \brief Declaration of FSM functions for indicator lights and warnings
+ * \authors Romain Barré, Lucas Velay, Yann Etrillard
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -32,7 +38,7 @@ tTransition trans[] = {
     { ST_INDICATOR_ACQUITTED_OFF, EV_INDICATOR_TMR_EQ_1, ST_INDICATOR_ACTIVATED_ON},
 };
 
-uint8_t get_next_event(indicator_state_t current_state, uint8_t cmd_value, clock_t timer) {
+uint8_t get_next_event_indicator_light_warning(indicator_state_t current_state, uint8_t cmd_value, clock_t timer) {
     uint8_t event;
 
     switch (current_state) {

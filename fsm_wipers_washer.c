@@ -1,3 +1,9 @@
+/**
+ * \file fsm_wipers_washer.c
+ * \brief Declaration of FSM functions for windscreen wipers and washer
+ * \authors Romain Barré, Lucas Velay, Yann Etrillard
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -27,7 +33,7 @@ tTransition trans[] = {
     { ST_TMR_WP_WS_OFF, EV_WP_WS_TMR_GT2, ST_WP_WS_ALL_OFF},
 };
 
-uint8_t get_next_event(wipers_washer_state_t current_state, uint8_t cmd_wipers_value, uint8_t cmd_washer_value, clock_t timer) {
+uint8_t get_next_event_wipers_washer(wipers_washer_state_t current_state, uint8_t cmd_wipers_value, uint8_t cmd_washer_value, clock_t timer) {
     uint8_t event;
 
     switch (current_state) {
