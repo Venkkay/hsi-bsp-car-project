@@ -787,6 +787,51 @@
       "dimension": 1,
       "initialization_value": 12,
       "comment": ""
+    },
+    {
+      "id": 17,
+      "name": "BGF_POSITION",
+      "kind": "define",
+      "type": "",
+      "dimension": 1,
+      "initialization_value": 1,
+      "comment": ""
+    },
+    {
+      "id": 18,
+      "name": "BGF_LOW_BEAM",
+      "kind": "define",
+      "type": "",
+      "dimension": 1,
+      "initialization_value": 2,
+      "comment": ""
+    },
+    {
+      "id": 19,
+      "name": "BGF_HIGH_BEAM",
+      "kind": "define",
+      "type": "",
+      "dimension": 1,
+      "initialization_value": 3,
+      "comment": ""
+    },
+    {
+      "id": 20,
+      "name": "BGF_RIGHT_INDICATOR",
+      "kind": "define",
+      "type": "",
+      "dimension": 1,
+      "initialization_value": 4,
+      "comment": ""
+    },
+    {
+      "id": 21,
+      "name": "BGF_LEFT_INDICATOR",
+      "kind": "define",
+      "type": "",
+      "dimension": 1,
+      "initialization_value": 5,
+      "comment": ""
     }
   ]
 }

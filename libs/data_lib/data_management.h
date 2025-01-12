@@ -1,3 +1,9 @@
+/**
+ * \file	data_management.h
+ * \brief	Header file of the data management lib with the types, enums, structs and functions declarations.
+ * \author	data_lib_generator tool
+ */
+
 #ifndef DATA_MANAGEMENT_H
 #define DATA_MANAGEMENT_H
 
@@ -74,6 +80,8 @@ typedef uint8_t speed_t;
  * \details CRC8 
 */
 typedef uint8_t crc8_t;
+
+
 /**
  * Flag comodo_frame_t.
  *
@@ -243,6 +251,8 @@ typedef enum wipers_washer_event_t_struct {
     EV_WP_WS_TMR_LT2 = 6,
     EV_WP_WS_ERROR = 7,
 } wipers_washer_event_t;
+
+
 
 /**
  * Struct type mux_frame_t.
@@ -568,13 +578,6 @@ bool set_cmd_washer_in_comodo_frame_t(comodo_frame_t* instance, const uint8_t va
  * @return Return True if the value is valid, False otherwise.
  */
 bool set_all_flag_comodo_frame_t(comodo_frame_t* instance, const uint8_t cmd_warning, const uint8_t cmd_position_light, const uint8_t cmd_low_beam, const uint8_t cmd_high_beam, const uint8_t cmd_right_indicator, const uint8_t cmd_left_indicator, const uint8_t cmd_wipers, const uint8_t cmd_washer);
-/**
- * Check the value of comodo_frame_t.
- *
- * \param[in] value : The value to check.
- * \return bool : Return True if the value is valid, False otherwise.
- */
-bool check_comodo_frame_t(const uint8_t value);
 /**
  * Set comodo_frame_t.
  *
@@ -942,13 +945,6 @@ bool set_washer_active_in_dashboard_light_t(dashboard_light_t* instance, const u
  * @return Return True if the value is valid, False otherwise.
  */
 bool set_all_flag_dashboard_light_t(dashboard_light_t* instance, const uint16_t position_light, const uint16_t low_beam, const uint16_t high_beam, const uint16_t fuel, const uint16_t motor_issue, const uint16_t pressure_issue, const uint16_t unused, const uint16_t discharged_battery, const uint16_t warning, const uint16_t battery_issue, const uint16_t coolant_temperature, const uint16_t motor_pressure, const uint16_t oil_overheat, const uint16_t brake_issue, const uint16_t wiper_active, const uint16_t washer_active);
-/**
- * Check the value of dashboard_light_t.
- *
- * \param[in] value : The value to check.
- * \return bool : Return True if the value is valid, False otherwise.
- */
-bool check_dashboard_light_t(const uint16_t value);
 /**
  * Set dashboard_light_t.
  *
@@ -1364,4 +1360,12 @@ bool check_bcgv_frame_t(const rpm_dashboard_t rpm, const fuel_percent_t fuel_per
  * \return bool : Return True if the value is valid, False otherwise.
  */
 bool set_bcgv_frame_t(bcgv_frame_t* instance, kilometer_t kilometer, rpm_dashboard_t rpm, speed_t speed, fuel_percent_t fuel_percent_level, dashboard_light_t dashboard_light);
-#endif
+/**
+ * \brief	Init dashboard_state
+ * \return	bcgv_frame_t : the initialized struct.
+ */
+/**
+ * \brief	Init light_state_current
+ * \return	light_state_t : the initialized struct.
+ */
+#endif // DATA_MANAGEMENT_H
